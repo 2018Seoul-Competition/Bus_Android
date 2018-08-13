@@ -1,12 +1,12 @@
-package com.ndc.sub.Utils;
+package com.ndc.bus.Utils;
 
 import android.util.Log;
 
-import com.ndc.sub.Common.BaseApplication;
+import com.ndc.bus.Common.BaseApplication;
 
 public class Dlog {
 
-    static final String TAG = "2018SeoulSubway";
+    static final String TAG = "2018SeoulBus";
 
 
     /**

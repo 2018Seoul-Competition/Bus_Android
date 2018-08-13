@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ndc.sub">
+    package="com.ndc.bus">
 
     <application
         android:name=".Common.BaseApplication"

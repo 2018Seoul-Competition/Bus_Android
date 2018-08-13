@@ -1,4 +1,4 @@
-package com.ndc.sub;
+package com.ndc.bus;
 
 import org.junit.Test;
 
