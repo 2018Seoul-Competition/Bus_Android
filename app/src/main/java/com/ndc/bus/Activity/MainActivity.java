@@ -1,5 +1,6 @@
 package com.ndc.bus.Activity;
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,11 +9,21 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.ndc.bus.Common.BaseApplication;
+import com.ndc.bus.Network.RetrofitClient;
 import com.ndc.bus.R;
 import com.ndc.bus.Utils.Dlog;
+import com.ndc.bus.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity {
+import java.io.IOException;
 
+import retrofit2.Call;
+
+public class MainActivity extends BaseActivity {
+
+    private ActivityMainBinding binding;
+
+    /*
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,26 +38,27 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
+    */
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    public void initVariable(){
+        this.binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        binding.setActivity(this);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    public void retrieveBusInfo(){
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        BaseApplication baseApplication = (BaseApplication)getApplication();
+        String serviceKey = baseApplication.getKey();
+        String vehId = binding.vehId.getText().toString();
+
+        Call<String> call =  RetrofitClient.getInstance().getService().getBusPosByVehId(serviceKey, vehId);
+        try {
+            String busInfo = call.execute().body();
+            Dlog.i(busInfo);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        return super.onOptionsItemSelected(item);
     }
+
 }
