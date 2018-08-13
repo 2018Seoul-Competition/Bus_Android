@@ -8,7 +8,7 @@ import android.content.pm.PackageManager;
 public class BaseApplication extends Application {
     public static boolean DEBUG;
     private Context m_Context;
-
+    private final String key = "EhxzLlLWZRRobmy7a5zscgcLA8u9%2B1EKLE1m439UhFUuw7nGChFGGYjH5q8JNnOmI3ma7NYtPPH9xo75Sipt%2FA%3D%3D";
     @Override
     public void onCreate() {
         super.onCreate();
@@ -34,5 +34,9 @@ public class BaseApplication extends Application {
         }
 
         return debuggable;
+    }
+
+    public String getKey() {
+        return key;
     }
 }
