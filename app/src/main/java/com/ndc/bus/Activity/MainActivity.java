@@ -1,46 +1,26 @@
 package com.ndc.bus.Activity;
 
 import android.databinding.DataBindingUtil;
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 
+import com.ndc.bus.Arrival.ArrivalServiceResult;
 import com.ndc.bus.Common.BaseApplication;
 import com.ndc.bus.Network.RetrofitClient;
 import com.ndc.bus.R;
 import com.ndc.bus.Utils.Dlog;
 import com.ndc.bus.databinding.ActivityMainBinding;
 
-import java.io.IOException;
-
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 public class MainActivity extends BaseActivity {
 
     private ActivityMainBinding binding;
 
-    /*
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Dlog.i("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-    }
-    */
     @Override
     public void initVariable(){
+        super.initVariable();
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.setActivity(this);
     }
@@ -51,13 +31,23 @@ public class MainActivity extends BaseActivity {
         String serviceKey = baseApplication.getKey();
         String vehId = binding.vehId.getText().toString();
 
-        Call<String> call =  RetrofitClient.getInstance().getService().getBusPosByVehId(serviceKey, vehId);
-        try {
-            String busInfo = call.execute().body();
-            Dlog.i(busInfo);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Call<ArrivalServiceResult> call =  RetrofitClient.getInstance().getService().getBusPosByVehId(serviceKey, vehId);
+        call.enqueue(new Callback<ArrivalServiceResult>() {
+            @Override
+            public void onResponse(Call<ArrivalServiceResult> call, Response<ArrivalServiceResult> response) {
+                // you  will get the reponse in the response parameter
+                if(response.isSuccessful()) {
+                    Dlog.i(response.body().getArrivalMsgHeader().getHeaderMsg());
+                }else {
+                    int statusCode  = response.code();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrivalServiceResult> call, Throwable t) {
+                Dlog.e(t.getMessage());
+            }
+        });
 
     }
 
