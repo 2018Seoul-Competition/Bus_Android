@@ -1,5 +1,7 @@
 package com.ndc.bus.Network;
 
+import com.ndc.bus.Arrival.ArrivalServiceResult;
+
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -7,8 +9,8 @@ import retrofit2.http.Query;
 public interface RetrofitService {
 
     @GET("getBusPosByVehId")
-    Call<String> getBusPosByVehId(
-        @Query("serviceKey") String serviceKey,
+    Call<ArrivalServiceResult> getBusPosByVehId(
+        final @Query(value = "serviceKey", encoded = true) String serviceKey,
         @Query("vehId") String vehId
     );
     /*
