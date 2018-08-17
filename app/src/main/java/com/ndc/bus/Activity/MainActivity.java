@@ -21,15 +21,22 @@ public class MainActivity extends BaseActivity {
     @Override
     public void initVariable(){
         super.initVariable();
-        this.binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        binding.setActivity(this);
+        retrieveBusInfo();
+
+/*        this.binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        binding.setActivity(this);*/
     }
 
     public void retrieveBusInfo(){
 
+        /*BaseApplication baseApplication = (BaseApplication)getApplication();
+        String serviceKey = baseApplication.getKey();
+        String vehId = binding.vehId.getText().toString();*/
+
+        //get vehId from QrScanActivity
         BaseApplication baseApplication = (BaseApplication)getApplication();
         String serviceKey = baseApplication.getKey();
-        String vehId = binding.vehId.getText().toString();
+        String vehId = getIntent().getStringExtra("vehId");
 
         Call<ArrivalServiceResult> call =  RetrofitClient.getInstance().getService().getBusPosByVehId(serviceKey, vehId);
         call.enqueue(new Callback<ArrivalServiceResult>() {

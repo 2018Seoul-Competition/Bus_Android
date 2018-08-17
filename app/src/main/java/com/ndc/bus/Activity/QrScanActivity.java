@@ -52,10 +52,15 @@ public class QrScanActivity extends AppCompatActivity {
                 Toast.makeText(QrScanActivity.this, "취소!", Toast.LENGTH_SHORT).show();
             } else {
                 //qrcode 결과가 있으면
-                Toast.makeText(QrScanActivity.this, "스캔완료!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 try {
                     //data를 json으로 변환
                     JSONObject obj = new JSONObject(result.getContents());
+                    String strUrl = (String) obj.get("url");
+                    String strDistBusId= (String) obj.get("vehId");
+                    Intent nextIntent = new Intent(this, MainActivity.class);
+                    nextIntent.putExtra("vehId", strDistBusId);
+                    startActivity(nextIntent);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
