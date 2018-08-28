@@ -5,12 +5,13 @@ import android.os.Bundle;
 
 public class BaseActivity extends Activity {
 
-    @Override protected void onCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initVariable();
+        initSettings();
     }
 
-    public void initVariable(){
+    public void initSettings(){
 
     }
 

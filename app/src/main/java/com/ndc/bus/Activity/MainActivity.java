@@ -9,22 +9,33 @@ import com.ndc.bus.R;
 import com.ndc.bus.Utils.Dlog;
 import com.ndc.bus.databinding.ActivityMainBinding;
 
+import android.os.Build;
+import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
+
+import java.util.Locale;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.speech.tts.TextToSpeech.ERROR;
 
-public class MainActivity extends BaseActivity {
 
-    private ActivityMainBinding binding;
+public class MainActivity extends BaseActivity implements TextToSpeech.OnInitListener{
+
+    //private ActivityMainBinding binding;
+    private TextToSpeech tts;
 
     @Override
-    public void initVariable(){
-        super.initVariable();
+    public void initSettings(){
+        super.initSettings();
+        this.tts = new TextToSpeech(this, this);
         retrieveBusInfo();
-
-/*        this.binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        binding.setActivity(this);*/
+        /*
+        this.binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        binding.setActivity(this);
+        */
     }
 
     public void retrieveBusInfo(){
@@ -57,5 +68,38 @@ public class MainActivity extends BaseActivity {
         });
 
     }
+
+    // 비동기로 speech 출력을 처리한다.
+    synchronized private void speechBusInfo(String speechData){
+        tts.setPitch(0.9f);         // 음성 톤은을 기본의 0.9로 설정
+        tts.setSpeechRate(1.0f);    // 읽는 속도를 기본으로 설정
+
+        // 버전에 따라서 함수를 달리 설정해주어야 함
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            tts.speak(speechData,TextToSpeech.QUEUE_FLUSH,null,null);
+        } else {
+            tts.speak(speechData, TextToSpeech.QUEUE_FLUSH, null);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // TTS 객체가 남아있다면 실행을 중지하고 메모리에서 제거한다.
+        if(tts != null){
+            tts.stop();
+            tts.shutdown();
+            tts = null;
+        }
+    }
+
+    @Override
+    public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+            tts.setLanguage(Locale.KOREAN);
+            speechBusInfo("테스팅 중 입니다.");
+        }
+    }
+
 
 }
