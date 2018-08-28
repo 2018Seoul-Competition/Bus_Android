@@ -29,6 +29,7 @@
             android:windowSoftInputMode="stateAlwaysHidden">
 
         </activity>
+        <activity android:name=".Activity.StationActivity" />
     </application>
 
 </manifest>
