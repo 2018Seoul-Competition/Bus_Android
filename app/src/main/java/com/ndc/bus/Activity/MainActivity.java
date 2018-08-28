@@ -31,18 +31,12 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
     public void initSettings(){
         super.initSettings();
         this.tts = new TextToSpeech(this, this);
+        //this.binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        //binding.setActivity(this);
         retrieveBusInfo();
-        /*
-        this.binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        binding.setActivity(this);
-        */
     }
 
     public void retrieveBusInfo(){
-
-        /*BaseApplication baseApplication = (BaseApplication)getApplication();
-        String serviceKey = baseApplication.getKey();
-        String vehId = binding.vehId.getText().toString();*/
 
         //get vehId from QrScanActivity
         BaseApplication baseApplication = (BaseApplication)getApplication();
@@ -97,9 +91,6 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
             tts.setLanguage(Locale.KOREAN);
-            speechBusInfo("테스팅 중 입니다.");
         }
     }
-
-
 }
