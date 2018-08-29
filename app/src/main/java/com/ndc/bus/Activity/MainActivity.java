@@ -1,17 +1,22 @@
 package com.ndc.bus.Activity;
 
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 
 import com.ndc.bus.Arrival.ArrivalServiceResult;
 import com.ndc.bus.Common.BaseApplication;
 import com.ndc.bus.Network.RetrofitClient;
 import com.ndc.bus.R;
+import com.ndc.bus.Service.ArrivalNotificationService;
 import com.ndc.bus.Utils.Dlog;
 import com.ndc.bus.databinding.ActivityMainBinding;
 
 import android.os.Build;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 
 import java.util.Locale;
 
@@ -30,10 +35,27 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
     @Override
     public void initSettings(){
         super.initSettings();
+
+        //for gps
+        if ( Build.VERSION.SDK_INT >= 23 &&
+                ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions( this, new String[] {  android.Manifest.permission.ACCESS_FINE_LOCATION  },
+                    0 );
+        }
+
         this.tts = new TextToSpeech(this, this);
         //this.binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         //binding.setActivity(this);
-        retrieveBusInfo();
+
+        //FIXME : origin code
+//        retrieveBusInfo();
+
+        //FIXME : test code for GPS
+        ArrivalNotificationService service = new ArrivalNotificationService();
+        Intent intent = new Intent(
+                getApplicationContext(),
+                ArrivalNotificationService.class);
+        startService(intent);
     }
 
     public void retrieveBusInfo(){

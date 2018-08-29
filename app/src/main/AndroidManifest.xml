@@ -5,6 +5,9 @@
     <!-- Add Internet Permission for HTTP and Socket API -->
     <uses-permission android:name="android.permission.INTERNET"/>
 
+    <!-- Add GPS Permission -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
     <application
         android:name=".Common.BaseApplication"
         android:allowBackup="true"
@@ -13,13 +16,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.MainActivity" />
+        <activity android:name=".Activity.MainActivity">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
         <activity android:name=".Activity.BaseActivity" />
         <activity android:name=".Activity.QrScanActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".Activity.AnyOrientationCaptureActivity"
@@ -30,6 +34,8 @@
 
         </activity>
         <activity android:name=".Activity.StationActivity" />
+
+        <service android:name=".Service.ArrivalNotificationService" />
     </application>
 
 </manifest>
