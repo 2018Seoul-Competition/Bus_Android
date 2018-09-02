@@ -16,11 +16,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".Activity.IndexActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".Activity.MainActivity">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
         </activity>
         <activity android:name=".Activity.BaseActivity" />
         <activity android:name=".Activity.QrScanActivity">
@@ -31,11 +33,13 @@
             android:stateNotNeeded="true"
             android:theme="@style/zxing_CaptureTheme"
             android:windowSoftInputMode="stateAlwaysHidden">
-
         </activity>
-        <activity android:name=".Activity.StationActivity" />
+        <activity android:name=".Activity.StationActivity">
+        </activity>
 
-        <service android:name=".Service.ArrivalNotificationService" />
+
+        <service
+            android:name=".Service.ArrivalNotificationService"/>
     </application>
 
 </manifest>

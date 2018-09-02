@@ -17,6 +17,9 @@ import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import java.util.Locale;
 
@@ -31,6 +34,10 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
 
     //private ActivityMainBinding binding;
     private TextToSpeech tts;
+
+    //for back press
+    private final long FINSH_INTERVAL_TIME = 2000;
+    private long backPressedTime = 0;
 
     @Override
     public void initSettings(){
@@ -47,42 +54,29 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
         //this.binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         //binding.setActivity(this);
 
-        //FIXME : origin code
-//        retrieveBusInfo();
-
-        //FIXME : test code for GPS
-        ArrivalNotificationService service = new ArrivalNotificationService();
-        Intent intent = new Intent(
-                getApplicationContext(),
-                ArrivalNotificationService.class);
-        startService(intent);
-    }
-
-    public void retrieveBusInfo(){
-
-        //get vehId from QrScanActivity
-        BaseApplication baseApplication = (BaseApplication)getApplication();
-        String serviceKey = baseApplication.getKey();
-        String vehId = getIntent().getStringExtra("vehId");
-
-        Call<ArrivalServiceResult> call =  RetrofitClient.getInstance().getService().getBusPosByVehId(serviceKey, vehId);
-        call.enqueue(new Callback<ArrivalServiceResult>() {
+        //buttons onclick
+        setContentView(R.layout.activity_main);
+        Button btn_searchByNum = (Button) findViewById(R.id.toStation);
+        Button btn_qrScan = (Button) findViewById(R.id.toScan);
+        btn_searchByNum.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onResponse(Call<ArrivalServiceResult> call, Response<ArrivalServiceResult> response) {
-                // you  will get the reponse in the response parameter
-                if(response.isSuccessful()) {
-                    Dlog.i(response.body().getArrivalMsgHeader().getHeaderMsg());
-                }else {
-                    int statusCode  = response.code();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ArrivalServiceResult> call, Throwable t) {
-                Dlog.e(t.getMessage());
+            public void onClick(View view){
+                Intent intent = new Intent(
+                        getApplicationContext(),
+                        StationActivity.class);
+                intent.putExtra("vehId", "value");
+                startActivity(intent);
             }
         });
-
+        btn_qrScan.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                Intent intent = new Intent(
+                        getApplicationContext(),
+                        QrScanActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     // 비동기로 speech 출력을 처리한다.
@@ -96,6 +90,21 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
         } else {
             tts.speak(speechData, TextToSpeech.QUEUE_FLUSH, null);
         }
+    }
+
+    @Override
+    public void onBackPressed(){
+        long tempTime = System.currentTimeMillis();
+        long intervalTime = tempTime - backPressedTime;
+
+        if( 0 <= intervalTime && FINSH_INTERVAL_TIME >= intervalTime){
+            super.onBackPressed();
+        }
+        else {
+            backPressedTime = tempTime;
+            Toast.makeText(getApplicationContext(), "뒤로 버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT).show();
+        }
+        //뒤로 가기 막기
     }
 
     @Override

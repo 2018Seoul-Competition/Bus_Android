@@ -1,39 +1,52 @@
 package com.ndc.bus.Service;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.ndc.bus.Activity.MainActivity;
+import com.ndc.bus.Activity.QrScanActivity;
+import com.ndc.bus.Activity.StationActivity;
+import com.ndc.bus.R;
 import com.ndc.bus.Utils.Dlog;
 
 public class ArrivalNotificationService extends Service {
     private static final String TAG = "TESTGPS";
     private LocationManager mLocationManager = null;
     private static final int LOCATION_INTERVAL = 1000;
-    private static final float LOCATION_DISTANCE = 10f;
+    private static final float LOCATION_DISTANCE = 0.01f;
 
     private double destLongitude;
-    private double destAltitude;
+    private double destLatitude;
 
     public void setDestLongitude(double  _destLongitude){
         destLongitude = _destLongitude;
     }
 
-    public void setDestAltitude(double  _destAltitude){
-        destAltitude = _destAltitude;
+    public void setDestLatitude(double  _destLatitude){
+        destLatitude = _destLatitude;
     }
 
-    private boolean checkNearArrival(double currentAltitude, double currentLongitude){
-        if(Math.pow(destAltitude-currentAltitude,2 ) + Math.pow(destLongitude-currentLongitude,2 ) < 10000)
+    private boolean checkNearArrival(double currentLatitude, double currentLongitude){
+        if(Math.pow(destLatitude-currentLatitude,2 ) + Math.pow(destLongitude-currentLongitude,2 ) < 10000)
             return true;
         else
             return false;
@@ -53,9 +66,12 @@ public class ArrivalNotificationService extends Service {
         public void onLocationChanged(Location location)
         {
             mLastLocation.set(location);
+            Toast.makeText(getApplicationContext(), "Long : " + Double.toString(location.getLongitude()) + " Alti : " + Double.toString(location.getAltitude()), Toast.LENGTH_SHORT).show();
+            //makeNoti();
+
             if(checkNearArrival(mLastLocation.getAltitude(), mLastLocation.getLongitude()))
                 ;
-                // alarm
+            // alarm
             Dlog.i("Long" + Double.toString(location.getLongitude()));
             Dlog.i("Alt" + Double.toString(location.getAltitude()));
         }
@@ -143,4 +159,28 @@ public class ArrivalNotificationService extends Service {
             mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         }
     }
+
+    private void makeNoti(){
+        // prepare intent which is triggered if the
+// notification is selected
+
+        Intent intent = new Intent(this, MainActivity.class);
+// use System.currentTimeMillis() to have a unique ID for the pending intent
+        PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
+
+// build notification
+// the addAction re-use the same intent to keep the example short
+        Notification n  = new Notification.Builder(this)
+                .setContentTitle("New mail from " + "test@gmail.com")
+                .setContentText("Subject")
+                .setContentIntent(pIntent)
+                .setAutoCancel(true).build();
+
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        notificationManager.notify(0, n);
+    }
+
 }

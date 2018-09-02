@@ -24,11 +24,17 @@
             android:text="115051449" />
 
         <Button
-            android:id="@+id/retrieveBusInfoBtn"
+            android:id="@+id/toStation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="실시간 버스정보 조회"
-            android:onClick="@{()->activity.retrieveBusInfo()}"/>
+            android:text="실시간 버스정보 조회"/>
+
+        <Button
+            android:id="@+id/toScan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Qr Scan"/>
+
 
     </LinearLayout>
 </layout>
