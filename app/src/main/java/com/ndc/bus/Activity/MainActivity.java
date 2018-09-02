@@ -98,13 +98,13 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
         long intervalTime = tempTime - backPressedTime;
 
         if( 0 <= intervalTime && FINSH_INTERVAL_TIME >= intervalTime){
-            super.onBackPressed();
+            finishAffinity();
+            System.exit(0);
         }
         else {
             backPressedTime = tempTime;
             Toast.makeText(getApplicationContext(), "뒤로 버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT).show();
         }
-        //뒤로 가기 막기
     }
 
     @Override
