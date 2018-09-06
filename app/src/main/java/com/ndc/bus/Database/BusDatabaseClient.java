@@ -43,11 +43,11 @@ public class BusDatabaseClient {
 
     private void initData(){
         ArrayList<Station> stationList = new ArrayList<>();
-        Station station1 = new Station("A", "에이");
+        Station station1 = new Station("A", "에이", "1", "일");
         stationList.add(station1);
-        Station station2 = new Station("B", "비");
+        Station station2 = new Station("B", "비", "2", "이");
         stationList.add(station2);
-        Station station3 = new Station("C", "씨");
+        Station station3 = new Station("C", "씨", "3", "삼");
         stationList.add(station3);
 
         busDatabase.stationDAO().insertAllStations(stationList);

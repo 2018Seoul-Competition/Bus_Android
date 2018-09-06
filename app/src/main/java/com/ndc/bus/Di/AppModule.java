@@ -11,6 +11,7 @@ import dagger.Provides;
 
 @Module
 public class AppModule {
+
     private final BaseApplication app;
 
     public AppModule(BaseApplication app){
@@ -19,7 +20,7 @@ public class AppModule {
 
     @Singleton
     @Provides
-    public Context provideContext(){
+    public Context provideContext() {
         return this.app;
     }
 
