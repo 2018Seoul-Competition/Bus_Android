@@ -13,18 +13,17 @@ import com.ndc.bus.Station.Station;
 import com.ndc.bus.databinding.StationRowBinding;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class StationAdapter extends RecyclerView.Adapter<StationAdapter.MyViewHolder> {
     private final StationRecyclerViewClickListener listener;
-    private ArrayList<Station> stationList;
+    private List<Station> stationList;
     private LayoutInflater inflater;
-    private Activity activity;
 
-    public StationAdapter(Activity activity, ArrayList<Station> stationList, StationRecyclerViewClickListener listener) {
-        this.activity = activity;
+    public StationAdapter(Context  context, List<Station> stationList, StationRecyclerViewClickListener listener) {
         this.stationList = stationList;
         this.listener = listener;
-        this.inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
