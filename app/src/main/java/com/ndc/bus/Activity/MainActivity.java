@@ -43,12 +43,6 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
     public void initSettings(){
         super.initSettings();
 
-        //for gps
-        if ( Build.VERSION.SDK_INT >= 23 &&
-                ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-            ActivityCompat.requestPermissions( this, new String[] {  android.Manifest.permission.ACCESS_FINE_LOCATION  },
-                    0 );
-        }
 
         this.tts = new TextToSpeech(this, this);
         //this.binding = DataBindingUtil.setContentView(this, R.layout.activity_main);

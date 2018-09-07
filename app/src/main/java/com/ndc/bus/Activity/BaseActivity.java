@@ -11,6 +11,11 @@ public class BaseActivity extends Activity {
         initSettings();
     }
 
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+    }
+
     public void initSettings(){
 
     }
