@@ -56,20 +56,10 @@ public class StationActivity extends BaseActivity {
 
         SelectDatabaseTask selectTask = new SelectDatabaseTask();
         selectTask.execute(getApplicationContext());
-
-        StationAdapter stationAdapter = new StationAdapter(this, stationList, new StationRecyclerViewClickListener() {
-            @Override
-            public void onItemClick(Station station) {
-                setDestStation(station);
-            }
-        });
-
-        binding.stationRv.setAdapter(stationAdapter);
     }
 
     private void setDestStation(Station station) {
         Dlog.i(station.getStNm());
-
         //목적지로 설정하냐는 문구 띄움 필요
         destStation = station;
         startArrivalAlarmService();

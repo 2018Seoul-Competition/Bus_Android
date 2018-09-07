@@ -22,11 +22,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.MainActivity">
+        <activity android:name=".Activity.MainActivity"/>
         <activity android:name=".Activity.TestActivity">
         </activity>
-        <activity android:name=".Activity.QrScanActivity">
-        </activity>
+        <activity android:name=".Activity.QrScanActivity"/>
         <activity
             android:name=".Activity.AnyOrientationCaptureActivity"
             android:screenOrientation="portrait"
