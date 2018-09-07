@@ -39,7 +39,6 @@ public class QrScanActivity extends AppCompatActivity {
         qrScan.initiateScan();
     }
 
-
     //Getting the scan results
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
@@ -57,7 +56,7 @@ public class QrScanActivity extends AppCompatActivity {
                     JSONObject obj = new JSONObject(result.getContents());
                     String appUrl = (String) obj.get("url");
                     String strDistBusId= (String) obj.get("vehId");
-                    Intent intent = new Intent(this, MainActivity.class);
+                    Intent intent = new Intent(this, StationActivity.class);
                     intent.putExtra("vehId", strDistBusId);
                     startActivity(intent);
                 } catch (JSONException e) {

@@ -2,10 +2,10 @@ package com.ndc.bus.Common;
 
 import android.app.Activity;
 import android.app.Application;
-import android.arch.persistence.room.Insert;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.location.Location;
 
 import com.ndc.bus.Di.AppModule;
 import com.ndc.bus.Di.DaggerAppComponent;
@@ -22,6 +22,12 @@ public class BaseApplication extends Application implements HasActivityInjector{
 
     public static boolean DEBUG;
     private final String key = "EhxzLlLWZRRobmy7a5zscgcLA8u9%2B1EKLE1m439UhFUuw7nGChFGGYjH5q8JNnOmI3ma7NYtPPH9xo75Sipt%2FA%3D%3D";
+    private final String CHANNEL_ID = "";
+    private final String CHANNEL_NAME = "CHANNEL_FOR_BUS_ANDROID";
+
+    public static String VEH_ID;
+    public static Location MY_GPS_LOCATION;
+
 
     @Override
     public void onCreate() {

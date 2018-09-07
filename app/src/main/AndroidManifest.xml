@@ -16,17 +16,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.TestActivity">
+        <activity android:name=".Activity.IndexActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".Activity.MainActivity">
-
+        <activity android:name=".Activity.TestActivity">
         </activity>
         <activity android:name=".Activity.QrScanActivity">
-
         </activity>
         <activity
             android:name=".Activity.AnyOrientationCaptureActivity"
