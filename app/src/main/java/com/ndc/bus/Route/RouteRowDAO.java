@@ -13,7 +13,7 @@ public interface RouteRowDAO {
     @Query("SELECT * FROM RouteRow WHERE routeId IN(:routeId)")
     List<RouteRow> getAllRouteRows(String routeId);
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAllRouteRows(RouteRow... routeRows);
+    void insertAllRouteRows(List<RouteRow> routeRows);
     @Delete
     void deleteRouteRow(RouteRow routeRow);
 }

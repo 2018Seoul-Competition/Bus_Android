@@ -1,32 +1,24 @@
 package com.ndc.bus.Station;
 
-import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 @Entity
 public class Station {
     @PrimaryKey
+    @NonNull
     private String stId;
-    @ColumnInfo
-    private String xPos;
-    @ColumnInfo
-    private String yPos;
-    @ColumnInfo
+    private String posX;
+    private String posY;
     private String stNm;
 
-    public Station(String stId, String stNm){
+    public Station(String stId, String stNm, String posX, String posY){
         this.stId = stId;
         this.stNm = stNm;
+        this.posX = posX;
+        this.posY = posY;
     }
-
-    public Station(String stId, String stNm, String xPos, String yPos){
-        this.stId = stId;
-        this.stNm = stNm;
-        this.xPos = xPos;
-        this.yPos = yPos;
-    }
-
 
     public String getStId() {
         return stId;
@@ -44,19 +36,19 @@ public class Station {
         this.stNm = stNm;
     }
 
-    public String getxPos() {
-        return xPos;
+    public String getPosX() {
+        return posX;
     }
 
-    public void setxPos(String xPos) {
-        this.xPos = xPos;
+    public void setPosX(String posX) {
+        this.posX = posX;
     }
 
-    public String getyPos() {
-        return yPos;
+    public String getPosY() {
+        return posY;
     }
 
-    public void setyPos(String yPos) {
-        this.yPos = yPos;
+    public void setPosY(String posY) {
+        this.posY = posY;
     }
 }
