@@ -13,8 +13,12 @@ abstract class ActivityModule {
     @ActivityScope
     @ContributesAndroidInjector
     abstract public MainActivity contributeMainActivityInjector();
+
     @ContributesAndroidInjector
+    @ActivityScope
     abstract public TestActivity contributeTestActivityInjector();
+
+    @ActivityScope
     @ContributesAndroidInjector
     abstract public StationActivity contributeStationActivityInjector();
 }
