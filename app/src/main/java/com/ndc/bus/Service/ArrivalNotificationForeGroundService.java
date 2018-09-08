@@ -184,8 +184,8 @@ public class ArrivalNotificationForeGroundService extends Service {
 
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), requestId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        mBuilder.setContentTitle("Title") // required
-                .setContentText("Content")  // required
+        mBuilder.setContentTitle(BaseApplication.APP_NAME) // required
+                .setContentText(mStationName + "에 거의 도착하였습니다!")  // required
                 .setDefaults(Notification.DEFAULT_ALL) // 알림, 사운드 진동 설정
                 .setAutoCancel(true) // 알림 터치시 반응 후 삭제
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
