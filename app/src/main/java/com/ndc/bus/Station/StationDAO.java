@@ -12,7 +12,7 @@ import java.util.List;
 @Dao
 public interface StationDAO {
     @Query("SELECT * FROM Station WHERE stId =:stId")
-    Station getStation(String stId);
+    Station retrieveStationById(String stId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAllStations(List<Station> stationList);

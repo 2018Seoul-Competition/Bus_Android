@@ -11,11 +11,12 @@ import java.util.List;
 @Dao
 public interface RouteDAO {
     @Query("SELECT routeNm FROM Route WHERE routeId =:routeId")
-    String getRouteNm(String routeId);
+    String retrieveRouteNmById(String routeId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAllRoutes(List<Route> routeList);
 
     @Delete
     void deleteRoute(Route route);
+
 }
