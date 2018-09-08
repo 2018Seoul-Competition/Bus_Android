@@ -1,14 +1,26 @@
 package com.ndc.bus.Service;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.arch.persistence.room.Index;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.RingtoneManager;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
+import com.ndc.bus.Activity.IndexActivity;
+import com.ndc.bus.Activity.StationActivity;
+import com.ndc.bus.Common.BaseApplication;
+import com.ndc.bus.R;
 import com.ndc.bus.Utils.Dlog;
 
 public class ArrivalNotificationForeGroundService extends Service {
@@ -21,15 +33,28 @@ public class ArrivalNotificationForeGroundService extends Service {
     private static final int LOCATION_INTERVAL = 1000 * 1;
     private static final float LOCATION_DISTANCE = 0.1f;
 
+    //for noti
+    private NotificationManager mNotificationManager;
+    private NotificationCompat.Builder mBuilder;
+
     //m_variables
     private String mVehId;
     private String mStationName;
-    private Location mDestStationGPS;
+    private double mDestStationLongitude;
+    private double mDestStationLatitude;
     private Location myGPS;
+
+    //Binder for Communicating with activity
+    IBinder mBinder = new MyBinder();
+    public class MyBinder extends Binder {
+        public ArrivalNotificationForeGroundService getService(){
+            return ArrivalNotificationForeGroundService.this;
+        }
+    }
 
     @Override
     public IBinder onBind(Intent intent){
-        return null;
+        return mBinder;
     }
 
     @Override
@@ -57,6 +82,17 @@ public class ArrivalNotificationForeGroundService extends Service {
         } catch (IllegalArgumentException ex) {
             Dlog.d(ex.getMessage());
         }
+
+        mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+        int importance = NotificationManager.IMPORTANCE_HIGH;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel mChannel = new NotificationChannel(
+                    BaseApplication.CHANNEL_ID, BaseApplication.CHANNEL_NAME, importance);
+
+            mNotificationManager.createNotificationChannel(mChannel);
+        }
+        mBuilder = new NotificationCompat.Builder(getApplicationContext(), BaseApplication.CHANNEL_ID);
+
         super.onCreate();
     }
 
@@ -67,8 +103,10 @@ public class ArrivalNotificationForeGroundService extends Service {
 
             switch(action){
                 case ACTION_START_SERVICE :
+                    startForeGroundService(intent);
                     break;
                 case ACTION_STOP_SERVICE :
+                    stopForeGroundService();
                     break;
             }
         }
@@ -90,14 +128,13 @@ public class ArrivalNotificationForeGroundService extends Service {
         {
             mLastLocation.set(location);
             myGPS = mLastLocation;
-            Toast.makeText(getApplicationContext(), "Long : " + Double.toString(location.getLongitude()) + " Alti : " + Double.toString(location.getAltitude()), Toast.LENGTH_SHORT).show();
-            //makeNoti();
+            Toast.makeText(getApplicationContext(), "Long : " + Double.toString(location.getLongitude()) + " Lati : " + Double.toString(location.getLatitude()), Toast.LENGTH_SHORT).show();
 
             if(checkNearArrival())
-                ;
-            // alarm
+                makeNoti();
+
             Dlog.i("Long" + Double.toString(location.getLongitude()));
-            Dlog.i("Alt" + Double.toString(location.getAltitude()));
+            Dlog.i("Lat" + Double.toString(location.getLatitude()));
         }
 
         @Override
@@ -130,7 +167,7 @@ public class ArrivalNotificationForeGroundService extends Service {
     }
 
     private boolean checkNearArrival(){
-        if(Math.pow(mDestStationGPS.getAltitude()-myGPS.getAltitude(),2 ) + Math.pow(mDestStationGPS.getLatitude()-myGPS.getLatitude(),2 ) < 10000)
+        if(Math.pow(mDestStationLongitude-myGPS.getLongitude(),2 ) + Math.pow(mDestStationLatitude-myGPS.getLatitude(),2 ) < 10000)
             return true;
         else
             return false;
@@ -138,11 +175,70 @@ public class ArrivalNotificationForeGroundService extends Service {
     }
 
     private void makeNoti(){
+        Intent notificationIntent = new Intent(getApplicationContext(), StationActivity.class);
+        notificationIntent.putExtra(BaseApplication.VEH_ID, mVehId);
 
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        int requestId = (int) System.currentTimeMillis();
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), requestId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        mBuilder.setContentTitle("Title") // required
+                .setContentText("Content")  // required
+                .setDefaults(Notification.DEFAULT_ALL) // 알림, 사운드 진동 설정
+                .setAutoCancel(true) // 알림 터치시 반응 후 삭제
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                .setSmallIcon(android.R.drawable.btn_star)
+                .setContentIntent(pendingIntent);
+
+        mNotificationManager.notify(0, mBuilder.build());
     }
 
-    public Location giveNowLocation(){
-        return null;
+    private void setDestLongAndLat(Intent intent){
+        mDestStationLongitude = Double.parseDouble(intent.getStringExtra(BaseApplication.EXTRA_LONG));
+        mDestStationLatitude = Double.parseDouble(intent.getStringExtra(BaseApplication.EXTRA_LATI));
+        mVehId = intent.getStringExtra(BaseApplication.VEH_ID);
+        mStationName = intent.getStringExtra(BaseApplication.DEST_STATION_NAME);
     }
+
+    private void startForeGroundService(Intent gettingIntent){
+        setDestLongAndLat(gettingIntent);
+
+        Intent intent = new Intent(this, StationActivity.class);
+        intent.putExtra(BaseApplication.VEH_ID, mVehId);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        mBuilder.setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setPriority(Notification.PRIORITY_MAX)
+                .setContentTitle(BaseApplication.APP_NAME)
+                .setContentText(mVehId + " 도착 알람 기능중입니다.")
+                .setContentIntent(pendingIntent);
+
+        // Add Delete button intent in notification.
+        Intent deleteIntent = new Intent(this, ArrivalNotificationForeGroundService.class);
+        deleteIntent.setAction(ArrivalNotificationForeGroundService.ACTION_STOP_SERVICE);
+        PendingIntent pendingPrevIntent = PendingIntent.getService(this, 0, deleteIntent, 0);
+        NotificationCompat.Action prevAction = new NotificationCompat.Action(android.R.drawable.ic_delete, "Delete", pendingPrevIntent);
+        mBuilder.addAction(prevAction);
+
+        // Build the notification.
+        Notification notification = mBuilder.build();
+
+        // Start foreground service.
+        startForeground(1, notification);
+    }
+
+    private void stopForeGroundService(){
+        stopForeground(true);
+        stopSelf();
+    }
+
+    public Location getNowLocation(){
+        return myGPS;
+    }
+
+    public String getVehId(){ return mVehId;}
 }
 

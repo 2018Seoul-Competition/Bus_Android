@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.journeyapps.barcodescanner.CaptureActivity;
+import com.ndc.bus.Common.BaseApplication;
 import com.ndc.bus.R;
 
 import org.json.JSONException;
@@ -57,7 +58,7 @@ public class QrScanActivity extends AppCompatActivity {
                     String appUrl = (String) obj.get("url");
                     String strDistBusId= (String) obj.get("vehId");
                     Intent intent = new Intent(this, StationActivity.class);
-                    intent.putExtra("vehId", strDistBusId);
+                    intent.putExtra(BaseApplication.VEH_ID, strDistBusId);
                     startActivity(intent);
                 } catch (JSONException e) {
                     e.printStackTrace();

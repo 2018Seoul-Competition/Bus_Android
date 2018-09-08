@@ -1,5 +1,7 @@
 package com.ndc.bus.Activity;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
@@ -12,9 +14,14 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+import com.ndc.bus.Common.BaseApplication;
 import com.ndc.bus.Database.BusDatabaseClient;
 import com.ndc.bus.Database.BusDatabaseModule;
 import com.ndc.bus.R;
+import com.ndc.bus.Service.ArrivalNotificationForeGroundService;
+import com.ndc.bus.Utils.Dlog;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -27,17 +34,11 @@ public class IndexActivity extends BaseActivity{
     private Handler mHandler;
     private Runnable mRunnable;
 
+    private ActivityManager mActivityManager;
+
     @Override
     public void initSettings(){
-        mRunnable = new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
-            }
-        };
-        mHandler = new Handler();
-        mHandler.postDelayed(mRunnable, TIME_GIF);
+        mActivityManager = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
 
         //for gps
         if ( Build.VERSION.SDK_INT >= 23 &&
@@ -52,6 +53,16 @@ public class IndexActivity extends BaseActivity{
 
         //처음 화면 보여주기
         showStartAni();
+
+        mRunnable = new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+            }
+        };
+        mHandler = new Handler();
+        mHandler.postDelayed(mRunnable, TIME_GIF);
     }
 
     @Override
@@ -76,4 +87,29 @@ public class IndexActivity extends BaseActivity{
         }
     }
 
+    private boolean isServiceRunning(){
+        mActivityManager = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
+
+        for(ActivityManager.RunningServiceInfo service : mActivityManager.getRunningServices(Integer.MAX_VALUE)){
+            if(ArrivalNotificationForeGroundService.class.getName().equals(service.service.getClassName())) {
+                Dlog.i("Service Running");
+                return true;
+            }
+        }
+        Dlog.i("Service not exist");
+        return false;
+    }
+
+    private boolean isAppRunning(){
+        mActivityManager = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> procInfos = mActivityManager.getRunningAppProcesses();
+        for(int i = 0; i < procInfos.size(); i++){
+            if(procInfos.get(i).processName.equals(getApplicationContext().getPackageName())){
+                Dlog.i("App Running");
+                return true;
+            }
+        }
+        Dlog.i("App not exist");
+        return false;
+    }
 }

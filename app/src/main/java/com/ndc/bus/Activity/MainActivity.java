@@ -1,33 +1,17 @@
 package com.ndc.bus.Activity;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.databinding.DataBindingUtil;
 
-import com.ndc.bus.Arrival.ArrivalServiceResult;
 import com.ndc.bus.Common.BaseApplication;
-import com.ndc.bus.Network.RetrofitClient;
 import com.ndc.bus.R;
-import com.ndc.bus.Service.ArrivalNotificationService;
-import com.ndc.bus.Utils.Dlog;
-import com.ndc.bus.databinding.ActivityMainBinding;
 
 import android.os.Build;
-import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.Locale;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-import static android.speech.tts.TextToSpeech.ERROR;
 
 
 public class MainActivity extends BaseActivity implements TextToSpeech.OnInitListener{
@@ -58,7 +42,7 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
                 Intent intent = new Intent(
                         getApplicationContext(),
                         StationActivity.class);
-                intent.putExtra("vehId", "value");
+                intent.putExtra(BaseApplication.VEH_ID, "value");
                 startActivity(intent);
             }
         });

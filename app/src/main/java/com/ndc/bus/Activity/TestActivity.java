@@ -1,18 +1,11 @@
 package com.ndc.bus.Activity;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 
 import com.ndc.bus.Database.BusDatabaseClient;
-import com.ndc.bus.Database.BusDatabaseModule;
 import com.ndc.bus.R;
-import com.ndc.bus.Service.ArrivalNotificationService;
 
 import javax.inject.Inject;
 

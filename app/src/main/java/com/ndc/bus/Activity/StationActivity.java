@@ -1,36 +1,33 @@
 package com.ndc.bus.Activity;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.app.ActivityManager;
-import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.databinding.DataBindingUtil;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.os.IBinder;
 
 import com.ndc.bus.Activity.Adapter.StationAdapter;
-import com.ndc.bus.Database.BusDatabase;
 import com.ndc.bus.Database.BusDatabaseClient;
-import com.ndc.bus.Database.BusDatabaseModule;
 import com.ndc.bus.Arrival.ArrivalServiceResult;
 import com.ndc.bus.Common.BaseApplication;
 import com.ndc.bus.Listener.StationRecyclerViewClickListener;
 import com.ndc.bus.Network.RetrofitClient;
 import com.ndc.bus.R;
-import com.ndc.bus.Service.ArrivalNotificationService;
+import com.ndc.bus.Service.ArrivalNotificationForeGroundService;
+import com.ndc.bus.Service.ArrivalNotificationForeGroundService.MyBinder;
 import com.ndc.bus.Station.Station;
 
 import com.ndc.bus.Utils.Dlog;
 import com.ndc.bus.databinding.ActivityStationBinding;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import dagger.android.ContributesAndroidInjector;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,8 +37,25 @@ public class StationActivity extends BaseActivity {
     @Inject
     BusDatabaseClient busDatabaseClient;
     private ActivityStationBinding binding;
+    private ServiceConnection mServiceConnection;
+    private boolean isServiceConnected;
 
-    private Station destStation;
+    private Station mDestStation;
+    private String mVehId;
+
+    private ArrivalNotificationForeGroundService myService;
+    private Location mNowGPS;
+
+    ServiceConnection conn = new ServiceConnection() {
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            MyBinder mb = (ArrivalNotificationForeGroundService.MyBinder) service;
+            myService = mb.getService(); // 서비스가 제공하는 메소드 호출하여
+            isServiceConnected = true;
+        }
+        public void onServiceDisconnected(ComponentName name) {
+            isServiceConnected = false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +75,7 @@ public class StationActivity extends BaseActivity {
     private void setDestStation(Station station) {
         Dlog.i(station.getStNm());
         //목적지로 설정하냐는 문구 띄움 필요
-        destStation = station;
+        mDestStation = station;
         startArrivalAlarmService();
     }
 
@@ -69,9 +83,9 @@ public class StationActivity extends BaseActivity {
         //get vehId from QrScanActivity
         BaseApplication baseApplication = (BaseApplication)getApplication();
         String serviceKey = baseApplication.getKey();
-        String vehId = getIntent().getStringExtra("vehId");
+        mVehId = getIntent().getStringExtra(BaseApplication.VEH_ID);
 
-        Call<ArrivalServiceResult> call =  RetrofitClient.getInstance().getService().getBusPosByVehId(serviceKey, vehId);
+        Call<ArrivalServiceResult> call =  RetrofitClient.getInstance().getService().getBusPosByVehId(serviceKey, mVehId);
         call.enqueue(new Callback<ArrivalServiceResult>() {
             @Override
             public void onResponse(Call<ArrivalServiceResult> call, Response<ArrivalServiceResult> response) {
@@ -92,14 +106,23 @@ public class StationActivity extends BaseActivity {
     }
 
     private void startArrivalAlarmService(){
-        if(destStation != null && !isServiceRunning()){
-            //FIXME : need to make ArrivalNotificationService and give gps data of dest station.
+        if(!isServiceRunning()){
+            //FIXME : need to make ArrivalNotificationForeGroundService and give gps data of dest station.
             Dlog.i("Service Start");
-            ArrivalNotificationService service = new ArrivalNotificationService();
             Intent intent = new Intent(
                     getApplicationContext(),
-                    ArrivalNotificationService.class);
+                    ArrivalNotificationForeGroundService.class);
+            intent.setAction(ArrivalNotificationForeGroundService.ACTION_START_SERVICE);
+            //FIXME : give real GPS data
+            intent.putExtra(BaseApplication.VEH_ID, mVehId);
+            intent.putExtra(BaseApplication.DEST_STATION_NAME, "TEST 정류장");
+            intent.putExtra(BaseApplication.EXTRA_LONG, "172.1");
+            intent.putExtra(BaseApplication.EXTRA_LATI, "193.1");
+            bindService(intent, conn, Context.BIND_AUTO_CREATE);
             startService(intent);
+        }
+        else{
+            //목적지를 바꾸시겠습니까?
         }
     }
 
@@ -107,7 +130,7 @@ public class StationActivity extends BaseActivity {
         ActivityManager manager = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
 
         for(ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)){
-            if(ArrivalNotificationService.class.getName().equals(service.service.getClassName())) {
+            if(ArrivalNotificationForeGroundService.class.getName().equals(service.service.getClassName())) {
                 Dlog.i("Service Running");
                 return true;
             }
@@ -142,5 +165,16 @@ public class StationActivity extends BaseActivity {
 
     }
 
+    private void getNowGPSFromService(){
+        if(isServiceConnected){
+            mNowGPS = myService.getNowLocation();
+        }
+    }
 
+    @Override
+    public void onBackPressed(){
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }

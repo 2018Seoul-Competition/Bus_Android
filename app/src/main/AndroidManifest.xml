@@ -36,7 +36,8 @@
         </activity>
         <activity android:name=".Activity.StationActivity" />
 
-        <service android:name=".Service.ArrivalNotificationService" />
+        <service android:name=".Service.ArrivalNotificationForeGroundService" />
+
     </application>
 
 </manifest>

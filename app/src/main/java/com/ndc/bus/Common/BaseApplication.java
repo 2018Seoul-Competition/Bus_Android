@@ -22,10 +22,17 @@ public class BaseApplication extends Application implements HasActivityInjector{
 
     public static boolean DEBUG;
     private final String key = "EhxzLlLWZRRobmy7a5zscgcLA8u9%2B1EKLE1m439UhFUuw7nGChFGGYjH5q8JNnOmI3ma7NYtPPH9xo75Sipt%2FA%3D%3D";
-    private final String CHANNEL_ID = "";
-    private final String CHANNEL_NAME = "CHANNEL_FOR_BUS_ANDROID";
 
-    public static String VEH_ID;
+    public static String APP_NAME = "BUS_ANDROID";
+
+    public static String CHANNEL_ID = "";
+    public static String CHANNEL_NAME = "CHANNEL_FOR_BUS_ANDROID";
+
+    public static String EXTRA_LONG = "EXTRA_LONG";
+    public static String EXTRA_LATI = "EXTRA_LATI";
+
+    public static String VEH_ID = "VEH_ID";
+    public static String DEST_STATION_NAME = "DEST_STATION_NAME";
     public static Location MY_GPS_LOCATION;
 
 
