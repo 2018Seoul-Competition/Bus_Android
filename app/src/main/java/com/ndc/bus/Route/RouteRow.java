@@ -2,7 +2,6 @@ package com.ndc.bus.Route;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
-import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
 import com.ndc.bus.Station.Station;
@@ -12,11 +11,11 @@ public class RouteRow {
     @NonNull
     private String routeId;
     @NonNull
-    private String routeRowNum;
+    private int routeRowNum;
     @ForeignKey(entity = Station.class, parentColumns = "stId", childColumns = "stId")
     private String stId;
 
-    public RouteRow(String  routeId, String routeRowNum, String stId) {
+    public RouteRow(String  routeId, int routeRowNum, String stId) {
         this.routeId = routeId;
         this.routeRowNum = routeRowNum;
         this.stId = stId;
@@ -30,11 +29,11 @@ public class RouteRow {
         this.routeId = routeId;
     }
 
-    public String getRouteRowNum() {
+    public int getRouteRowNum() {
         return routeRowNum;
     }
 
-    public void setRouteRowNum(String routeRowNum) {
+    public void setRouteRowNum(int routeRowNum) {
         this.routeRowNum = routeRowNum;
     }
 
