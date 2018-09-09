@@ -42,60 +42,76 @@ public class BusDatabaseClient {
         return true;
     }
 
-
     public void initBusData() {
         boolean isExist = isDatabaseExists();
 
         if (!isExist) {
             try {
-                BufferedReader bufReader_Route = new BufferedReader(new InputStreamReader(context.getAssets().open("Route.txt")));
-                BufferedReader bufReader_Station = new BufferedReader(new InputStreamReader(context.getAssets().open("Station.txt")));
-                BufferedReader bufReader_RouteRow = new BufferedReader(new InputStreamReader(context.getAssets().open("RouteRow.txt")));
-                ArrayList<Object> list_Route = new ArrayList<>();
-                ArrayList<Object> list_Station = new ArrayList<>();
-                ArrayList<Object> list_RouteRow = new ArrayList<>();
-                String Route = "";
-                String Station = "";
-                String RouteRow = "";
-                String[] splitedStr = null;
-
-                while ((Route = bufReader_Route.readLine()) != null) {
-                    splitedStr = Route.split("\t");
-
-                    for (int i = 0; i < splitedStr.length; i++) {
-                        splitedStr[i] = splitedStr[i].trim();
-                    }
-                    list_Route.add(new Route(splitedStr[0], splitedStr[1]));
-                }
-
-                while ((Station = bufReader_Station.readLine()) != null) {
-                    splitedStr = Station.split("\t");
-
-                    for (int i = 0; i < splitedStr.length; i++) {
-                        splitedStr[i] = splitedStr[i].trim();
-                    }
-                    list_Station.add(new Station(splitedStr[0], splitedStr[1], splitedStr[2], splitedStr[3]));
-                }
-
-                while ((RouteRow = bufReader_RouteRow.readLine()) != null) {
-                    splitedStr = RouteRow.split("\t");
-
-                    for (int i = 0; i < splitedStr.length; i++) {
-                        splitedStr[i] = splitedStr[i].trim();
-                    }
-                    list_RouteRow.add(new RouteRow(splitedStr[0], splitedStr[1], splitedStr[2]));
-                }
-                bufReader_Route.close();
-                bufReader_Station.close();
-                bufReader_RouteRow.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                createRouteList();
+                createStationList();
+                createRouteRowList();
             } catch (IOException e) {
-                System.out.println(e);
+                e.printStackTrace();
             }
-
             // busDatabase.stationDAO().insertAllStations(stationList);
 
         }
+    }
+
+    public ArrayList createRouteList() throws IOException {
+        BufferedReader routeBuf = new BufferedReader(new InputStreamReader(context.getAssets().open("Route.txt")));
+        ArrayList<Route> routeList = new ArrayList<>();
+        String routeStr = "";
+        String[] splitedStr = null;
+
+        while ((routeStr = routeBuf.readLine()) != null) {
+            splitedStr = routeStr.split("\t");
+
+            for (int i = 0; i < splitedStr.length; i++) {
+                splitedStr[i] = splitedStr[i].trim();
+            }
+            routeList.add(new Route(splitedStr[0], splitedStr[1]));
+        }
+
+        routeBuf.close();
+        return routeList;
+    }
+
+    public ArrayList createStationList() throws IOException {
+        BufferedReader stationBuf = new BufferedReader(new InputStreamReader(context.getAssets().open("Station.txt")));
+        ArrayList<Station> stationList = new ArrayList<>();
+        String stationStr = "";
+        String[] splitedStr = null;
+
+        while ((stationStr = stationBuf.readLine()) != null) {
+            splitedStr = stationStr.split("\t");
+
+            for (int i = 0; i < splitedStr.length; i++) {
+                splitedStr[i] = splitedStr[i].trim();
+            }
+            stationList.add(new Station(splitedStr[0], splitedStr[1], splitedStr[2], splitedStr[3]));
+        }
+
+        stationBuf.close();
+        return stationList;
+    }
+
+    public  ArrayList createRouteRowList() throws IOException {
+        BufferedReader routeRowBuf = new BufferedReader(new InputStreamReader(context.getAssets().open("RouteRow.txt")));
+        ArrayList<RouteRow> routeRowList = new ArrayList<>();
+        String routeRowStr = "";
+        String[] splitedStr = null;
+
+        while ((routeRowStr = routeRowBuf.readLine()) != null) {
+            splitedStr = routeRowStr.split("\t");
+
+            for (int i = 0; i < splitedStr.length; i++) {
+                splitedStr[i] = splitedStr[i].trim();
+            }
+            routeRowList.add(new RouteRow(splitedStr[0], splitedStr[1], splitedStr[2]));
+        }
+
+        routeRowBuf.close();
+        return routeRowList;
     }
 }
