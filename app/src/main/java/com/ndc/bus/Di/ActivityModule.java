@@ -6,7 +6,6 @@ import com.ndc.bus.Activity.QrScanActivity;
 import com.ndc.bus.Activity.StationActivity;
 
 import dagger.Module;
-
 import dagger.android.ContributesAndroidInjector;
 
 @Module
