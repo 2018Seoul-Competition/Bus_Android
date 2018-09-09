@@ -16,9 +16,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
     dataBinding {
         enabled = true
     }
+
     sourceSets { main { assets.srcDirs = ['src/main/assets'] } }
 }
 
