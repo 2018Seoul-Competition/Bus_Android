@@ -5,8 +5,11 @@ import android.content.Intent;
 import com.ndc.bus.Common.BaseApplication;
 import com.ndc.bus.R;
 
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -27,6 +30,12 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
     public void initSettings(){
         super.initSettings();
 
+        //for gps
+        if ( Build.VERSION.SDK_INT >= 23 &&
+                ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions( this, new String[] {  android.Manifest.permission.ACCESS_FINE_LOCATION  },
+                    0 );
+        }
 
         this.tts = new TextToSpeech(this, this);
         //this.binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
