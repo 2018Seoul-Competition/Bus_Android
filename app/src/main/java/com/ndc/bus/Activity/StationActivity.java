@@ -154,7 +154,7 @@ public class StationActivity extends BaseActivity {
         @Override
         protected void onPostExecute(List<Station> stationList) {
             super.onPostExecute(stationList);
-            StationAdapter stationAdapter = new StationAdapter(context, stationList, new StationRecyclerViewClickListener() {
+            StationAdapter stationAdapter = new StationAdapter(stationList, new StationRecyclerViewClickListener() {
                 @Override
                 public void onItemClick(Station station) {
                     setDestStation(station);

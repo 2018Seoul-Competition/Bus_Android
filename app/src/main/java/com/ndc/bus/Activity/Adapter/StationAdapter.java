@@ -1,7 +1,5 @@
 package com.ndc.bus.Activity.Adapter;
 
-import android.app.Activity;
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,12 +16,10 @@ import java.util.List;
 public class StationAdapter extends RecyclerView.Adapter<StationAdapter.MyViewHolder> {
     private final StationRecyclerViewClickListener listener;
     private List<Station> stationList;
-    private LayoutInflater inflater;
 
-    public StationAdapter(Context  context, List<Station> stationList, StationRecyclerViewClickListener listener) {
+    public StationAdapter(List<Station> stationList, StationRecyclerViewClickListener listener) {
         this.stationList = stationList;
         this.listener = listener;
-        this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
@@ -51,15 +47,15 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.MyViewHo
         return stationList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    class MyViewHolder extends RecyclerView.ViewHolder {
         private StationRowBinding binding;
 
-        public MyViewHolder(StationRowBinding binding) {
+        MyViewHolder(StationRowBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }
 
-        public void bind(final Station station, final StationRecyclerViewClickListener listener) {
+        void bind(final Station station, final StationRecyclerViewClickListener listener) {
             binding.setVariable(BR.station, station);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
