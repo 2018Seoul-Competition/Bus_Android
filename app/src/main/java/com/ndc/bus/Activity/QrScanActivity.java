@@ -3,7 +3,6 @@ package com.ndc.bus.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -19,7 +18,7 @@ import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
-public class QrScanActivity extends AppCompatActivity {
+public class QrScanActivity extends BaseActivity {
 
     @Inject
     BusDatabaseClient busDatabaseClient;
