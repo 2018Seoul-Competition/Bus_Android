@@ -3,21 +3,28 @@ package com.ndc.bus.Activity;
 import android.content.Intent;
 
 import com.ndc.bus.Common.BaseApplication;
+import com.ndc.bus.Database.BusDatabaseClient;
 import com.ndc.bus.R;
 
+import android.databinding.DataBindingUtil;
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
+import com.ndc.bus.databinding.ActivityMainBinding;
 import java.util.Locale;
+
+import javax.inject.Inject;
 
 
 public class MainActivity extends BaseActivity implements TextToSpeech.OnInitListener{
 
-    //private ActivityMainBinding binding;
+    @Inject
+    BusDatabaseClient busDatabaseClient;
+    private ActivityMainBinding binding;
     private TextToSpeech tts;
+
 
     //for back press
     private final long FINSH_INTERVAL_TIME = 2000;
@@ -26,35 +33,20 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
     @Override
     public void initSettings(){
         super.initSettings();
-
-
         this.tts = new TextToSpeech(this, this);
-        //this.binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        //binding.setActivity(this);
+        this.binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+    }
 
-        //buttons onclick
-        setContentView(R.layout.activity_main);
-        Button btn_searchByNum = (Button) findViewById(R.id.toStation);
-        Button btn_qrScan = (Button) findViewById(R.id.toScan);
-        btn_searchByNum.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                Intent intent = new Intent(
-                        getApplicationContext(),
-                        StationActivity.class);
-                intent.putExtra(BaseApplication.VEH_ID, "value");
-                startActivity(intent);
-            }
-        });
-        btn_qrScan.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                Intent intent = new Intent(
-                        getApplicationContext(),
-                        QrScanActivity.class);
-                startActivity(intent);
-            }
-        });
+    public void retrieveBusData(){
+        //busDatabaseClient.getBusDatabase().stationDAO().retrieveStationById();
+        Intent intent = new Intent(this, StationActivity.class);
+        intent.putExtra(BaseApplication.VEH_ID, "value");
+        startActivity(intent);
+    }
+
+    public void gotoQrScanActivity(){
+        Intent intent = new Intent(this, StationActivity.class);
+        startActivity(intent);
     }
 
     // 비동기로 speech 출력을 처리한다.

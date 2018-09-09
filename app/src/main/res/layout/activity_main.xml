@@ -5,7 +5,6 @@
     <data>
         <variable name="activity" type="com.ndc.bus.Activity.MainActivity"/>
     </data>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,23 +17,23 @@
         tools:context="com.ndc.bus.Activity.MainActivity">
 
         <EditText
-            android:id="@+id/vehId"
+            android:id="@+id/vehIdEt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="115051449" />
+            android:text="420" />
 
         <Button
             android:id="@+id/toStation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="실시간 버스정보 조회"/>
+            android:text="실시간 버스정보 조회"
+            android:onClick="@{()->activity.retrieveBusData()}"/>
 
         <Button
             android:id="@+id/toScan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Qr Scan"/>
-
-
+            android:text="Qr Scan"
+            android:onClick="@{()->activity.gotoQrScanActivity()}"/>
     </LinearLayout>
 </layout>
