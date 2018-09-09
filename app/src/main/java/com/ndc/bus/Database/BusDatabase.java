@@ -13,4 +13,6 @@ import com.ndc.bus.Station.StationDAO;
 @Database(version = 1, entities = {Station.class, Route.class, RouteRow.class})
 public abstract class BusDatabase extends RoomDatabase {
     abstract public StationDAO stationDAO();
+    abstract public RouteDAO routeDAO();
+    abstract public RouteRowDAO routeRowDAO();
 }

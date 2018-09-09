@@ -21,7 +21,9 @@ public interface RouteRowDAO {
     @Delete
     void deleteRouteRow(RouteRow routeRow);
 
-    @Query("SELECT * FROM RouteRow INNER JOIN Station ON RouteRow.stId = Station.stId WHERE RouteRow.routeId=:routeId")
+    @Query("SELECT STATION.stId, STATION.stNm, STATION.posX, STATION.posY FROM STATION INNER JOIN RouteRow ON RouteRow.stId = Station.stId WHERE RouteRow.routeId=:routeId ORDER BY RouteRow.routeRowNum ASC")
     List<Station> retrieveAllStationsById(String routeId);
 
+    @Query("SELECT * FROM RouteRow")
+    List<RouteRow> getAllRouteRow();
 }

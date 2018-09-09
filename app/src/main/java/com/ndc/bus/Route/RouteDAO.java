@@ -19,4 +19,9 @@ public interface RouteDAO {
     @Delete
     void deleteRoute(Route route);
 
+    @Query("SELECT * FROM Route")
+    List<Route> getAllRoutes();
+
+    @Query("SELECT * FROM Route WHERE routeNm =:routeNm")
+    Route retrieveRouteNmByNm(String routeNm);
 }

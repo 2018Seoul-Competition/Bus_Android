@@ -6,16 +6,13 @@ import android.content.Context;
 import com.ndc.bus.Route.Route;
 import com.ndc.bus.Route.RouteRow;
 import com.ndc.bus.Station.Station;
-import com.ndc.bus.Di.ActivityScope;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
@@ -30,16 +27,19 @@ public class BusDatabaseClient {
         this.context = context;
     }
 
-    public BusDatabase getBusDatabase() {
+    public void closeBusDatabase(){
+        busDatabase.close();
+    }
+
+    synchronized public BusDatabase getBusDatabase() {
         return busDatabase;
     }
 
     private boolean isDatabaseExists() {
         int stationSize = busDatabase.stationDAO().getAllStations().size();
-        if (stationSize <= 0) {
-            return false;
-        }
-        return true;
+        int routeSize = busDatabase.routeDAO().getAllRoutes().size();
+        int routeRowSize = busDatabase.routeRowDAO().getAllRouteRow().size();
+        return stationSize > 0 && routeRowSize > 0 && routeSize > 0;
     }
 
     public void initBusData() {
@@ -53,16 +53,15 @@ public class BusDatabaseClient {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            // busDatabase.stationDAO().insertAllStations(stationList);
 
         }
     }
 
-    public ArrayList createRouteList() throws IOException {
+    private void createRouteList() throws IOException {
         BufferedReader routeBuf = new BufferedReader(new InputStreamReader(context.getAssets().open("Route.txt")));
-        ArrayList<Route> routeList = new ArrayList<>();
-        String routeStr = "";
-        String[] splitedStr = null;
+        List<Route> routeList = new ArrayList<>();
+        String routeStr;
+        String[] splitedStr;
 
         while ((routeStr = routeBuf.readLine()) != null) {
             splitedStr = routeStr.split("\t");
@@ -74,14 +73,14 @@ public class BusDatabaseClient {
         }
 
         routeBuf.close();
-        return routeList;
+        busDatabase.routeDAO().insertAllRoutes(routeList);
     }
 
-    public ArrayList createStationList() throws IOException {
+    private void createStationList() throws IOException {
         BufferedReader stationBuf = new BufferedReader(new InputStreamReader(context.getAssets().open("Station.txt")));
-        ArrayList<Station> stationList = new ArrayList<>();
-        String stationStr = "";
-        String[] splitedStr = null;
+        List<Station> stationList = new ArrayList<>();
+        String stationStr;
+        String[] splitedStr;
 
         while ((stationStr = stationBuf.readLine()) != null) {
             splitedStr = stationStr.split("\t");
@@ -93,14 +92,14 @@ public class BusDatabaseClient {
         }
 
         stationBuf.close();
-        return stationList;
+        busDatabase.stationDAO().insertAllStations(stationList);
     }
 
-    public  ArrayList createRouteRowList() throws IOException {
+    private void createRouteRowList() throws IOException {
         BufferedReader routeRowBuf = new BufferedReader(new InputStreamReader(context.getAssets().open("RouteRow.txt")));
-        ArrayList<RouteRow> routeRowList = new ArrayList<>();
-        String routeRowStr = "";
-        String[] splitedStr = null;
+        List<RouteRow> routeRowList = new ArrayList<>();
+        String routeRowStr;
+        String[] splitedStr;
 
         while ((routeRowStr = routeRowBuf.readLine()) != null) {
             splitedStr = routeRowStr.split("\t");
@@ -108,10 +107,10 @@ public class BusDatabaseClient {
             for (int i = 0; i < splitedStr.length; i++) {
                 splitedStr[i] = splitedStr[i].trim();
             }
-            routeRowList.add(new RouteRow(splitedStr[0], splitedStr[1], splitedStr[2]));
+            routeRowList.add(new RouteRow(splitedStr[0], Integer.valueOf(splitedStr[1]), splitedStr[2]));
         }
 
         routeRowBuf.close();
-        return routeRowList;
+        busDatabase.routeRowDAO().insertAllRouteRows(routeRowList);
     }
 }
