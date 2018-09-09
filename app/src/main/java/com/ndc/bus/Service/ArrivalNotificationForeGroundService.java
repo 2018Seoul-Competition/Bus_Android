@@ -5,30 +5,31 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.arch.persistence.room.Index;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.media.RingtoneManager;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.app.NotificationCompat;
-import android.widget.Toast;
 
-import com.ndc.bus.Activity.IndexActivity;
 import com.ndc.bus.Activity.StationActivity;
 import com.ndc.bus.Common.BaseApplication;
 import com.ndc.bus.R;
 import com.ndc.bus.Utils.Dlog;
 
-import java.security.PrivilegedAction;
+import java.util.Locale;
 
-public class ArrivalNotificationForeGroundService extends Service {
-    private static final String TAG = "FOREGROUND_ARRIVAL_NOTIFICATION_SERVICE";
+public class ArrivalNotificationForeGroundService extends Service implements TextToSpeech.OnInitListener{
     public static final String ACTION_STOP_SERVICE = "ACTION_STOP_SERVICE";
     public static final String ACTION_START_SERVICE = "ACTION_START_SERVICE";
+
+    //for TTS
+    private TextToSpeech tts;
 
     //for gps
     private LocationManager mLocationManager = null;
@@ -41,7 +42,7 @@ public class ArrivalNotificationForeGroundService extends Service {
     private boolean mIsNotiCreate;
 
     //m_variables
-    private String mVehId;
+    private String mVehNm;
     private String mStationName;
     private double mDestStationLongitude;
     private double mDestStationLatitude;
@@ -97,6 +98,8 @@ public class ArrivalNotificationForeGroundService extends Service {
         mBuilder = new NotificationCompat.Builder(getApplicationContext(), BaseApplication.CHANNEL_ID);
         mIsNotiCreate = false;
 
+        this.tts = new TextToSpeech(this, this);
+
         super.onCreate();
     }
 
@@ -132,10 +135,11 @@ public class ArrivalNotificationForeGroundService extends Service {
         {
             mLastLocation.set(location);
             myGPS = mLastLocation;
-//            Toast.makeText(getApplicationContext(), "Long : " + Double.toString(location.getLongitude()) + " Lati : " + Double.toString(location.getLatitude()), Toast.LENGTH_SHORT).show();
 
-            if(checkNearArrival())
+            if(checkNearArrival()){
                 makeNoti();
+                speechBusInfo("목적지에 도착합니다!!");
+            }
 
             Dlog.i("Long" + Double.toString(location.getLongitude()));
             Dlog.i("Lat" + Double.toString(location.getLatitude()));
@@ -203,7 +207,7 @@ public class ArrivalNotificationForeGroundService extends Service {
     private void setDestLongAndLat(Intent intent){
         mDestStationLongitude = Double.parseDouble(intent.getStringExtra(BaseApplication.EXTRA_LONG));
         mDestStationLatitude = Double.parseDouble(intent.getStringExtra(BaseApplication.EXTRA_LATI));
-        mVehId = intent.getStringExtra(BaseApplication.VEH_ID);
+        mVehNm = intent.getStringExtra(BaseApplication.VEH_NM);
         mStationName = intent.getStringExtra(BaseApplication.DEST_STATION_NAME);
     }
 
@@ -211,14 +215,14 @@ public class ArrivalNotificationForeGroundService extends Service {
         setDestLongAndLat(gettingIntent);
 
         Intent intent = new Intent(this, StationActivity.class);
-        intent.putExtra(BaseApplication.VEH_ID, mVehId);
+        intent.putExtra(BaseApplication.VEH_NM, mVehNm);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
         mBuilder.setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setPriority(Notification.PRIORITY_MAX)
                 .setContentTitle(BaseApplication.APP_NAME)
-                .setContentText(mVehId + " 도착 알람 기능중입니다.")
+                .setContentText(mVehNm + " 도착 알람 기능중입니다.")
                 .setContentIntent(pendingIntent);
 
         // Add Delete button intent in notification.
@@ -244,6 +248,37 @@ public class ArrivalNotificationForeGroundService extends Service {
         return myGPS;
     }
 
-    public String getVehId(){ return mVehId;}
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // TTS 객체가 남아있다면 실행을 중지하고 메모리에서 제거한다.
+        if(tts != null){
+            tts.stop();
+            tts.shutdown();
+            tts = null;
+        }
+    }
+
+
+    // 비동기로 speech 출력을 처리한다.
+    synchronized private void speechBusInfo(String speechData){
+        tts.setPitch(0.9f);         // 음성 톤은을 기본의 0.9로 설정
+        tts.setSpeechRate(1.0f);    // 읽는 속도를 기본으로 설정
+
+        // 버전에 따라서 함수를 달리 설정해주어야 함
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            tts.speak(speechData, TextToSpeech.QUEUE_FLUSH,null,null);
+        } else {
+            tts.speak(speechData, TextToSpeech.QUEUE_FLUSH, null);
+        }
+    }
+
+    @Override
+    public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+            tts.setLanguage(Locale.KOREAN);
+        }
+    }
+
 }
 
