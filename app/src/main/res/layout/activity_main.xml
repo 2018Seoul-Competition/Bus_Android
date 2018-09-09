@@ -17,20 +17,20 @@
         tools:context="com.ndc.bus.Activity.MainActivity">
 
         <EditText
-            android:id="@+id/vehIdEt"
+            android:id="@+id/vehNmText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="420" />
+            android:text="6000" />
 
         <Button
-            android:id="@+id/toStation"
+            android:id="@+id/stationBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="실시간 버스정보 조회"
             android:onClick="@{()->activity.retrieveBusData()}"/>
 
         <Button
-            android:id="@+id/toScan"
+            android:id="@+id/scanBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Qr Scan"

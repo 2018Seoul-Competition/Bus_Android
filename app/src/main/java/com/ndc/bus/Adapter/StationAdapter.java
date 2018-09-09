@@ -1,4 +1,4 @@
-package com.ndc.bus.Activity.Adapter;
+package com.ndc.bus.Adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

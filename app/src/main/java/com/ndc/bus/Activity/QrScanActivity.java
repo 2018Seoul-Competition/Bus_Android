@@ -1,26 +1,29 @@
 package com.ndc.bus.Activity;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.journeyapps.barcodescanner.CaptureActivity;
 import com.ndc.bus.Common.BaseApplication;
+import com.ndc.bus.Database.BusDatabaseClient;
 import com.ndc.bus.R;
+import com.ndc.bus.Route.Route;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import static java.security.AccessController.getContext;
+import java.util.concurrent.ExecutionException;
+
+import javax.inject.Inject;
 
 public class QrScanActivity extends AppCompatActivity {
+
+    @Inject
+    BusDatabaseClient busDatabaseClient;
+
     //qr code scanner object
     private IntentIntegrator qrScan;
 
@@ -56,11 +59,11 @@ public class QrScanActivity extends AppCompatActivity {
                     //data를 json으로 변환
                     JSONObject obj = new JSONObject(result.getContents());
                     String appUrl = (String) obj.get("url");
-                    String strDistBusId= (String) obj.get("vehId");
-                    Intent intent = new Intent(this, StationActivity.class);
-                    intent.putExtra(BaseApplication.VEH_ID, strDistBusId);
-                    startActivity(intent);
-                } catch (JSONException e) {
+                    String vehNm = (String)obj.get("vehNm");
+                    retrieveBusData(vehNm);
+                    //String strDistBusId= (String) obj.get("vehNm");
+                    //retrieveBusInfo(strDistBusId);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -69,4 +72,66 @@ public class QrScanActivity extends AppCompatActivity {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
+
+    public void retrieveBusData(String vehNm) throws ExecutionException, InterruptedException {
+        RetrieveRouteTask retrieveRouteTask = new RetrieveRouteTask();
+        Route route = retrieveRouteTask.execute(vehNm).get();
+        if(route != null){
+            Intent intent = new Intent(this, StationActivity.class);
+            intent.putExtra(BaseApplication.VEH_NM, vehNm);
+            startActivity(intent);
+        }else{
+            Toast.makeText(this,"존재하지 않는 버스입니다!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /*
+    public void retrieveBusInfo(String vehId){
+        //get vehId from QrScanActivity
+        BaseApplication baseApplication = (BaseApplication)getApplication();
+        String serviceKey = baseApplication.getKey();
+
+        Call<ArrivalServiceResult> call =  RetrofitClient.getInstance().getService().getBusPosByVehId(serviceKey, vehId);
+        call.enqueue(new Callback<ArrivalServiceResult>() {
+            @Override
+            public void onResponse(Call<ArrivalServiceResult> call, Response<ArrivalServiceResult> response) {
+                // you  will get the reponse in the response parameter
+                if(response.isSuccessful()) {
+                    Dlog.i(response.body().getArrivalMsgHeader().getHeaderMsg());
+                    Intent intent = new Intent(QrScanActivity.this, StationActivity.class);
+                    intent.putExtra(BaseApplication.VEH_NM, response.body().);
+                    startActivity(intent);
+                }else {
+                    int statusCode  = response.code();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrivalServiceResult> call, Throwable t) {
+                Dlog.e(t.getMessage());
+            }
+        });
+
+    }
+    */
+
+    private class RetrieveRouteTask extends AsyncTask<String, Void, Route> {
+        private String routeNm;
+
+        @Override
+        protected Route doInBackground(String... strings) {
+            routeNm = strings[0];
+            Route route = busDatabaseClient.getBusDatabase().routeDAO().retrieveRouteNmByNm(routeNm);
+            return route;
+        }
+
+        @Override
+        protected void onPostExecute(Route route) {
+            super.onPostExecute(route);
+        }
+
+    }
+
+
+
 }

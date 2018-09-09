@@ -1,29 +1,26 @@
 package com.ndc.bus.Activity;
 
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
-import android.app.ActivityManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.databinding.DataBindingUtil;
-import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 
-import com.ndc.bus.Activity.Adapter.StationAdapter;
-import com.ndc.bus.Database.BusDatabaseClient;
-import com.ndc.bus.Arrival.ArrivalServiceResult;
+import com.ndc.bus.Adapter.StationAdapter;
 import com.ndc.bus.Common.BaseApplication;
+import com.ndc.bus.Database.BusDatabaseClient;
 import com.ndc.bus.Listener.StationRecyclerViewClickListener;
-import com.ndc.bus.Network.RetrofitClient;
 import com.ndc.bus.R;
+import com.ndc.bus.Route.Route;
 import com.ndc.bus.Service.ArrivalNotificationForeGroundService;
 import com.ndc.bus.Service.ArrivalNotificationForeGroundService.MyBinder;
 import com.ndc.bus.Station.Station;
-
 import com.ndc.bus.Utils.Dlog;
 import com.ndc.bus.databinding.ActivityStationBinding;
 
@@ -31,22 +28,17 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 public class StationActivity extends BaseActivity {
     @Inject
     BusDatabaseClient busDatabaseClient;
+
     private ActivityStationBinding binding;
-    private ServiceConnection mServiceConnection;
     private boolean isServiceConnected;
 
     private Station mDestStation;
-    private String mVehId;
+    private String mVehNm;
 
     private ArrivalNotificationForeGroundService myService;
-    private Location mNowGPS;
 
     ServiceConnection conn = new ServiceConnection() {
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -67,11 +59,11 @@ public class StationActivity extends BaseActivity {
     @Override
     public void initSettings() {
         super.initSettings();
+        mVehNm = getIntent().getStringExtra(BaseApplication.VEH_NM);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_station);
         binding.setActivity(this);
-
         SelectDatabaseTask selectTask = new SelectDatabaseTask();
-        selectTask.execute(getApplicationContext());
+        selectTask.execute(mVehNm);
     }
 
     private void setDestStation(Station station) {
@@ -79,32 +71,6 @@ public class StationActivity extends BaseActivity {
         //목적지로 설정하냐는 문구 띄움 필요
         mDestStation = station;
         startArrivalAlarmService();
-    }
-
-    public void retrieveBusInfo(){
-        //get vehId from QrScanActivity
-        BaseApplication baseApplication = (BaseApplication)getApplication();
-        String serviceKey = baseApplication.getKey();
-        mVehId = getIntent().getStringExtra(BaseApplication.VEH_ID);
-
-        Call<ArrivalServiceResult> call =  RetrofitClient.getInstance().getService().getBusPosByVehId(serviceKey, mVehId);
-        call.enqueue(new Callback<ArrivalServiceResult>() {
-            @Override
-            public void onResponse(Call<ArrivalServiceResult> call, Response<ArrivalServiceResult> response) {
-                // you  will get the reponse in the response parameter
-                if(response.isSuccessful()) {
-                    Dlog.i(response.body().getArrivalMsgHeader().getHeaderMsg());
-                }else {
-                    int statusCode  = response.code();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ArrivalServiceResult> call, Throwable t) {
-                Dlog.e(t.getMessage());
-            }
-        });
-
     }
 
     private void startArrivalAlarmService(){
@@ -115,7 +81,7 @@ public class StationActivity extends BaseActivity {
                     getApplicationContext(),
                     ArrivalNotificationForeGroundService.class);
             intent.setAction(ArrivalNotificationForeGroundService.ACTION_START_SERVICE);
-            intent.putExtra(BaseApplication.VEH_ID, mVehId);
+            intent.putExtra(BaseApplication.VEH_NM, mVehNm);
             intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
             intent.putExtra(BaseApplication.EXTRA_LONG, mDestStation.getPosX());
             intent.putExtra(BaseApplication.EXTRA_LATI, mDestStation.getPosY());
@@ -134,7 +100,7 @@ public class StationActivity extends BaseActivity {
                                     getApplicationContext(),
                                     ArrivalNotificationForeGroundService.class);
                             intent.setAction(ArrivalNotificationForeGroundService.ACTION_STOP_SERVICE);
-                            intent.putExtra(BaseApplication.VEH_ID, mVehId);
+                            intent.putExtra(BaseApplication.VEH_NM, mVehNm);
                             intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
                             intent.putExtra(BaseApplication.EXTRA_LONG, mDestStation.getPosX());
                             intent.putExtra(BaseApplication.EXTRA_LATI, mDestStation.getPosY());
@@ -144,7 +110,7 @@ public class StationActivity extends BaseActivity {
                                     getApplicationContext(),
                                     ArrivalNotificationForeGroundService.class);
                             intent.setAction(ArrivalNotificationForeGroundService.ACTION_START_SERVICE);
-                            intent.putExtra(BaseApplication.VEH_ID, mVehId);
+                            intent.putExtra(BaseApplication.VEH_NM, mVehNm);
                             intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
                             intent.putExtra(BaseApplication.EXTRA_LONG, mDestStation.getPosX());
                             intent.putExtra(BaseApplication.EXTRA_LATI, mDestStation.getPosY());
@@ -174,15 +140,18 @@ public class StationActivity extends BaseActivity {
         return false;
     }
 
+    @Override
+    public void onBackPressed(){
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
 
-
-    private class SelectDatabaseTask extends AsyncTask<Context, Void, List<Station>> {
-        private Context context;
-
+    private class SelectDatabaseTask extends AsyncTask<String, Void, List<Station>> {
         @Override
-        protected List<Station> doInBackground(Context... contexts) {
-            this.context = contexts[0];
-            List<Station> stationList = busDatabaseClient.getBusDatabase().stationDAO().getAllStations();
+        protected List<Station> doInBackground(String... strings) {
+            Route route = busDatabaseClient.getBusDatabase().routeDAO().retrieveRouteNmByNm(strings[0]);
+            List<Station> stationList = busDatabaseClient.getBusDatabase().routeRowDAO().retrieveAllStationsById(route.getRouteId());
             return stationList;
         }
 
@@ -200,16 +169,4 @@ public class StationActivity extends BaseActivity {
 
     }
 
-    private void getNowGPSFromService(){
-        if(isServiceConnected){
-            mNowGPS = myService.getNowLocation();
-        }
-    }
-
-    @Override
-    public void onBackPressed(){
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        startActivity(intent);
-        finish();
-    }
 }

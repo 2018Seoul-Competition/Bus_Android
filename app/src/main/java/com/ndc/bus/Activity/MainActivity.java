@@ -1,32 +1,29 @@
 package com.ndc.bus.Activity;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.databinding.DataBindingUtil;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.widget.Toast;
 
 import com.ndc.bus.Common.BaseApplication;
 import com.ndc.bus.Database.BusDatabaseClient;
 import com.ndc.bus.R;
-
-import android.databinding.DataBindingUtil;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import android.speech.tts.TextToSpeech;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.view.View;
-import android.widget.Toast;
-
+import com.ndc.bus.Route.Route;
+import com.ndc.bus.Utils.Dlog;
 import com.ndc.bus.databinding.ActivityMainBinding;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
 
-public class MainActivity extends BaseActivity implements TextToSpeech.OnInitListener{
+public class MainActivity extends BaseActivity {
 
     @Inject
     BusDatabaseClient busDatabaseClient;
     private ActivityMainBinding binding;
-    private TextToSpeech tts;
 
     //for back press
     private final long FINSH_INTERVAL_TIME = 2000;
@@ -43,33 +40,30 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
                     0 );
         }
 
-        this.tts = new TextToSpeech(this, this);
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        binding.setActivity(this);
     }
 
-    public void retrieveBusData(){
-        //busDatabaseClient.getBusDatabase().stationDAO().retrieveStationById();
-        Intent intent = new Intent(this, StationActivity.class);
-        intent.putExtra(BaseApplication.VEH_ID, "value");
-        startActivity(intent);
+    public void retrieveBusData() {
+        try {
+            String vehNm = binding.vehNmText.getText().toString();
+            RetrieveRouteTask retrieveRouteTask = new RetrieveRouteTask();
+            Route route = retrieveRouteTask.execute(vehNm).get();
+            if (route != null) {
+                Intent intent = new Intent(this, StationActivity.class);
+                intent.putExtra(BaseApplication.VEH_NM, vehNm);
+                startActivity(intent);
+            } else {
+                Toast.makeText(MainActivity.this, "존재하지 않는 버스입니다!", Toast.LENGTH_SHORT).show();
+            }
+        }catch (Exception e){
+            Dlog.e(e.getMessage());
+        }
     }
 
     public void gotoQrScanActivity(){
-        Intent intent = new Intent(this, StationActivity.class);
+        Intent intent = new Intent(this, QrScanActivity.class);
         startActivity(intent);
-    }
-
-    // 비동기로 speech 출력을 처리한다.
-    synchronized private void speechBusInfo(String speechData){
-        tts.setPitch(0.9f);         // 음성 톤은을 기본의 0.9로 설정
-        tts.setSpeechRate(1.0f);    // 읽는 속도를 기본으로 설정
-
-        // 버전에 따라서 함수를 달리 설정해주어야 함
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            tts.speak(speechData,TextToSpeech.QUEUE_FLUSH,null,null);
-        } else {
-            tts.speak(speechData, TextToSpeech.QUEUE_FLUSH, null);
-        }
     }
 
     @Override
@@ -87,21 +81,21 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // TTS 객체가 남아있다면 실행을 중지하고 메모리에서 제거한다.
-        if(tts != null){
-            tts.stop();
-            tts.shutdown();
-            tts = null;
+    private class RetrieveRouteTask extends AsyncTask<String, Void, Route> {
+        private String routeNm;
+
+        @Override
+        protected Route doInBackground(String... strings) {
+            routeNm = strings[0];
+            Route route = busDatabaseClient.getBusDatabase().routeDAO().retrieveRouteNmByNm(routeNm);
+            return route;
         }
+
+        @Override
+        protected void onPostExecute(Route route) {
+            super.onPostExecute(route);
+        }
+
     }
 
-    @Override
-    public void onInit(int status) {
-        if (status == TextToSpeech.SUCCESS) {
-            tts.setLanguage(Locale.KOREAN);
-        }
-    }
 }
