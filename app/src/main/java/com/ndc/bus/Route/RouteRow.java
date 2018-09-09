@@ -16,6 +16,12 @@ public class RouteRow {
     @ForeignKey(entity = Station.class, parentColumns = "stId", childColumns = "stId")
     private String stId;
 
+    public RouteRow(String  routeId, String routeRowNum, String stId) {
+        this.routeId = routeId;
+        this.routeRowNum = routeRowNum;
+        this.stId = stId;
+    }
+
     public String getRouteId() {
         return routeId;
     }

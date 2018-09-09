@@ -9,9 +9,9 @@ public class Station {
     @PrimaryKey
     @NonNull
     private String stId;
+    private String stNm;
     private String posX;
     private String posY;
-    private String stNm;
 
     public Station(String stId, String stNm, String posX, String posY){
         this.stId = stId;
