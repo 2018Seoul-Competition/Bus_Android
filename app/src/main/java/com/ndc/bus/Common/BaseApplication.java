@@ -5,7 +5,6 @@ import android.app.Application;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.location.Location;
 
 import com.ndc.bus.Di.AppModule;
 import com.ndc.bus.Di.DaggerAppComponent;
@@ -32,10 +31,8 @@ public class BaseApplication extends Application implements HasActivityInjector{
     public static String EXTRA_LONG = "EXTRA_LONG";
     public static String EXTRA_LATI = "EXTRA_LATI";
 
-    public static String VEH_ID = "VEH_ID";
+    public static String VEH_NM = "VEH_NM";
     public static String DEST_STATION_NAME = "DEST_STATION_NAME";
-    public static Location MY_GPS_LOCATION;
-
 
     @Override
     public void onCreate() {
