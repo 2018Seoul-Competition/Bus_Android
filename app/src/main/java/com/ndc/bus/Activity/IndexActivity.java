@@ -40,13 +40,6 @@ public class IndexActivity extends BaseActivity{
     public void initSettings(){
         mActivityManager = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
 
-        //for gps
-        if ( Build.VERSION.SDK_INT >= 23 &&
-                ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-            ActivityCompat.requestPermissions( this, new String[] {  android.Manifest.permission.ACCESS_FINE_LOCATION  },
-                    0 );
-        }
-
         //DB 호출
         InitDatabaseTask initTask = new InitDatabaseTask();
         initTask.execute();

@@ -1,8 +1,10 @@
 package com.ndc.bus.Activity;
 
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.app.ActivityManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.databinding.DataBindingUtil;
@@ -113,16 +115,49 @@ public class StationActivity extends BaseActivity {
                     getApplicationContext(),
                     ArrivalNotificationForeGroundService.class);
             intent.setAction(ArrivalNotificationForeGroundService.ACTION_START_SERVICE);
-            //FIXME : give real GPS data
             intent.putExtra(BaseApplication.VEH_ID, mVehId);
-            intent.putExtra(BaseApplication.DEST_STATION_NAME, "TEST 정류장");
-            intent.putExtra(BaseApplication.EXTRA_LONG, "172.1");
-            intent.putExtra(BaseApplication.EXTRA_LATI, "193.1");
+            intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
+            intent.putExtra(BaseApplication.EXTRA_LONG, mDestStation.getPosX());
+            intent.putExtra(BaseApplication.EXTRA_LATI, mDestStation.getPosY());
             bindService(intent, conn, Context.BIND_AUTO_CREATE);
             startService(intent);
         }
         else{
-            //목적지를 바꾸시겠습니까?
+            AlertDialog.Builder dialog = new AlertDialog.Builder(StationActivity.this);
+            dialog.setTitle(BaseApplication.APP_NAME)
+                    .setMessage("목적지를 " + mDestStation.getStNm() + "로 바꾸시겠습니까?")
+                    .setPositiveButton("예", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            //stop now service
+                            Intent intent = new Intent(
+                                    getApplicationContext(),
+                                    ArrivalNotificationForeGroundService.class);
+                            intent.setAction(ArrivalNotificationForeGroundService.ACTION_STOP_SERVICE);
+                            intent.putExtra(BaseApplication.VEH_ID, mVehId);
+                            intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
+                            intent.putExtra(BaseApplication.EXTRA_LONG, mDestStation.getPosX());
+                            intent.putExtra(BaseApplication.EXTRA_LATI, mDestStation.getPosY());
+                            startService(intent);
+
+                            intent = new Intent(
+                                    getApplicationContext(),
+                                    ArrivalNotificationForeGroundService.class);
+                            intent.setAction(ArrivalNotificationForeGroundService.ACTION_START_SERVICE);
+                            intent.putExtra(BaseApplication.VEH_ID, mVehId);
+                            intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
+                            intent.putExtra(BaseApplication.EXTRA_LONG, mDestStation.getPosX());
+                            intent.putExtra(BaseApplication.EXTRA_LATI, mDestStation.getPosY());
+                            startService(intent);
+                        }
+                    })
+                    .setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                        }
+                    });
+            dialog.create();
+            dialog.show();
         }
     }
 

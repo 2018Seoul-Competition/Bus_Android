@@ -23,6 +23,8 @@ import com.ndc.bus.Common.BaseApplication;
 import com.ndc.bus.R;
 import com.ndc.bus.Utils.Dlog;
 
+import java.security.PrivilegedAction;
+
 public class ArrivalNotificationForeGroundService extends Service {
     private static final String TAG = "FOREGROUND_ARRIVAL_NOTIFICATION_SERVICE";
     public static final String ACTION_STOP_SERVICE = "ACTION_STOP_SERVICE";
@@ -30,12 +32,13 @@ public class ArrivalNotificationForeGroundService extends Service {
 
     //for gps
     private LocationManager mLocationManager = null;
-    private static final int LOCATION_INTERVAL = 1000 * 1;
+    private static final int LOCATION_INTERVAL = 1000 * 1 * 10;
     private static final float LOCATION_DISTANCE = 0.1f;
 
     //for noti
     private NotificationManager mNotificationManager;
     private NotificationCompat.Builder mBuilder;
+    private boolean mIsNotiCreate;
 
     //m_variables
     private String mVehId;
@@ -92,6 +95,7 @@ public class ArrivalNotificationForeGroundService extends Service {
             mNotificationManager.createNotificationChannel(mChannel);
         }
         mBuilder = new NotificationCompat.Builder(getApplicationContext(), BaseApplication.CHANNEL_ID);
+        mIsNotiCreate = false;
 
         super.onCreate();
     }
@@ -128,7 +132,7 @@ public class ArrivalNotificationForeGroundService extends Service {
         {
             mLastLocation.set(location);
             myGPS = mLastLocation;
-            Toast.makeText(getApplicationContext(), "Long : " + Double.toString(location.getLongitude()) + " Lati : " + Double.toString(location.getLatitude()), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getApplicationContext(), "Long : " + Double.toString(location.getLongitude()) + " Lati : " + Double.toString(location.getLatitude()), Toast.LENGTH_SHORT).show();
 
             if(checkNearArrival())
                 makeNoti();
@@ -167,7 +171,7 @@ public class ArrivalNotificationForeGroundService extends Service {
     }
 
     private boolean checkNearArrival(){
-        if(Math.pow(mDestStationLongitude-myGPS.getLongitude(),2 ) + Math.pow(mDestStationLatitude-myGPS.getLatitude(),2 ) < 10000)
+        if(Math.pow(mDestStationLongitude-myGPS.getLongitude(),2 ) + Math.pow(mDestStationLatitude-myGPS.getLatitude(),2 ) < Math.pow(0.0001, 2))
             return true;
         else
             return false;
@@ -175,24 +179,25 @@ public class ArrivalNotificationForeGroundService extends Service {
     }
 
     private void makeNoti(){
-        Intent notificationIntent = new Intent(getApplicationContext(), StationActivity.class);
-        notificationIntent.putExtra(BaseApplication.VEH_ID, mVehId);
+        if(!mIsNotiCreate){
+            Intent notificationIntent = new Intent(this, ArrivalNotificationForeGroundService.class);
+            notificationIntent.setAction(ArrivalNotificationForeGroundService.ACTION_STOP_SERVICE);
+            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            int requestId = (int) System.currentTimeMillis();
 
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), requestId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        int requestId = (int) System.currentTimeMillis();
+            mBuilder.setContentTitle(BaseApplication.APP_NAME) // required
+                    .setContentText(mStationName + "에 거의 도착하였습니다!")  // required
+                    .setDefaults(Notification.DEFAULT_ALL) // 알림, 사운드 진동 설정
+                    .setAutoCancel(true) // 알림 터치시 반응 후 삭제
+                    .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                    .setSmallIcon(android.R.drawable.btn_star)
+                    .setContentIntent(pendingIntent);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), requestId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        mBuilder.setContentTitle(BaseApplication.APP_NAME) // required
-                .setContentText(mStationName + "에 거의 도착하였습니다!")  // required
-                .setDefaults(Notification.DEFAULT_ALL) // 알림, 사운드 진동 설정
-                .setAutoCancel(true) // 알림 터치시 반응 후 삭제
-                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                .setSmallIcon(android.R.drawable.btn_star)
-                .setContentIntent(pendingIntent);
-
-        mNotificationManager.notify(0, mBuilder.build());
+            mNotificationManager.notify(BaseApplication.ARRIVAL_NOTI_ID, mBuilder.build());
+            mIsNotiCreate = true;
+        }
     }
 
     private void setDestLongAndLat(Intent intent){

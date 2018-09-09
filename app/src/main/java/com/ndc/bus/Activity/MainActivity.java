@@ -7,8 +7,11 @@ import com.ndc.bus.Database.BusDatabaseClient;
 import com.ndc.bus.R;
 
 import android.databinding.DataBindingUtil;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Toast;
 
@@ -25,7 +28,6 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
     private ActivityMainBinding binding;
     private TextToSpeech tts;
 
-
     //for back press
     private final long FINSH_INTERVAL_TIME = 2000;
     private long backPressedTime = 0;
@@ -33,6 +35,14 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
     @Override
     public void initSettings(){
         super.initSettings();
+
+        //for gps
+        if ( Build.VERSION.SDK_INT >= 23 &&
+                ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions( this, new String[] {  android.Manifest.permission.ACCESS_FINE_LOCATION  },
+                    0 );
+        }
+
         this.tts = new TextToSpeech(this, this);
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
     }
