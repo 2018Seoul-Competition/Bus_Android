@@ -13,6 +13,11 @@ public class Route {
     private String routeId;
     private String routeNm;
 
+    public Route(String  routeId, String routeNm) {
+        this.routeId = routeId;
+        this.routeNm = routeNm;
+    }
+
     public String getRouteId() {
         return routeId;
     }
