@@ -34,16 +34,6 @@ public class IndexActivity extends BaseActivity{
 
         //처음 화면 보여주기
         showStartAni();
-
-        mRunnable = new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
-            }
-        };
-        mHandler = new Handler();
-        mHandler.postDelayed(mRunnable, TIME_GIF);
     }
 
     @Override
@@ -63,6 +53,19 @@ public class IndexActivity extends BaseActivity{
             busDatabaseClient.initBusData();
             // 데이터베이스에 데이터를 넣은 후이므로 여기서 화면 이동을 해야함
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v){
+            mRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
+                }
+            };
+            mHandler = new Handler();
+            mHandler.postDelayed(mRunnable, TIME_GIF);
         }
     }
 
