@@ -50,6 +50,8 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
     private double mBeforeStationLatitude;
     private Location myGPS;
 
+    private boolean mServiceRuuning;
+
     //Binder for Communicating with activity
     IBinder mBinder = new MyBinder();
     public class MyBinder extends Binder {
@@ -219,6 +221,8 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
     }
 
     private void startForeGroundService(Intent gettingIntent){
+        mServiceRuuning = true;
+
         setDestLongAndLat(gettingIntent);
 
         Intent intent = new Intent(this, StationActivity.class);
@@ -251,6 +255,7 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
     private void stopForeGroundService(){
         stopForeground(true);
         stopSelf();
+        mServiceRuuning = false;
     }
 
     public Location getNowLocation(){
@@ -289,11 +294,8 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
         }
     }
 
-    public boolean isDestSet(){
-        if(mStationName != null)
-            return true;
-        else
-            return false;
+    public boolean isServiceRuuning(){
+        return mServiceRuuning;
     }
 }
 

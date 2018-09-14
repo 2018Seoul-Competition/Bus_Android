@@ -45,6 +45,7 @@ public class StationActivity extends BaseActivity {
     ServiceConnection conn = new ServiceConnection() {
         public void onServiceConnected(ComponentName name, IBinder service) {
             MyBinder mb = (ArrivalNotificationForeGroundService.MyBinder) service;
+            myService = mb.getService();
             isServiceConnected = true;
         }
         public void onServiceDisconnected(ComponentName name) {
@@ -80,7 +81,7 @@ public class StationActivity extends BaseActivity {
         if(!isServiceRunning()){
             Dlog.i("Service Start");
             Intent intent = new Intent(
-                    getApplicationContext(),
+                    StationActivity.this,
                     ArrivalNotificationForeGroundService.class);
             intent.setAction(ArrivalNotificationForeGroundService.ACTION_START_SERVICE);
             intent.putExtra(BaseApplication.VEH_NM, mVehNm);
@@ -106,11 +107,11 @@ public class StationActivity extends BaseActivity {
                         public void onClick(DialogInterface dialogInterface, int i) {
                             //stop now service
                             Intent intent = new Intent(
-                                    getApplicationContext(),
+                                    StationActivity.this,
                                     ArrivalNotificationForeGroundService.class);
                             intent.setAction(ArrivalNotificationForeGroundService.ACTION_STOP_SERVICE);
                             startService(intent);
-/*
+
                             intent = new Intent(
                                     getApplicationContext(),
                                     ArrivalNotificationForeGroundService.class);
@@ -122,7 +123,7 @@ public class StationActivity extends BaseActivity {
                             intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
                             intent.putExtra(BaseApplication.BEFORE_LATI, mBeforeDestStation.getPosY());
                             bindService(intent, conn, Context.BIND_AUTO_CREATE);
-                            startService(intent);*/
+                            startService(intent);
                         }
                     });
             dialog.create();
@@ -131,16 +132,10 @@ public class StationActivity extends BaseActivity {
     }
 
     private boolean isServiceRunning(){
-        ActivityManager manager = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
-
-        for(ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)){
-            if(ArrivalNotificationForeGroundService.class.getName().equals(service.service.getClassName())) {
-                Dlog.i("Service Running");
-                return true;
-            }
-        }
-        Dlog.i("Service not exist");
-        return false;
+        if(myService != null)
+            return myService.isServiceRuuning();
+        else
+            return false;
     }
 
     @Override

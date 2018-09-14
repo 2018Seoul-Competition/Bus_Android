@@ -51,7 +51,7 @@ public class QrScanActivity extends BaseActivity {
         if (result != null) {
             //qrcode 가 없으면
             if (result.getContents() == null) {
-                Toast.makeText(QrScanActivity.this, "취소!", Toast.LENGTH_SHORT).show();
+                onBackPressed();
             } else {
                 //qrcode 결과가 있으면
                 try {
