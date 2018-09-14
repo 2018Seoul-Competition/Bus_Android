@@ -45,7 +45,6 @@ public class StationActivity extends BaseActivity {
     ServiceConnection conn = new ServiceConnection() {
         public void onServiceConnected(ComponentName name, IBinder service) {
             MyBinder mb = (ArrivalNotificationForeGroundService.MyBinder) service;
-            myService = mb.getService(); // 서비스가 제공하는 메소드 호출하여
             isServiceConnected = true;
         }
         public void onServiceDisconnected(ComponentName name) {
@@ -105,18 +104,13 @@ public class StationActivity extends BaseActivity {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             //stop now service
+
                             Intent intent = new Intent(
                                     getApplicationContext(),
                                     ArrivalNotificationForeGroundService.class);
                             intent.setAction(ArrivalNotificationForeGroundService.ACTION_STOP_SERVICE);
-                            intent.putExtra(BaseApplication.VEH_NM, mVehNm);
-                            intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
-                            intent.putExtra(BaseApplication.DEST_LONG, mDestStation.getPosX());
-                            intent.putExtra(BaseApplication.DEST_LATI, mDestStation.getPosY());
-                            intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
-                            intent.putExtra(BaseApplication.BEFORE_LATI, mBeforeDestStation.getPosY());
                             startService(intent);
-
+/*
                             intent = new Intent(
                                     getApplicationContext(),
                                     ArrivalNotificationForeGroundService.class);
@@ -127,7 +121,8 @@ public class StationActivity extends BaseActivity {
                             intent.putExtra(BaseApplication.DEST_LATI, mDestStation.getPosY());
                             intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
                             intent.putExtra(BaseApplication.BEFORE_LATI, mBeforeDestStation.getPosY());
-                            startService(intent);
+                            bindService(intent, conn, Context.BIND_AUTO_CREATE);
+                            startService(intent);*/
                         }
                     });
             dialog.create();

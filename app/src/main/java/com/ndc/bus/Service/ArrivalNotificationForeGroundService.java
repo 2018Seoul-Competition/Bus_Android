@@ -97,7 +97,6 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
 
             mNotificationManager.createNotificationChannel(mChannel);
         }
-        mBuilder = new NotificationCompat.Builder(getApplicationContext(), BaseApplication.CHANNEL_ID);
         mIsNotiCreate = false;
 
         this.tts = new TextToSpeech(this, this);
@@ -139,8 +138,10 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
             myGPS = mLastLocation;
 
             if(checkNearArrival()){
-                makeNoti();
-                speechBusInfo("목적지에 곧 도착합니다!!");
+                if(!mIsNotiCreate){
+                    makeNoti();
+                    speechBusInfo("목적지에 곧 도착합니다!!");
+                }
             }
 
             Dlog.i("Long" + Double.toString(location.getLongitude()));
@@ -193,6 +194,8 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
 
             PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), requestId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+            mBuilder = new NotificationCompat.Builder(getApplicationContext(), BaseApplication.CHANNEL_ID);
+
             mBuilder.setContentTitle(BaseApplication.APP_NAME) // required
                     .setContentText(mStationName + "에 거의 도착하였습니다!")  // required
                     .setDefaults(Notification.DEFAULT_ALL) // 알림, 사운드 진동 설정
@@ -221,6 +224,8 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
         Intent intent = new Intent(this, StationActivity.class);
         intent.putExtra(BaseApplication.VEH_NM, mVehNm);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        mBuilder = new NotificationCompat.Builder(getApplicationContext(), BaseApplication.CHANNEL_ID);
 
         mBuilder.setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.mipmap.ic_launcher)
