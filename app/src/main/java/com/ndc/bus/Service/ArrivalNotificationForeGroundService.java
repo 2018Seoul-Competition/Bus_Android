@@ -46,6 +46,8 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
     private String mStationName;
     private double mDestStationLongitude;
     private double mDestStationLatitude;
+    private double mBeforeStationLongitude;
+    private double mBeforeStationLatitude;
     private Location myGPS;
 
     //Binder for Communicating with activity
@@ -138,7 +140,7 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
 
             if(checkNearArrival()){
                 makeNoti();
-                speechBusInfo("목적지에 도착합니다!!");
+                speechBusInfo("목적지에 곧 도착합니다!!");
             }
 
             Dlog.i("Long" + Double.toString(location.getLongitude()));
@@ -175,11 +177,11 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
     }
 
     private boolean checkNearArrival(){
-        if(Math.pow(mDestStationLongitude-myGPS.getLongitude(),2 ) + Math.pow(mDestStationLatitude-myGPS.getLatitude(),2 ) < Math.pow(0.0001, 2))
+        Double dDistance = Math.sqrt(Math.pow((mDestStationLongitude - mBeforeStationLongitude), 2) + Math.pow((mDestStationLatitude - mBeforeStationLatitude), 2));
+        if(Math.sqrt(Math.pow(mDestStationLongitude-myGPS.getLongitude(),2 ) + Math.pow(mDestStationLatitude-myGPS.getLatitude(),2 )) < dDistance / 2)
             return true;
         else
             return false;
-
     }
 
     private void makeNoti(){
@@ -205,8 +207,10 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
     }
 
     private void setDestLongAndLat(Intent intent){
-        mDestStationLongitude = Double.parseDouble(intent.getStringExtra(BaseApplication.EXTRA_LONG));
-        mDestStationLatitude = Double.parseDouble(intent.getStringExtra(BaseApplication.EXTRA_LATI));
+        mDestStationLongitude = Double.parseDouble(intent.getStringExtra(BaseApplication.DEST_LONG));
+        mDestStationLatitude = Double.parseDouble(intent.getStringExtra(BaseApplication.DEST_LATI));
+        mBeforeStationLatitude = Double.parseDouble(intent.getStringExtra(BaseApplication.BEFORE_LONG));
+        mBeforeStationLongitude = Double.parseDouble(intent.getStringExtra(BaseApplication.BEFORE_LATI));
         mVehNm = intent.getStringExtra(BaseApplication.VEH_NM);
         mStationName = intent.getStringExtra(BaseApplication.DEST_STATION_NAME);
     }
@@ -222,14 +226,14 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setPriority(Notification.PRIORITY_MAX)
                 .setContentTitle(BaseApplication.APP_NAME)
-                .setContentText(mVehNm + " 도착 알람 기능중입니다.")
+                .setContentText(mVehNm + "번 버스 " + mStationName + "역 도착 알람 기능중입니다.")
                 .setContentIntent(pendingIntent);
 
         // Add Delete button intent in notification.
         Intent deleteIntent = new Intent(this, ArrivalNotificationForeGroundService.class);
         deleteIntent.setAction(ArrivalNotificationForeGroundService.ACTION_STOP_SERVICE);
         PendingIntent pendingPrevIntent = PendingIntent.getService(this, 0, deleteIntent, 0);
-        NotificationCompat.Action prevAction = new NotificationCompat.Action(android.R.drawable.ic_delete, "Delete", pendingPrevIntent);
+        NotificationCompat.Action prevAction = new NotificationCompat.Action(android.R.drawable.ic_delete, "알람 기능 취소", pendingPrevIntent);
         mBuilder.addAction(prevAction);
 
         // Build the notification.

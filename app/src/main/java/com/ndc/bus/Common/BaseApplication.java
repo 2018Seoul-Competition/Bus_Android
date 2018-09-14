@@ -28,8 +28,10 @@ public class BaseApplication extends Application implements HasActivityInjector{
     public static String CHANNEL_NAME = "CHANNEL_FOR_BUS_ANDROID";
     public static int ARRIVAL_NOTI_ID = 0;
 
-    public static String EXTRA_LONG = "EXTRA_LONG";
-    public static String EXTRA_LATI = "EXTRA_LATI";
+    public static String BEFORE_LONG = "BEFORE_LONG";
+    public static String BEFORE_LATI = "BEFORE_LATI";
+    public static String DEST_LONG = "DEST_LONG";
+    public static String DEST_LATI = "DEST_LATI";
 
     public static String VEH_NM = "VEH_NM";
     public static String DEST_STATION_NAME = "DEST_STATION_NAME";

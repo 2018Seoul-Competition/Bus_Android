@@ -11,6 +11,7 @@ import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.widget.Toast;
 
 import com.ndc.bus.Adapter.StationAdapter;
 import com.ndc.bus.Common.BaseApplication;
@@ -35,6 +36,7 @@ public class StationActivity extends BaseActivity {
     private ActivityStationBinding binding;
     private boolean isServiceConnected;
 
+    private Station mBeforeDestStation;
     private Station mDestStation;
     private String mVehNm;
 
@@ -66,16 +68,16 @@ public class StationActivity extends BaseActivity {
         selectTask.execute(mVehNm);
     }
 
-    private void setDestStation(Station station) {
-        Dlog.i(station.getStNm());
+    private void setDestStation(Station beforStation, Station destStation) {
+        Dlog.i("Set Dest Station : " + destStation.getStNm());
         //목적지로 설정하냐는 문구 띄움 필요
-        mDestStation = station;
+        mBeforeDestStation = beforStation;
+        mDestStation = destStation;
         startArrivalAlarmService();
     }
 
     private void startArrivalAlarmService(){
         if(!isServiceRunning()){
-            //FIXME : need to make ArrivalNotificationForeGroundService and give gps data of dest station.
             Dlog.i("Service Start");
             Intent intent = new Intent(
                     getApplicationContext(),
@@ -83,8 +85,10 @@ public class StationActivity extends BaseActivity {
             intent.setAction(ArrivalNotificationForeGroundService.ACTION_START_SERVICE);
             intent.putExtra(BaseApplication.VEH_NM, mVehNm);
             intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
-            intent.putExtra(BaseApplication.EXTRA_LONG, mDestStation.getPosX());
-            intent.putExtra(BaseApplication.EXTRA_LATI, mDestStation.getPosY());
+            intent.putExtra(BaseApplication.DEST_LONG, mDestStation.getPosX());
+            intent.putExtra(BaseApplication.DEST_LATI, mDestStation.getPosY());
+            intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
+            intent.putExtra(BaseApplication.BEFORE_LATI, mBeforeDestStation.getPosY());
             bindService(intent, conn, Context.BIND_AUTO_CREATE);
             startService(intent);
         }
@@ -92,6 +96,11 @@ public class StationActivity extends BaseActivity {
             AlertDialog.Builder dialog = new AlertDialog.Builder(StationActivity.this);
             dialog.setTitle(BaseApplication.APP_NAME)
                     .setMessage("목적지를 " + mDestStation.getStNm() + "로 바꾸시겠습니까?")
+                    .setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                        }
+                    })
                     .setPositiveButton("예", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
@@ -102,8 +111,10 @@ public class StationActivity extends BaseActivity {
                             intent.setAction(ArrivalNotificationForeGroundService.ACTION_STOP_SERVICE);
                             intent.putExtra(BaseApplication.VEH_NM, mVehNm);
                             intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
-                            intent.putExtra(BaseApplication.EXTRA_LONG, mDestStation.getPosX());
-                            intent.putExtra(BaseApplication.EXTRA_LATI, mDestStation.getPosY());
+                            intent.putExtra(BaseApplication.DEST_LONG, mDestStation.getPosX());
+                            intent.putExtra(BaseApplication.DEST_LATI, mDestStation.getPosY());
+                            intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
+                            intent.putExtra(BaseApplication.BEFORE_LATI, mBeforeDestStation.getPosY());
                             startService(intent);
 
                             intent = new Intent(
@@ -112,14 +123,11 @@ public class StationActivity extends BaseActivity {
                             intent.setAction(ArrivalNotificationForeGroundService.ACTION_START_SERVICE);
                             intent.putExtra(BaseApplication.VEH_NM, mVehNm);
                             intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
-                            intent.putExtra(BaseApplication.EXTRA_LONG, mDestStation.getPosX());
-                            intent.putExtra(BaseApplication.EXTRA_LATI, mDestStation.getPosY());
+                            intent.putExtra(BaseApplication.DEST_LONG, mDestStation.getPosX());
+                            intent.putExtra(BaseApplication.DEST_LATI, mDestStation.getPosY());
+                            intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
+                            intent.putExtra(BaseApplication.BEFORE_LATI, mBeforeDestStation.getPosY());
                             startService(intent);
-                        }
-                    })
-                    .setNegativeButton("아니오", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
                         }
                     });
             dialog.create();
@@ -156,12 +164,16 @@ public class StationActivity extends BaseActivity {
         }
 
         @Override
-        protected void onPostExecute(List<Station> stationList) {
+        protected void onPostExecute(final List<Station> stationList) {
             super.onPostExecute(stationList);
             StationAdapter stationAdapter = new StationAdapter(stationList, new StationRecyclerViewClickListener() {
                 @Override
                 public void onItemClick(Station station) {
-                    setDestStation(station);
+                    int iDest = stationList.indexOf(station);
+                    if(iDest != 0){
+                        Station beforeStation = stationList.get(iDest-1);
+                        setDestStation(beforeStation, station);
+                    }
                 }
             });
             binding.stationRv.setAdapter(stationAdapter);
