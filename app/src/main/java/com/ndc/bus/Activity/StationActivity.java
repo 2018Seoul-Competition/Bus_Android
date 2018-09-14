@@ -72,6 +72,7 @@ public class StationActivity extends BaseActivity {
         //목적지로 설정하냐는 문구 띄움 필요
         mBeforeDestStation = beforStation;
         mDestStation = destStation;
+
         startArrivalAlarmService();
     }
 
@@ -104,7 +105,6 @@ public class StationActivity extends BaseActivity {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             //stop now service
-
                             Intent intent = new Intent(
                                     getApplicationContext(),
                                     ArrivalNotificationForeGroundService.class);
@@ -175,5 +175,4 @@ public class StationActivity extends BaseActivity {
         }
 
     }
-
 }

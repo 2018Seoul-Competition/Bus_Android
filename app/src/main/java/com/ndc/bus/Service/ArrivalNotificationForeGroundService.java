@@ -212,8 +212,8 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
     private void setDestLongAndLat(Intent intent){
         mDestStationLongitude = Double.parseDouble(intent.getStringExtra(BaseApplication.DEST_LONG));
         mDestStationLatitude = Double.parseDouble(intent.getStringExtra(BaseApplication.DEST_LATI));
-        mBeforeStationLatitude = Double.parseDouble(intent.getStringExtra(BaseApplication.BEFORE_LONG));
-        mBeforeStationLongitude = Double.parseDouble(intent.getStringExtra(BaseApplication.BEFORE_LATI));
+        mBeforeStationLatitude = Double.parseDouble(intent.getStringExtra(BaseApplication.BEFORE_LATI));
+        mBeforeStationLongitude = Double.parseDouble(intent.getStringExtra(BaseApplication.BEFORE_LONG));
         mVehNm = intent.getStringExtra(BaseApplication.VEH_NM);
         mStationName = intent.getStringExtra(BaseApplication.DEST_STATION_NAME);
     }
@@ -289,5 +289,11 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
         }
     }
 
+    public boolean isDestSet(){
+        if(mStationName != null)
+            return true;
+        else
+            return false;
+    }
 }
 
