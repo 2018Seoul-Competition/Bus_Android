@@ -223,6 +223,7 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
 
     private void startForeGroundService(Intent gettingIntent){
         mServiceRuuning = true;
+        mIsNotiCreate = false;
 
         setDestLongAndLat(gettingIntent);
 
