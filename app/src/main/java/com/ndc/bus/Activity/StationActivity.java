@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.databinding.DataBindingUtil;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -129,6 +130,13 @@ public class StationActivity extends BaseActivity {
             dialog.create();
             dialog.show();
         }
+    }
+
+    private Location getNowGPSFromService(){
+        if(isServiceRunning())
+            return myService.getNowLocation();
+        else
+            return null;
     }
 
     private boolean isServiceRunning(){
