@@ -143,6 +143,7 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
                 if(!mIsNotiCreate){
                     makeNoti();
                     speechBusInfo("목적지에 곧 도착합니다!!");
+                    stopForeGroundService();
                 }
             }
 
