@@ -53,6 +53,8 @@ public class StationActivity extends BaseActivity {
         mVehNm = getIntent().getStringExtra(BaseApplication.VEH_NM);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_station);
         binding.setActivity(this);
+        binding.vehNumber.setText(mVehNm);
+
         SelectDatabaseTask selectTask = new SelectDatabaseTask();
         selectTask.execute(mVehNm);
     }
@@ -140,6 +142,10 @@ public class StationActivity extends BaseActivity {
         @Override
         protected void onPostExecute(final List<Station> stationList) {
             super.onPostExecute(stationList);
+            binding.startStation.setText(stationList.get(0).getStNm());
+            binding.endStation.setText(stationList.get(stationList.size()-1).getStNm());
+
+
             StationAdapter stationAdapter = new StationAdapter(stationList, new StationRecyclerViewClickListener() {
                 @Override
                 public void onItemClick(Station station) {
