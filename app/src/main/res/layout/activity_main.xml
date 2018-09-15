@@ -20,7 +20,7 @@
             android:id="@+id/vehNmText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="6000" />
+            android:text="관악02" />
 
         <Button
             android:id="@+id/stationBtn"

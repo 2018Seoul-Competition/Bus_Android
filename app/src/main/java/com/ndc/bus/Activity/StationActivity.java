@@ -1,12 +1,12 @@
 package com.ndc.bus.Activity;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.databinding.DataBindingUtil;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -21,7 +21,6 @@ import com.ndc.bus.Listener.StationRecyclerViewClickListener;
 import com.ndc.bus.R;
 import com.ndc.bus.Route.Route;
 import com.ndc.bus.Service.ArrivalNotificationForeGroundService;
-import com.ndc.bus.Service.ArrivalNotificationForeGroundService.MyBinder;
 import com.ndc.bus.Station.Station;
 import com.ndc.bus.Utils.Dlog;
 import com.ndc.bus.databinding.ActivityStationBinding;
@@ -42,17 +41,6 @@ public class StationActivity extends BaseActivity {
     private String mVehNm;
 
     private ArrivalNotificationForeGroundService myService;
-
-    ServiceConnection conn = new ServiceConnection() {
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            MyBinder mb = (ArrivalNotificationForeGroundService.MyBinder) service;
-            myService = mb.getService();
-            isServiceConnected = true;
-        }
-        public void onServiceDisconnected(ComponentName name) {
-            isServiceConnected = false;
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +79,6 @@ public class StationActivity extends BaseActivity {
             intent.putExtra(BaseApplication.DEST_LATI, mDestStation.getPosY());
             intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
             intent.putExtra(BaseApplication.BEFORE_LATI, mBeforeDestStation.getPosY());
-            bindService(intent, conn, Context.BIND_AUTO_CREATE);
             startService(intent);
         }
         else{
@@ -110,12 +97,6 @@ public class StationActivity extends BaseActivity {
                             Intent intent = new Intent(
                                     StationActivity.this,
                                     ArrivalNotificationForeGroundService.class);
-                            intent.setAction(ArrivalNotificationForeGroundService.ACTION_STOP_SERVICE);
-                            startService(intent);
-
-                            intent = new Intent(
-                                    getApplicationContext(),
-                                    ArrivalNotificationForeGroundService.class);
                             intent.setAction(ArrivalNotificationForeGroundService.ACTION_START_SERVICE);
                             intent.putExtra(BaseApplication.VEH_NM, mVehNm);
                             intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
@@ -123,7 +104,6 @@ public class StationActivity extends BaseActivity {
                             intent.putExtra(BaseApplication.DEST_LATI, mDestStation.getPosY());
                             intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
                             intent.putExtra(BaseApplication.BEFORE_LATI, mBeforeDestStation.getPosY());
-                            bindService(intent, conn, Context.BIND_AUTO_CREATE);
                             startService(intent);
                         }
                     });
@@ -132,18 +112,14 @@ public class StationActivity extends BaseActivity {
         }
     }
 
-    private Location getNowGPSFromService(){
-        if(isServiceRunning())
-            return myService.getNowLocation();
-        else
-            return null;
-    }
-
     private boolean isServiceRunning(){
-        if(myService != null)
-            return myService.isServiceRuuning();
-        else
-            return false;
+        ActivityManager manager = (ActivityManager) this.getSystemService(Activity.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if ("com.ndc.bus.Service.ArrivalNotificationForeGroundService".equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
