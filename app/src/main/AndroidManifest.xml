@@ -7,6 +7,7 @@
 
     <!-- Add GPS Permission -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:name=".Common.BaseApplication"
@@ -33,9 +34,12 @@
 
         </activity>
         <activity android:name=".Activity.StationActivity" />
-
+        <activity android:name=".Activity.MapActivity"/>
         <service android:name=".Service.ArrivalNotificationForeGroundService" />
 
+        <meta-data
+            android:name="com.kakao.sdk.AppKey"
+            android:value="@string/kakaomap_api_key"/>
     </application>
 
 </manifest>

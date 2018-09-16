@@ -60,7 +60,8 @@ public class IndexActivity extends BaseActivity{
             mRunnable = new Runnable() {
                 @Override
                 public void run() {
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    //Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), MapActivity.class);
                     startActivity(intent);
                 }
             };
