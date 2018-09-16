@@ -73,7 +73,6 @@ public class MainActivity extends BaseActivity {
 
         if( 0 <= intervalTime && FINSH_INTERVAL_TIME >= intervalTime){
             finishAffinity();
-            System.exit(0);
         }
         else {
             backPressedTime = tempTime;

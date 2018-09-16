@@ -43,7 +43,7 @@ public class IndexActivity extends BaseActivity{
     }
 
     private void showStartAni(){
-        Glide.with(this).load(R.raw.chu).into(binding.logoIv);
+        Glide.with(this).load(R.raw.index_logo).into(binding.logoIv);
     }
 
     @SuppressLint("StaticFieldLeak")
