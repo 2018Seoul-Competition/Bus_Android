@@ -132,6 +132,8 @@ public class StationActivity extends BaseActivity {
         }
     }
 
+
+    // have to make Service first, before using this method
     private Location getNowGPSFromService(){
         if(isServiceRunning())
             return myService.getNowLocation();
