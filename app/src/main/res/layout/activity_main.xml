@@ -1,119 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-    <data>
-        <variable name="activity" type="com.ndc.bus.Activity.MainActivity"/>
-    </data>
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools">
+<data>
+    <variable name="activity" type="com.ndc.bus.Activity.MainActivity"/>
+</data>
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:showIn="@layout/activity_main"
+    tools:context="com.ndc.bus.Activity.MainActivity">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:background="@drawable/main_background_1"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="43dp"
+            android:background="@drawable/main_search">
+
+            <EditText
+                android:id="@+id/vehNmText"
+                android:layout_width="wrap_content"
+                android:layout_height="43dp"
+                android:layout_marginHorizontal="15dp"
+                android:text="관악02" />
+            >
+
+            <ImageButton
+                android:id="@+id/stationBtn"
+                android:layout_width="35dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="280dp"
+                android:layout_marginTop="5dp"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:background="@drawable/main_searchicon"
+                android:onClick="@{()->activity.retrieveBusData()}"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="310dp"
+            android:layout_height="250dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="100dp"
+            android:background="@drawable/main_history"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/main_historylogo" />
+
+            <ImageButton
+                android:id="@+id/remove1Btn"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginEnd="18dp"
+                android:layout_marginTop="7dp"
+                android:background="@drawable/main_historyremove" />
+
+            <ImageButton
+                android:id="@+id/remove2Btn"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_alignStart="@+id/remove1Btn"
+                android:layout_below="@+id/remove1Btn"
+                android:layout_marginTop="14dp"
+                android:background="@drawable/main_historyremove"/>
+        </RelativeLayout>
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:showIn="@layout/activity_main"
-        tools:context="com.ndc.bus.Activity.MainActivity">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="500dp"
-            android:paddingBottom="@dimen/activity_vertical_margin"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:paddingTop="@dimen/activity_vertical_margin"
-            android:background="@drawable/main_background_1"
-            android:orientation="vertical">
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="43dp"
-                android:background="@drawable/main_search">
-
-                <EditText
-                    android:id="@+id/vehNmText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="43dp"
-                    android:layout_marginHorizontal="15dp"
-                    android:text="관악02" />
-                >
-
-                <ImageButton
-                    android:id="@+id/stationBtn"
-                    android:layout_width="45dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="280dp"
-                    android:layout_marginTop="5dp"
-                    android:adjustViewBounds="true"
-                    android:scaleType="fitCenter"
-                    android:background="@drawable/main_searchicon"
-                    android:onClick="@{()->activity.retrieveBusData()}"/>
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="300dp"
-                android:layout_height="250dp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="100dp"
-                android:background="@drawable/main_history"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/imageView2"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_centerInParent="true"
-                    android:background="@drawable/main_historylogo" />
-
-                <ImageButton
-                    android:id="@+id/imageButton"
-                    android:layout_width="20dp"
-                    android:layout_height="15dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginEnd="18dp"
-                    android:layout_marginTop="5dp"
-                    android:background="@drawable/main_historyremove" />
-
-                <ImageButton
-                    android:id="@+id/imageButton2"
-                    android:layout_width="20dp"
-                    android:layout_height="15dp"
-                    android:layout_alignStart="@+id/imageButton"
-                    android:layout_below="@+id/imageButton"
-                    android:layout_marginTop="8dp"
-                    android:background="@drawable/main_historyremove"/>
-            </RelativeLayout>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="500dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:background="@drawable/main_background_2"
-            android:orientation="horizontal">
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_marginTop="400dp"
-            android:layout_alignParentStart="true"
-            android:orientation="horizontal">
-
-            <ImageButton
-                android:id="@+id/scanBtn"
-                android:layout_width="110dp"
-                android:layout_height="110dp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginVertical="0dp"
-                android:scaleType="fitCenter"
-                android:adjustViewBounds="true"
-                android:background="@drawable/main_qrcode"
-                android:onClick="@{()->activity.gotoQrScanActivity()}"/>
-        </RelativeLayout>
+        android:layout_marginTop="500dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/main_background_2"
+        android:orientation="horizontal">
     </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:layout_marginTop="370dp"
+        android:layout_alignParentStart="true"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/scanBtn"
+            android:layout_width="140dp"
+            android:layout_height="130dp"
+            android:layout_centerHorizontal="true"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:background="@drawable/main_qrcode"
+            android:onClick="@{()->activity.gotoQrScanActivity()}"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="70dp"
+        android:orientation="vertical"
+        android:background="@drawable/main_setting">
+
+        <ImageButton
+            android:id="@+id/settingBtn"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/main_settingicon"
+            android:onClick="@{()->activity.gotoSettingActivity()}"/>/>
+
+    </RelativeLayout>
+</RelativeLayout>
 </layout>
