@@ -24,6 +24,7 @@
         </activity>
         <activity android:name=".Activity.MainActivity"/>
         <activity android:name=".Activity.QrScanActivity"/>
+        <activity android:name=".Activity.SettingActivity" />
         <activity
             android:name=".Activity.AnyOrientationCaptureActivity"
             android:screenOrientation="portrait"
