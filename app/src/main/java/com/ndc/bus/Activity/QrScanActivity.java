@@ -35,7 +35,10 @@ public class QrScanActivity extends BaseActivity {
         qrScan = new IntentIntegrator(this);
 
         //scan option
-        qrScan.setPrompt("QR코드를 찍어주세요");
+        if(BaseApplication.LAN_MODE == 0)
+            qrScan.setPrompt("QR코드를 찍어주세요");
+        else
+            qrScan.setPrompt("Scan Qr Code");
         qrScan.setCaptureActivity(AnyOrientationCaptureActivity.class);
         qrScan.setOrientationLocked(false);
 

@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Handler;
 
 import com.bumptech.glide.Glide;
+import com.ndc.bus.Common.BaseApplication;
 import com.ndc.bus.Database.BusDatabaseClient;
 import com.ndc.bus.R;
 import com.ndc.bus.databinding.ActivityIndexBinding;
@@ -27,6 +28,9 @@ public class IndexActivity extends BaseActivity{
     public void initSettings(){
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_index);
         binding.setActivity(this);
+
+        //ini 호출
+        BaseApplication.LAN_MODE = "KR";
 
         //DB 호출
         InitDatabaseTask initTask = new InitDatabaseTask();

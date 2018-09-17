@@ -47,10 +47,12 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
     //m_variables
     private String mVehNm;
     private String mStationName;
+    private String mStationEnName;
     private double mDestStationLongitude;
     private double mDestStationLatitude;
     private double mBeforeStationLongitude;
     private double mBeforeStationLatitude;
+    private String mLanMode;
     private Location myGPS;
 
     //Binder for Communicating with activity
@@ -233,6 +235,7 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
         mDestStationLatitude = Double.parseDouble(intent.getStringExtra(BaseApplication.DEST_LATI));
         mBeforeStationLatitude = Double.parseDouble(intent.getStringExtra(BaseApplication.BEFORE_LATI));
         mBeforeStationLongitude = Double.parseDouble(intent.getStringExtra(BaseApplication.BEFORE_LONG));
+        mLanMode = intent.getStringExtra(BaseApplication.LAN_MODE);
         mVehNm = intent.getStringExtra(BaseApplication.VEH_NM);
         mStationName = intent.getStringExtra(BaseApplication.DEST_STATION_NAME);
 

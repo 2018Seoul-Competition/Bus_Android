@@ -13,6 +13,5 @@ public class SettingActivity extends BaseActivity {
         super.initSettings();
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_setting);
         binding.setActivity(this);
-
     }
 }

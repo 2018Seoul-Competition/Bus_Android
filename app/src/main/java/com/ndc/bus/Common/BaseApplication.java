@@ -21,6 +21,7 @@ public class BaseApplication extends Application implements HasActivityInjector{
 
     public static boolean DEBUG;
     private final String key = "QwTT8IfKipYxlXcVce%2Fk4%2FgX9NsV5ZpSITqYwhk4auqSt0wXOb3Or2%2B8BS9wpsl45JsbtJ28WTymcVewQCgU0Q%3D%3D";
+    public static String LAN_MODE = "";
 
     public static String APP_NAME = "BUS_ANDROID";
 

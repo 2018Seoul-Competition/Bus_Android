@@ -103,41 +103,75 @@ public class StationActivity extends BaseActivity {
                     ArrivalNotificationForeGroundService.class);
             intent.setAction(ArrivalNotificationForeGroundService.ACTION_START_SERVICE);
             intent.putExtra(BaseApplication.VEH_NM, mVehNm);
-            intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
+            if(BaseApplication.LAN_MODE == "KR")
+                intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
+            else
+                intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStEngNm());
             intent.putExtra(BaseApplication.DEST_LONG, mDestStation.getPosX());
             intent.putExtra(BaseApplication.DEST_LATI, mDestStation.getPosY());
             intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
             intent.putExtra(BaseApplication.BEFORE_LATI, mBeforeDestStation.getPosY());
+            intent.putExtra(BaseApplication.LAN_MODE, BaseApplication.LAN_MODE);
             startService(intent);
             bindService(intent, mConn, Context.BIND_AUTO_CREATE);
         }
         else{
             AlertDialog.Builder dialog = new AlertDialog.Builder(StationActivity.this);
-            dialog.setTitle(BaseApplication.APP_NAME)
-                    .setMessage("목적지를 " + mDestStation.getStNm() + "로 바꾸시겠습니까?")
-                    .setNegativeButton("아니오", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                        }
-                    })
-                    .setPositiveButton("예", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            //stop now service
-                            Intent intent = new Intent(
-                                    StationActivity.this,
-                                    ArrivalNotificationForeGroundService.class);
-                            intent.setAction(ArrivalNotificationForeGroundService.ACTION_START_SERVICE);
-                            intent.putExtra(BaseApplication.VEH_NM, mVehNm);
-                            intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
-                            intent.putExtra(BaseApplication.DEST_LONG, mDestStation.getPosX());
-                            intent.putExtra(BaseApplication.DEST_LATI, mDestStation.getPosY());
-                            intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
-                            intent.putExtra(BaseApplication.BEFORE_LATI, mBeforeDestStation.getPosY());
-                            startService(intent);
-                            bindService(intent, mConn, Context.BIND_AUTO_CREATE);
-                        }
-                    });
+            dialog.setTitle(BaseApplication.APP_NAME);
+            if(BaseApplication.LAN_MODE == "KR"){
+                dialog.setMessage("목적지를 " + mDestStation.getStNm() + "로 바꾸시겠습니까?")
+                        .setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                            }
+                        })
+                        .setPositiveButton("예", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //stop now service
+                                Intent intent = new Intent(
+                                        StationActivity.this,
+                                        ArrivalNotificationForeGroundService.class);
+                                intent.setAction(ArrivalNotificationForeGroundService.ACTION_START_SERVICE);
+                                intent.putExtra(BaseApplication.VEH_NM, mVehNm);
+                                intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
+                                intent.putExtra(BaseApplication.DEST_LONG, mDestStation.getPosX());
+                                intent.putExtra(BaseApplication.DEST_LATI, mDestStation.getPosY());
+                                intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
+                                intent.putExtra(BaseApplication.BEFORE_LATI, mBeforeDestStation.getPosY());
+                                intent.putExtra(BaseApplication.LAN_MODE, BaseApplication.LAN_MODE);
+                                startService(intent);
+                                bindService(intent, mConn, Context.BIND_AUTO_CREATE);
+                            }
+                        });
+            }
+            else{
+                dialog.setMessage("Change Destination to " + mDestStation.getStNm() + "?")
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                            }
+                        })
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //stop now service
+                                Intent intent = new Intent(
+                                        StationActivity.this,
+                                        ArrivalNotificationForeGroundService.class);
+                                intent.setAction(ArrivalNotificationForeGroundService.ACTION_START_SERVICE);
+                                intent.putExtra(BaseApplication.VEH_NM, mVehNm);
+                                intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
+                                intent.putExtra(BaseApplication.DEST_LONG, mDestStation.getPosX());
+                                intent.putExtra(BaseApplication.DEST_LATI, mDestStation.getPosY());
+                                intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
+                                intent.putExtra(BaseApplication.BEFORE_LATI, mBeforeDestStation.getPosY());
+                                intent.putExtra(BaseApplication.LAN_MODE, BaseApplication.LAN_MODE);
+                                startService(intent);
+                                bindService(intent, mConn, Context.BIND_AUTO_CREATE);
+                            }
+                        });
+            }
             dialog.create();
             dialog.show();
         }
@@ -214,7 +248,10 @@ public class StationActivity extends BaseActivity {
         //마을 버스
         if(!isNumeric(vehNm)){
             bgLayout.setBackgroundResource(R.drawable.station_background_2);
-            binding.busTypeText.setText("마을버스");
+            if(BaseApplication.LAN_MODE == "KR")
+                binding.busTypeText.setText("마을버스");
+            else
+                binding.busTypeText.setText("Town Bus");
         }
         else{
             if(vehNm.length() == 4){
@@ -222,23 +259,35 @@ public class StationActivity extends BaseActivity {
                 if(vehNm.charAt(0) == '9'){
                     //red
                     bgLayout.setBackgroundResource(R.drawable.station_background_3);
-                    binding.busTypeText.setText("광역버스");
+                    if(BaseApplication.LAN_MODE == "KR")
+                        binding.busTypeText.setText("광역버스");
+                    else
+                        binding.busTypeText.setText("Wide area bus");
                 }
                 else{
                     //green
                     bgLayout.setBackgroundResource(R.drawable.station_background_2);
-                    binding.busTypeText.setText("지선버스");
+                    if(BaseApplication.LAN_MODE == "KR")
+                        binding.busTypeText.setText("지선버스");
+                    else
+                        binding.busTypeText.setText("Branch bus");
                 }
             }
             else if(vehNm.length() == 3){
                 //blue
                 bgLayout.setBackgroundResource(R.drawable.station_background_1);
-                binding.busTypeText.setText("간선버스");
+                if(BaseApplication.LAN_MODE == "KR")
+                    binding.busTypeText.setText("간선버스");
+                else
+                    binding.busTypeText.setText("Main bus");
             }
             else{
                 //yellow
                 bgLayout.setBackgroundResource(R.drawable.station_background_4);
-                binding.busTypeText.setText("도심순환버스");
+                if(BaseApplication.LAN_MODE == "KR")
+                    binding.busTypeText.setText("도심순환버스");
+                else
+                    binding.busTypeText.setText("Urban circulation bus");
             }
         }
     }
