@@ -1,6 +1,5 @@
 package com.ndc.bus.Activity;
 
-import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -8,16 +7,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.databinding.DataBindingUtil;
-import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.widget.Toast;
 
 import com.ndc.bus.Adapter.StationAdapter;
 import com.ndc.bus.Common.BaseApplication;
 import com.ndc.bus.Database.BusDatabaseClient;
 import com.ndc.bus.Listener.StationRecyclerViewClickListener;
+import com.ndc.bus.Network.RetrofitClient;
 import com.ndc.bus.R;
 import com.ndc.bus.Route.Route;
 import com.ndc.bus.Service.ArrivalNotificationForeGroundService;
@@ -132,13 +130,6 @@ public class StationActivity extends BaseActivity {
         }
     }
 
-    private Location getNowGPSFromService(){
-        if(isServiceRunning())
-            return myService.getNowLocation();
-        else
-            return null;
-    }
-
     private boolean isServiceRunning(){
         if(myService != null)
             return myService.isServiceRuuning();
@@ -154,9 +145,10 @@ public class StationActivity extends BaseActivity {
     }
 
     private class SelectDatabaseTask extends AsyncTask<String, Void, List<Station>> {
+        private Route route;
         @Override
         protected List<Station> doInBackground(String... strings) {
-            Route route = busDatabaseClient.getBusDatabase().routeDAO().retrieveRouteNmByNm(strings[0]);
+            this.route = busDatabaseClient.getBusDatabase().routeDAO().retrieveRouteNmByNm(strings[0]);
             List<Station> stationList = busDatabaseClient.getBusDatabase().routeRowDAO().retrieveAllStationsById(route.getRouteId());
             return stationList;
         }
@@ -175,6 +167,14 @@ public class StationActivity extends BaseActivity {
                 }
             });
             binding.stationRv.setAdapter(stationAdapter);
+            retrieveBusPosByRouteId();
+        }
+
+        private void retrieveBusPosByRouteId(){
+            BaseApplication baseApplication = (BaseApplication)getApplication();
+            String serviceKey = baseApplication.getKey();
+            RetrofitClient.getInstance().getService().getBusPosByRtid(serviceKey, route.getRouteId());
+            myService.getNowLocation();
         }
 
     }
