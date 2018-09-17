@@ -3,17 +3,12 @@ package com.ndc.bus.Activity;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.text.Layout;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.ndc.bus.Adapter.StationAdapter;
 import com.ndc.bus.Common.BaseApplication;
@@ -36,13 +31,9 @@ public class StationActivity extends BaseActivity {
     BusDatabaseClient busDatabaseClient;
 
     private ActivityStationBinding binding;
-    private boolean isServiceConnected;
-
     private Station mBeforeDestStation;
     private Station mDestStation;
     private String mVehNm;
-
-    private ArrivalNotificationForeGroundService myService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,13 +159,13 @@ public class StationActivity extends BaseActivity {
             BaseApplication baseApplication = (BaseApplication)getApplication();
             String serviceKey = baseApplication.getKey();
             RetrofitClient.getInstance().getService().getBusPosByRtid(serviceKey, route.getRouteId());
-            myService.getNowLocation();
+            //myService.getNowLocation();
         }
 
     }
 
     private void makeBackColorByBusNumber(String vehNm){
-        RelativeLayout bgLayout = (RelativeLayout) findViewById(R.id.station_background);
+        RelativeLayout bgLayout = binding.stationBackground;
         //마을 버스
         if(!isNumeric(vehNm)){
             bgLayout.setBackgroundResource(R.drawable.station_background_2);
@@ -183,7 +174,7 @@ public class StationActivity extends BaseActivity {
         else{
             if(vehNm.length() == 4){
                 //광역버스
-                if(vehNm.indexOf(0) == '9'){
+                if(vehNm.charAt(0) == '9'){
                     //red
                     bgLayout.setBackgroundResource(R.drawable.station_background_3);
                     binding.busTypeText.setText("광역버스");
