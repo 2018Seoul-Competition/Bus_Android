@@ -3,6 +3,7 @@ package com.ndc.bus.Di;
 import com.ndc.bus.Activity.IndexActivity;
 import com.ndc.bus.Activity.MainActivity;
 import com.ndc.bus.Activity.QrScanActivity;
+import com.ndc.bus.Activity.SettingActivity;
 import com.ndc.bus.Activity.StationActivity;
 
 import dagger.Module;
@@ -25,4 +26,8 @@ abstract class ActivityModule {
     @ActivityScope
     @ContributesAndroidInjector
     abstract public StationActivity contributeStationActivityInjector();
+
+    @ActivityScope
+    @ContributesAndroidInjector
+    abstract public SettingActivity contributeSettingActivityInjector();
 }

@@ -28,5 +28,13 @@
             android:text="@{station.stNm}"/>
 
 
+        <TextView
+            android:id="@+id/stEngNm_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:textSize="20sp"
+            android:text="@{station.stEngNm}"/>
+
     </LinearLayout>
 </layout>

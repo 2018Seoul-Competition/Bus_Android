@@ -12,6 +12,8 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.text.Layout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.ndc.bus.Adapter.StationAdapter;
@@ -54,6 +56,7 @@ public class StationActivity extends BaseActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_station);
         binding.setActivity(this);
         binding.vehNumber.setText(mVehNm);
+        makeBackColorByBusNumber(mVehNm);
 
         SelectDatabaseTask selectTask = new SelectDatabaseTask();
         selectTask.execute(mVehNm);
@@ -171,5 +174,48 @@ public class StationActivity extends BaseActivity {
             binding.stationRv.setAdapter(stationAdapter);
         }
 
+    }
+
+    private void makeBackColorByBusNumber(String vehNm){
+        RelativeLayout bgLayout = (RelativeLayout) findViewById(R.id.station_background);
+        //마을 버스
+        if(!isNumeric(vehNm)){
+            bgLayout.setBackgroundResource(R.drawable.station_background_2);
+            binding.busTypeText.setText("마을버스");
+        }
+        else{
+            if(vehNm.length() == 4){
+                //광역버스
+                if(vehNm.indexOf(0) == '9'){
+                    //red
+                    bgLayout.setBackgroundResource(R.drawable.station_background_3);
+                    binding.busTypeText.setText("광역버스");
+                }
+                else{
+                    //green
+                    bgLayout.setBackgroundResource(R.drawable.station_background_2);
+                    binding.busTypeText.setText("지선버스");
+                }
+            }
+            else if(vehNm.length() == 3){
+                //blue
+                bgLayout.setBackgroundResource(R.drawable.station_background_1);
+                binding.busTypeText.setText("간선버스");
+            }
+            else{
+                //yellow
+                bgLayout.setBackgroundResource(R.drawable.station_background_4);
+                binding.busTypeText.setText("도심순환버스");
+            }
+        }
+    }
+
+    public static boolean isNumeric(String s) {
+        try {
+            Double.parseDouble(s);
+            return true;
+        } catch(NumberFormatException e) {
+            return false;
+        }
     }
 }

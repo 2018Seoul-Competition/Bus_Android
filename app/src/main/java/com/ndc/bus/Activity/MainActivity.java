@@ -97,4 +97,9 @@ public class MainActivity extends BaseActivity {
 
     }
 
+    public void gotoSettingActivity(){
+        Intent intent = new Intent(this, SettingActivity.class);
+        startActivity(intent);
+    }
+
 }
