@@ -3,11 +3,15 @@ package com.ndc.bus.Activity;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.widget.RelativeLayout;
 
 import com.ndc.bus.Adapter.StationAdapter;
@@ -18,6 +22,7 @@ import com.ndc.bus.Network.RetrofitClient;
 import com.ndc.bus.R;
 import com.ndc.bus.Route.Route;
 import com.ndc.bus.Service.ArrivalNotificationForeGroundService;
+import com.ndc.bus.Service.ArrivalNotificationForeGroundService.MyBinder;
 import com.ndc.bus.Station.Station;
 import com.ndc.bus.Utils.Dlog;
 import com.ndc.bus.databinding.ActivityStationBinding;
@@ -35,6 +40,10 @@ public class StationActivity extends BaseActivity {
     private Station mDestStation;
     private String mVehNm;
 
+    private boolean mIsConnected;
+    private ArrivalNotificationForeGroundService mService;
+    public ServiceConnection mConn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +60,30 @@ public class StationActivity extends BaseActivity {
 
         SelectDatabaseTask selectTask = new SelectDatabaseTask();
         selectTask.execute(mVehNm);
+
+        mConn = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+                Dlog.i("ServiceConnected");
+                MyBinder mb = (MyBinder)iBinder;
+                mService = mb.getService();
+                mIsConnected = true;
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName componentName) {
+                Dlog.i("onServiceDisconnected");
+                mIsConnected = false;
+            }
+        };
+
+        if(isServiceRunning()){
+            Intent intent = new Intent(
+                    StationActivity.this,
+                    ArrivalNotificationForeGroundService.class);
+            bindService(intent, mConn, Context.BIND_AUTO_CREATE);
+        }
+
     }
 
     private void setDestStation(Station beforStation, Station destStation) {
@@ -76,6 +109,7 @@ public class StationActivity extends BaseActivity {
             intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
             intent.putExtra(BaseApplication.BEFORE_LATI, mBeforeDestStation.getPosY());
             startService(intent);
+            bindService(intent, mConn, Context.BIND_AUTO_CREATE);
         }
         else{
             AlertDialog.Builder dialog = new AlertDialog.Builder(StationActivity.this);
@@ -101,6 +135,7 @@ public class StationActivity extends BaseActivity {
                             intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
                             intent.putExtra(BaseApplication.BEFORE_LATI, mBeforeDestStation.getPosY());
                             startService(intent);
+                            bindService(intent, mConn, Context.BIND_AUTO_CREATE);
                         }
                     });
             dialog.create();
@@ -123,6 +158,16 @@ public class StationActivity extends BaseActivity {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        if(mIsConnected){
+            Dlog.i("unbindService");
+            unbindService(mConn);
+            mIsConnected = false;
+        }
     }
 
     private class SelectDatabaseTask extends AsyncTask<String, Void, List<Station>> {

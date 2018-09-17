@@ -66,6 +66,10 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
         return mBinder;
     }
 
+    public Location giveNowLocation(){
+        return myGPS;
+    }
+
     @Override
     public void onCreate(){
         super.onCreate();
