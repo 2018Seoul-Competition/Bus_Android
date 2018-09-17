@@ -20,7 +20,7 @@ public class BaseApplication extends Application implements HasActivityInjector{
     DispatchingAndroidInjector<Activity> activityInjector;
 
     public static boolean DEBUG;
-    private final String key = "EhxzLlLWZRRobmy7a5zscgcLA8u9%2B1EKLE1m439UhFUuw7nGChFGGYjH5q8JNnOmI3ma7NYtPPH9xo75Sipt%2FA%3D%3D";
+    private final String key = "QwTT8IfKipYxlXcVce%2Fk4%2FgX9NsV5ZpSITqYwhk4auqSt0wXOb3Or2%2B8BS9wpsl45JsbtJ28WTymcVewQCgU0Q%3D%3D";
 
     public static String APP_NAME = "BUS_ANDROID";
 
