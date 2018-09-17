@@ -12,12 +12,14 @@ public class Station {
     private String stNm;
     private String posX;
     private String posY;
+    private String stEngNm;
 
-    public Station(String stId, String stNm, String posX, String posY){
+    public Station(String stId, String stNm, String posX, String posY, String stEngNm){
         this.stId = stId;
         this.stNm = stNm;
         this.posX = posX;
         this.posY = posY;
+        this.stEngNm = stEngNm;
     }
 
     public String getStId() {
@@ -50,5 +52,13 @@ public class Station {
 
     public void setPosY(String posY) {
         this.posY = posY;
+    }
+
+    public String getStEngNm() {
+        return stEngNm;
+    }
+
+    public void setStEngNm(String stEngNm) {
+        this.stEngNm = stEngNm;
     }
 }

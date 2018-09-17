@@ -88,7 +88,7 @@ public class BusDatabaseClient {
             for (int i = 0; i < splitedStr.length; i++) {
                 splitedStr[i] = splitedStr[i].trim();
             }
-            stationList.add(new Station(splitedStr[0], splitedStr[1], splitedStr[2], splitedStr[3]));
+            stationList.add(new Station(splitedStr[0], splitedStr[1], splitedStr[2], splitedStr[3], splitedStr[4]));
         }
 
         stationBuf.close();

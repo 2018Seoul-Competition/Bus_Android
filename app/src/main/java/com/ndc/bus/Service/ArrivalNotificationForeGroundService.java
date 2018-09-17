@@ -1,5 +1,6 @@
 package com.ndc.bus.Service;
 
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -16,6 +17,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.NotificationCompat;
+import android.widget.Toast;
 
 import com.ndc.bus.Activity.StationActivity;
 import com.ndc.bus.Common.BaseApplication;
@@ -35,6 +37,7 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
     private LocationManager mLocationManager = null;
     private static final int LOCATION_INTERVAL = 1000 * 1 * 10;
     private static final float LOCATION_DISTANCE = 0.1f;
+    private ArrivalNotificationForeGroundService.LocationListener[] mLocationListeners;
 
     //for noti
     private NotificationManager mNotificationManager;
@@ -49,8 +52,6 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
     private double mBeforeStationLongitude;
     private double mBeforeStationLatitude;
     private Location myGPS;
-
-    private boolean mServiceRuuning;
 
     //Binder for Communicating with activity
     IBinder mBinder = new MyBinder();
@@ -72,31 +73,14 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
 
         //when service start, create locationManager for getting gps data
         initializeLocationManager();
-        try {
-            mLocationManager.requestLocationUpdates(
-                    LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
-                    mLocationListeners[1]);
-        } catch (java.lang.SecurityException ex) {
-            Dlog.i("fail to request location update, ignore" + ex);
-        } catch (IllegalArgumentException ex) {
-            Dlog.i("network provider does not exist, " + ex.getMessage());
-        }
-        try {
-            mLocationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
-                    mLocationListeners[0]);
-        } catch (java.lang.SecurityException ex) {
-            Dlog.d("fail to request location update, ignore" + ex);
-        } catch (IllegalArgumentException ex) {
-            Dlog.d(ex.getMessage());
-        }
+        initializeLocationListeners();
+        linkLocationManagerAndListeners();
 
         mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
         int importance = NotificationManager.IMPORTANCE_HIGH;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationChannel mChannel = new NotificationChannel(
                     BaseApplication.CHANNEL_ID, BaseApplication.CHANNEL_NAME, importance);
-
             mNotificationManager.createNotificationChannel(mChannel);
         }
         mIsNotiCreate = false;
@@ -169,18 +153,46 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
         }
     }
 
-    ArrivalNotificationForeGroundService.LocationListener[] mLocationListeners = new ArrivalNotificationForeGroundService.LocationListener[] {
-            new ArrivalNotificationForeGroundService.LocationListener(LocationManager.GPS_PROVIDER),
-            new ArrivalNotificationForeGroundService.LocationListener(LocationManager.NETWORK_PROVIDER)
-    };
-
     private void initializeLocationManager() {
         if (mLocationManager == null) {
             mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         }
     }
 
+    private void initializeLocationListeners(){
+        if(mLocationListeners == null){
+            mLocationListeners = new ArrivalNotificationForeGroundService.LocationListener[] {
+                    new ArrivalNotificationForeGroundService.LocationListener(LocationManager.GPS_PROVIDER),
+                    new ArrivalNotificationForeGroundService.LocationListener(LocationManager.NETWORK_PROVIDER)
+            };;
+        }
+    }
+
+    private void linkLocationManagerAndListeners(){
+        try {
+            mLocationManager.requestLocationUpdates(
+                    LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
+                    mLocationListeners[1]);
+        } catch (java.lang.SecurityException ex) {
+            Dlog.i("fail to request location update, ignore" + ex);
+        } catch (IllegalArgumentException ex) {
+            Dlog.i("network provider does not exist, " + ex.getMessage());
+        }
+        try {
+            mLocationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
+                    mLocationListeners[0]);
+        } catch (java.lang.SecurityException ex) {
+            Dlog.d("fail to request location update, ignore" + ex);
+        } catch (IllegalArgumentException ex) {
+            Dlog.d(ex.getMessage());
+        }
+    }
+
+
     private boolean checkNearArrival(){
+        Toast.makeText(getApplicationContext(), mStationName, Toast.LENGTH_SHORT).show();
+        Dlog.i("Check This station near " + mStationName);
         Double dDistance = Math.sqrt(Math.pow((mDestStationLongitude - mBeforeStationLongitude), 2) + Math.pow((mDestStationLatitude - mBeforeStationLatitude), 2));
         if(Math.sqrt(Math.pow(mDestStationLongitude-myGPS.getLongitude(),2 ) + Math.pow(mDestStationLatitude-myGPS.getLatitude(),2 )) < dDistance / 2)
             return true;
@@ -219,11 +231,14 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
         mBeforeStationLongitude = Double.parseDouble(intent.getStringExtra(BaseApplication.BEFORE_LONG));
         mVehNm = intent.getStringExtra(BaseApplication.VEH_NM);
         mStationName = intent.getStringExtra(BaseApplication.DEST_STATION_NAME);
+
+        Dlog.i("Test Station Name : "+ mStationName + " VehID : "+ mVehNm);
     }
 
     private void startForeGroundService(Intent gettingIntent){
-        mServiceRuuning = true;
         mIsNotiCreate = false;
+
+        initializeLocationListeners();
 
         setDestLongAndLat(gettingIntent);
 
@@ -251,13 +266,14 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
         Notification notification = mBuilder.build();
 
         // Start foreground service.
-        startForeground(1, notification);
+         startForeground(1, notification);
     }
 
     private void stopForeGroundService(){
+        mLocationManager.removeUpdates(mLocationListeners[0]);
+        mLocationManager.removeUpdates(mLocationListeners[1]);
         stopForeground(true);
         stopSelf();
-        mServiceRuuning = false;
     }
 
     public Location getNowLocation(){
@@ -267,6 +283,19 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        if(mNotificationManager != null)
+            mNotificationManager = null;
+        if(mLocationListeners[0] != null)
+            mLocationListeners[0] = null;
+        if(mLocationListeners[0] != null)
+            mLocationListeners[1] = null;
+        if(mLocationManager != null)
+            mLocationManager = null;
+
+        if(mBuilder != null)
+            mBuilder = null;
+
         // TTS 객체가 남아있다면 실행을 중지하고 메모리에서 제거한다.
         if(tts != null){
             tts.stop();
@@ -294,10 +323,6 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
         if (status == TextToSpeech.SUCCESS) {
             tts.setLanguage(Locale.KOREAN);
         }
-    }
-
-    public boolean isServiceRuuning(){
-        return mServiceRuuning;
     }
 }
 
