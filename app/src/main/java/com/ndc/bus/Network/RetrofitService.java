@@ -13,6 +13,12 @@ public interface RetrofitService {
         final @Query(value = "serviceKey", encoded = true) String serviceKey,
         @Query("vehId") String vehId
     );
+
+    @GET("getBusPosByRtid")
+    Call<ArrivalServiceResult> getBusPosByRtid(
+            final @Query(value = "serviceKey", encoded = true) String serviceKey,
+            @Query("busRouteId") String busRouteId
+    );
     /*
     //File Should be sended Through MultiPart and POST
     @POST("/sendImage")

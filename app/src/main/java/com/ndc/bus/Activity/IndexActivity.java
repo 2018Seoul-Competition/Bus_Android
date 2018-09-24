@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Handler;
 
 import com.bumptech.glide.Glide;
+import com.ndc.bus.Common.BaseApplication;
 import com.ndc.bus.Database.BusDatabaseClient;
 import com.ndc.bus.R;
 import com.ndc.bus.databinding.ActivityIndexBinding;
@@ -28,6 +29,9 @@ public class IndexActivity extends BaseActivity{
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_index);
         binding.setActivity(this);
 
+        //ini 호출
+        BaseApplication.LAN_MODE = "KR";
+
         //DB 호출
         InitDatabaseTask initTask = new InitDatabaseTask();
         initTask.execute();
@@ -43,7 +47,7 @@ public class IndexActivity extends BaseActivity{
     }
 
     private void showStartAni(){
-        Glide.with(this).load(R.raw.index_logo).into(binding.logoIv);
+        Glide.with(this).load(R.raw.chu).into(binding.logoIv);
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -61,6 +65,7 @@ public class IndexActivity extends BaseActivity{
                 @Override
                 public void run() {
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    //Intent intent = new Intent(getApplicationContext(), MapActivity.class);
                     startActivity(intent);
                 }
             };
