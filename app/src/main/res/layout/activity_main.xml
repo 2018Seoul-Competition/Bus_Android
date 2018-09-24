@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable name="activity" type="com.ndc.bus.Activity.MainActivity"/>
     </data>
@@ -57,6 +57,14 @@
                 android:background="@drawable/main_history"
                 android:orientation="vertical">
 
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/log_rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="0dp"
+                    android:scrollbars="vertical"
+                    app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+
                 <ImageView
                     android:id="@+id/imageView2"
                     android:layout_width="100dp"
@@ -64,24 +72,6 @@
                     android:layout_centerInParent="true"
                     android:background="@drawable/main_historylogo" />
 
-                <ImageButton
-                    android:id="@+id/remove1Btn"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginEnd="18dp"
-                    android:layout_marginTop="7dp"
-                    android:background="@drawable/main_historyremove" />
-
-                <ImageButton
-                    android:id="@+id/remove2Btn"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:layout_alignStart="@+id/remove1Btn"
-                    android:layout_below="@+id/remove1Btn"
-                    android:layout_marginTop="14dp"
-                    android:background="@drawable/main_historyremove"/>
             </RelativeLayout>
         </RelativeLayout>
 
