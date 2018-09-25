@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 
 import com.ndc.bus.BR;
 import com.ndc.bus.Listener.LogRecyclerViewClickListener;
-
 import com.ndc.bus.databinding.LogRowBinding;
+
 import java.util.ArrayList;
 
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MyViewHolder> {
@@ -54,7 +54,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MyViewHolder> 
         }
 
         void bind(final String vehNm, final LogRecyclerViewClickListener listener) {
-            binding.setVariable(BR.station, vehNm);
+            binding.setVariable(BR.vehNm, vehNm);
             binding.vehNmTv.setText(vehNm);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
