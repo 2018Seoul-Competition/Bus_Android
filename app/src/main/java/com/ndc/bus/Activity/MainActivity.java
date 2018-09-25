@@ -100,13 +100,12 @@ public class MainActivity extends BaseActivity {
         SharedPreferences sf = getSharedPreferences(BaseApplication.VEH_LOG, 0);
         SharedPreferences.Editor editor = sf.edit();//저장하려면 editor가 필요
 
-        vehLogList.add(vehNm);
+        if(!(vehLogList.contains(vehNm))){
+            vehLogList.add(vehNm);
+        }
         String jsonStr = gson.toJson(vehLogList);
-
         editor.putString(BaseApplication.VEH_LOG, jsonStr); // 입력
         editor.apply(); // 파일에 최종 반영함
-
-        //SharedPreferences prefs = new Shar
     }
 
     public void gotoQrScanActivity(){
