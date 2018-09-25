@@ -132,7 +132,10 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
             if(checkNearArrival()){
                 if(!mIsNotiCreate){
                     makeNoti();
-                    speechBusInfo("목적지에 곧 도착합니다!!");
+                    if(mLanMode == "KR")
+                        speechBusInfo("목적지에 곧 도착합니다!!");
+                    else
+                        speechBusInfo("You will arrive at your destination soon.");
                     stopForeGroundService();
                 }
             }
@@ -218,12 +221,16 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
             mBuilder = new NotificationCompat.Builder(getApplicationContext(), BaseApplication.CHANNEL_ID);
 
             mBuilder.setContentTitle(BaseApplication.APP_NAME) // required
-                    .setContentText(mStationName + "에 거의 도착하였습니다!")  // required
                     .setDefaults(Notification.DEFAULT_ALL) // 알림, 사운드 진동 설정
                     .setAutoCancel(true) // 알림 터치시 반응 후 삭제
                     .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                     .setSmallIcon(android.R.drawable.btn_star)
                     .setContentIntent(pendingIntent);
+
+            if(mLanMode == "KR")
+                mBuilder.setContentText(mStationName + "에 거의 도착하였습니다!");
+            else
+                mBuilder.setContentText("Almost Arrive at" + mStationEnName);
 
             mNotificationManager.notify(BaseApplication.ARRIVAL_NOTI_ID, mBuilder.build());
             mIsNotiCreate = true;
@@ -235,7 +242,7 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
         mDestStationLatitude = Double.parseDouble(intent.getStringExtra(BaseApplication.DEST_LATI));
         mBeforeStationLatitude = Double.parseDouble(intent.getStringExtra(BaseApplication.BEFORE_LATI));
         mBeforeStationLongitude = Double.parseDouble(intent.getStringExtra(BaseApplication.BEFORE_LONG));
-        mLanMode = intent.getStringExtra(BaseApplication.LAN_MODE);
+        mLanMode = intent.getStringExtra(BaseApplication.LAN_INTENT);
         mVehNm = intent.getStringExtra(BaseApplication.VEH_NM);
         mStationName = intent.getStringExtra(BaseApplication.DEST_STATION_NAME);
 
@@ -251,6 +258,7 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
 
         Intent intent = new Intent(this, StationActivity.class);
         intent.putExtra(BaseApplication.VEH_NM, mVehNm);
+        intent.putExtra(BaseApplication.LAN_INTENT, mLanMode);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
         mBuilder = new NotificationCompat.Builder(getApplicationContext(), BaseApplication.CHANNEL_ID);
@@ -259,8 +267,12 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setPriority(Notification.PRIORITY_MAX)
                 .setContentTitle(BaseApplication.APP_NAME)
-                .setContentText(mVehNm + "번 버스 " + mStationName + "역 도착 알람 기능중입니다.")
                 .setContentIntent(pendingIntent);
+
+        if(mLanMode == "KR")
+            mBuilder.setContentText(mVehNm + "번 버스 " + mStationName + "역 도착 알람 기능중입니다.");
+        else
+            mBuilder.setContentText(mVehNm + " Bus Arrival Alarm function for " + mStationEnName);
 
         // Add Delete button intent in notification.
         Intent deleteIntent = new Intent(this, ArrivalNotificationForeGroundService.class);

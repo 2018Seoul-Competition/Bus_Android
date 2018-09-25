@@ -30,7 +30,7 @@ public class IndexActivity extends BaseActivity{
         binding.setActivity(this);
 
         //ini 호출
-        BaseApplication.LAN_MODE = "KR";
+        BaseApplication.LAN_MODE = "EN";
 
         //DB 호출
         InitDatabaseTask initTask = new InitDatabaseTask();

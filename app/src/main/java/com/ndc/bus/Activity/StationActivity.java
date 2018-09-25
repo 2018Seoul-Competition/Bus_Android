@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.databinding.DataBindingUtil;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -53,6 +54,7 @@ public class StationActivity extends BaseActivity {
     public void initSettings() {
         super.initSettings();
         mVehNm = getIntent().getStringExtra(BaseApplication.VEH_NM);
+        BaseApplication.LAN_MODE = getIntent().getStringExtra(BaseApplication.LAN_INTENT);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_station);
         binding.setActivity(this);
         binding.vehNumber.setText(mVehNm);
@@ -111,7 +113,7 @@ public class StationActivity extends BaseActivity {
             intent.putExtra(BaseApplication.DEST_LATI, mDestStation.getPosY());
             intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
             intent.putExtra(BaseApplication.BEFORE_LATI, mBeforeDestStation.getPosY());
-            intent.putExtra(BaseApplication.LAN_MODE, BaseApplication.LAN_MODE);
+            intent.putExtra(BaseApplication.LAN_INTENT, BaseApplication.LAN_MODE);
             startService(intent);
             bindService(intent, mConn, Context.BIND_AUTO_CREATE);
         }
@@ -139,7 +141,7 @@ public class StationActivity extends BaseActivity {
                                 intent.putExtra(BaseApplication.DEST_LATI, mDestStation.getPosY());
                                 intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
                                 intent.putExtra(BaseApplication.BEFORE_LATI, mBeforeDestStation.getPosY());
-                                intent.putExtra(BaseApplication.LAN_MODE, BaseApplication.LAN_MODE);
+                                intent.putExtra(BaseApplication.LAN_INTENT, BaseApplication.LAN_MODE);
                                 startService(intent);
                                 bindService(intent, mConn, Context.BIND_AUTO_CREATE);
                             }
@@ -166,7 +168,7 @@ public class StationActivity extends BaseActivity {
                                 intent.putExtra(BaseApplication.DEST_LATI, mDestStation.getPosY());
                                 intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
                                 intent.putExtra(BaseApplication.BEFORE_LATI, mBeforeDestStation.getPosY());
-                                intent.putExtra(BaseApplication.LAN_MODE, BaseApplication.LAN_MODE);
+                                intent.putExtra(BaseApplication.LAN_INTENT, BaseApplication.LAN_MODE);
                                 startService(intent);
                                 bindService(intent, mConn, Context.BIND_AUTO_CREATE);
                             }
@@ -177,18 +179,14 @@ public class StationActivity extends BaseActivity {
         }
     }
 
-<<<<<<< HEAD
-
-    // have to make Service first, before using this method
+/*    // have to make Service first, before using this method
     private Location getNowGPSFromService(){
         if(isServiceRunning())
             return myService.getNowLocation();
         else
             return null;
-    }
+    }*/
 
-=======
->>>>>>> e6481529e819dcee6a793c09b5065485305bd005
     private boolean isServiceRunning(){
         ActivityManager manager = (ActivityManager) this.getSystemService(Activity.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -228,9 +226,14 @@ public class StationActivity extends BaseActivity {
         @Override
         protected void onPostExecute(final List<Station> stationList) {
             super.onPostExecute(stationList);
-            binding.startStation.setText(stationList.get(0).getStNm());
-            binding.endStation.setText(stationList.get(stationList.size()-1).getStNm());
-
+            if(BaseApplication.LAN_MODE == "KR") {
+                binding.startStation.setText(stationList.get(0).getStNm());
+                binding.endStation.setText(stationList.get(stationList.size()-1).getStNm());
+            }
+            else{
+                binding.startStation.setText(stationList.get(0).getStEngNm());
+                binding.endStation.setText(stationList.get(stationList.size()-1).getStEngNm());
+            }
 
             StationAdapter stationAdapter = new StationAdapter(stationList, new StationRecyclerViewClickListener() {
                 @Override
