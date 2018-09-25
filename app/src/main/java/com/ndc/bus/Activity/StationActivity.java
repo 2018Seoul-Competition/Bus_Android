@@ -24,9 +24,12 @@ import com.ndc.bus.Route.Route;
 import com.ndc.bus.Service.ArrivalNotificationForeGroundService;
 import com.ndc.bus.Service.ArrivalNotificationForeGroundService.MyBinder;
 import com.ndc.bus.Station.Station;
+import com.ndc.bus.Station.StationModel;
+import com.ndc.bus.Station.StationStatus;
 import com.ndc.bus.Utils.Dlog;
 import com.ndc.bus.databinding.ActivityStationBinding;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -52,14 +55,11 @@ public class StationActivity extends BaseActivity {
     @Override
     public void initSettings() {
         super.initSettings();
-        mVehNm = getIntent().getStringExtra(BaseApplication.VEH_NM);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_station);
         binding.setActivity(this);
-        binding.vehNumber.setText(mVehNm);
-        makeBackColorByBusNumber(mVehNm);
 
-        SelectDatabaseTask selectTask = new SelectDatabaseTask();
-        selectTask.execute(mVehNm);
+        mVehNm = getIntent().getStringExtra(BaseApplication.VEH_NM);
+        initView();
 
         mConn = new ServiceConnection() {
             @Override
@@ -83,6 +83,15 @@ public class StationActivity extends BaseActivity {
                     ArrivalNotificationForeGroundService.class);
             bindService(intent, mConn, Context.BIND_AUTO_CREATE);
         }
+
+    }
+
+    private void initView(){
+        binding.vehNumber.setText(mVehNm);
+        makeBackColorByBusNumber(mVehNm);
+
+        SelectDatabaseTask selectTask = new SelectDatabaseTask();
+        selectTask.execute(mVehNm);
 
     }
 
@@ -216,16 +225,18 @@ public class StationActivity extends BaseActivity {
         @Override
         protected void onPostExecute(final List<Station> stationList) {
             super.onPostExecute(stationList);
-            binding.startStation.setText(stationList.get(0).getStNm());
-            binding.endStation.setText(stationList.get(stationList.size()-1).getStNm());
+            final ArrayList<StationModel> stationModelList = createStationModelItems(stationList);
 
+            binding.startStation.setText(stationModelList.get(0).getStation().getStNm());
+            binding.endStation.setText(stationModelList.get(stationModelList.size()-1).getStation().getStNm());
 
-            StationAdapter stationAdapter = new StationAdapter(stationList, new StationRecyclerViewClickListener() {
+            StationAdapter stationAdapter = new StationAdapter(stationModelList, new StationRecyclerViewClickListener() {
                 @Override
-                public void onItemClick(Station station) {
-                    int iDest = stationList.indexOf(station);
+                public void onItemClick(StationModel stationModel) {
+                    int iDest = stationModelList.indexOf(stationModel);
+                    Station station = stationModelList.get(iDest).getStation();
                     if(iDest != 0){
-                        Station beforeStation = stationList.get(iDest-1);
+                        Station beforeStation = stationModelList.get(iDest-1).getStation();
                         setDestStation(beforeStation, station);
                     }
                 }
@@ -239,6 +250,16 @@ public class StationActivity extends BaseActivity {
             String serviceKey = baseApplication.getKey();
             RetrofitClient.getInstance().getService().getBusPosByRtid(serviceKey, route.getRouteId());
             //myService.getNowLocation();
+        }
+
+        private ArrayList<StationModel> createStationModelItems(List<Station> stationList){
+            ArrayList<StationModel> stationModelList = new ArrayList<>();
+
+            for(int i = 0; i < stationList.size(); i++){
+                StationModel stationModel = new StationModel(stationList.get(i), StationStatus.ACTIVE, "5분전");
+                stationModelList.add(stationModel);
+            }
+            return stationModelList;
         }
 
     }
