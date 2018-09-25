@@ -39,6 +39,8 @@ public class BaseApplication extends Application implements HasActivityInjector{
     public static String DEST_STATION_NAME = "DEST_STATION_NAME";
     public static String DEST_STATION_ENNAME = "DEST_STATION_ENNAME";
 
+    public static String VEH_LOG = "VEH_LOG";
+
     @Override
     public void onCreate() {
         super.onCreate();
