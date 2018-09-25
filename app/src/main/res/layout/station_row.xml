@@ -1,40 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout>
     <data>
         <variable
-            name="station"
-            type="com.ndc.bus.Station.Station"/>
+            name="stationModel"
+            type="com.ndc.bus.Station.StationModel"/>
     </data>
 
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp">
 
-        <TextView
-            android:id="@+id/stId_tv"
+        <com.github.vipulasri.timelineview.TimelineView
+            android:id="@+id/station_marker"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:line="@color/colorPrimary"
+            app:lineSize="3dp"
+            app:markerSize="20dp" />
+
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:text="@{station.stId}"
-            android:textSize="15sp" />
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/border"
+            app:cardElevation="1dp"
+            app:contentPadding="15dp">
 
-        <TextView
-            android:id="@+id/stNm_tv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:textSize="20sp"
-            android:text="@{station.stNm}"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical">
 
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/station_name_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    tools:text="24 JAN" />
 
-        <TextView
-            android:id="@+id/stEngNm_tv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:textSize="20sp"
-            android:text="@{station.stEngNm}"/>
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/station_date_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@android:color/black"
+                    tools:text="Order Successfully Completed" />
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
 
     </LinearLayout>
 </layout>
