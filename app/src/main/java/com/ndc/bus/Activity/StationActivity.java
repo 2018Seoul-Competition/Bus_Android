@@ -121,10 +121,8 @@ public class StationActivity extends BaseActivity {
                     ArrivalNotificationForeGroundService.class);
             intent.setAction(ArrivalNotificationForeGroundService.ACTION_START_SERVICE);
             intent.putExtra(BaseApplication.VEH_NM, mVehNm);
-            if (BaseApplication.LAN_MODE.compareTo("KR") == 0)
-                intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
-            else
-                intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStEngNm());
+            intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
+            intent.putExtra(BaseApplication.DEST_STATION_ENNAME, mDestStation.getStEngNm());
             intent.putExtra(BaseApplication.DEST_LONG, mDestStation.getPosX());
             intent.putExtra(BaseApplication.DEST_LATI, mDestStation.getPosY());
             intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
@@ -152,6 +150,7 @@ public class StationActivity extends BaseActivity {
                                 intent.setAction(ArrivalNotificationForeGroundService.ACTION_START_SERVICE);
                                 intent.putExtra(BaseApplication.VEH_NM, mVehNm);
                                 intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
+                                intent.putExtra(BaseApplication.DEST_STATION_ENNAME, mDestStation.getStEngNm());
                                 intent.putExtra(BaseApplication.DEST_LONG, mDestStation.getPosX());
                                 intent.putExtra(BaseApplication.DEST_LATI, mDestStation.getPosY());
                                 intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
@@ -178,6 +177,7 @@ public class StationActivity extends BaseActivity {
                                 intent.setAction(ArrivalNotificationForeGroundService.ACTION_START_SERVICE);
                                 intent.putExtra(BaseApplication.VEH_NM, mVehNm);
                                 intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
+                                intent.putExtra(BaseApplication.DEST_STATION_ENNAME, mDestStation.getStEngNm());
                                 intent.putExtra(BaseApplication.DEST_LONG, mDestStation.getPosX());
                                 intent.putExtra(BaseApplication.DEST_LATI, mDestStation.getPosY());
                                 intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
