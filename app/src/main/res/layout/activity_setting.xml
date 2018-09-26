@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable name="activity" type="com.ndc.bus.Activity.SettingActivity"/>
@@ -9,17 +10,128 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/index_background"
+        android:background="@drawable/notify_bg"
         tools:showIn="@layout/activity_main"
         tools:context="com.ndc.bus.Activity.SettingActivity">
 
+        <ImageView
+            android:id="@+id/settingHeader_iv"
+            android:layout_width="378dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginLeft="3dp"
+            android:background="@drawable/notify_icon" />
 
-        <ListView
-            android:id="@+id/SettingList"
+        <ImageView
+            android:id="@+id/settingNotify_iv"
+            android:layout_width="130dp"
+            android:layout_height="45dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginTop="50dp"
+            android:layout_below="@+id/settingHeader_iv"
+            android:src="@drawable/setting_notify" />
+
+
+        <ImageButton
+            android:id="@+id/settingIconBtn"
+            android:layout_width="110dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginTop="30dp"
+            android:layout_below="@+id/settingNotify_iv"
+            android:background="@drawable/setting_notify2" />
+
+        <ImageView
+            android:id="@+id/settingIcon_iv"
+            android:layout_width="130dp"
+            android:layout_height="45dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginTop="100dp"
+            android:layout_below="@+id/settingNotify_iv"
+            android:src="@drawable/setting_icon" />
+
+        <ImageButton
+            android:id="@+id/settingAlertBtn"
+            android:layout_width="110dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginTop="30dp"
+            android:layout_below="@+id/settingIcon_iv"
+            android:background="@drawable/setting_alert" />
+
+        <ImageButton
+            android:id="@+id/settingLanguageBtn"
+            android:layout_width="110dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginTop="90dp"
+            android:layout_below="@+id/settingIcon_iv"
+            android:background="@drawable/setting_language" />
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="312dp"
+            android:layout_height="35dp"
+            android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true" />
+            android:orientation="vertical">
 
+            <ImageView
+                android:id="@+id/settingLicence_iv"
+                android:layout_width="350dp"
+                android:layout_height="15dp"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/setting_licence" />
+
+            <ImageView
+                android:id="@+id/settingVersion_iv"
+                android:layout_width="120dp"
+                android:layout_height="10dp"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/setting_version" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="140dp"
+            android:layout_height="60dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@+id/settingAlertBtn"
+            android:layout_marginRight="30dp"
+            android:background="@drawable/setting_bg2"
+            android:orientation="vertical">
+
+            <Switch
+                android:id="@+id/switch1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text="알림 ON/OFF " />
+
+            <Switch
+                android:id="@+id/switch3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/switch1"
+                android:layout_gravity="right"
+                android:text="도착시간 " />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="140dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="5dp"
+            android:layout_alignTop="@+id/settingLanguageBtn"
+            android:background="@drawable/setting_bg2"
+            android:orientation="vertical">
+
+            <Switch
+                android:id="@+id/switch2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="right"
+                android:text="언어/language " />
+        </LinearLayout>
     </RelativeLayout>
 </layout>

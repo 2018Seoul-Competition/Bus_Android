@@ -6,8 +6,17 @@ import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -24,7 +33,6 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-
 public class MainActivity extends BaseActivity {
 
     @Inject
@@ -35,7 +43,6 @@ public class MainActivity extends BaseActivity {
     private final long FINSH_INTERVAL_TIME = 2000;
     private long backPressedTime = 0;
     private ArrayList<String> vehLogList;
-
 
     @Override
     public void initSettings(){
