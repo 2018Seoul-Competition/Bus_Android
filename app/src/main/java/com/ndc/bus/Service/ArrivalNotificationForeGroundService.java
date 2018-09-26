@@ -1,12 +1,15 @@
 package com.ndc.bus.Service;
 
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
@@ -15,6 +18,7 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
@@ -339,6 +343,48 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
             tts.setLanguage(Locale.KOREAN);
+        }
+    }
+
+    public void checkGPSService() {
+        boolean isGPSEnabled = false;
+        try {
+            isGPSEnabled = mLocationManager
+                    .isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch (Exception ex) {}
+        if (isGPSEnabled) {
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(
+                    "Your GPS module is disabled. Would you like to enable it ?")
+                    .setCancelable(false)
+                    .setPositiveButton("Yes",
+                            new DialogInterface.OnClickListener() {
+
+                                public void onClick(DialogInterface dialog,
+                                                    int id) {
+                                    // Sent user to GPS settings screen
+                                    final ComponentName toLaunch = new ComponentName(
+                                            "com.android.settings",
+                                            "com.android.settings.SecuritySettings");
+                                    final Intent intent = new Intent(
+                                            Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                    intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                                    intent.setComponent(toLaunch);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(intent);
+                                    dialog.dismiss();
+                                }
+                            })
+                    .setNegativeButton("No",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int id) {
+                                    dialog.cancel();
+                                }
+                            });
+            AlertDialog alert = builder.create();
+            alert.show();
         }
     }
 }

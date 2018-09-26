@@ -31,9 +31,6 @@ public class IndexActivity extends BaseActivity{
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_index);
         binding.setActivity(this);
 
-        //ini 호출
-        BaseApplication.LAN_MODE = "EN";
-
         //DB 호출
         InitDatabaseTask initTask = new InitDatabaseTask();
         initTask.execute();
