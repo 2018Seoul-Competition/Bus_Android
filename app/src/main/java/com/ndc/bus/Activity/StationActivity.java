@@ -9,7 +9,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.databinding.DataBindingUtil;
-import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -234,7 +233,7 @@ public class StationActivity extends BaseActivity {
         }
 
         @Override
-        protected void onPostExecute(final List<Station> stationList) {
+        protected void onPostExecute(List<Station> stationList) {
             super.onPostExecute(stationList);
             final ArrayList<StationModel> stationModelList = createStationModelItems(stationList);
 

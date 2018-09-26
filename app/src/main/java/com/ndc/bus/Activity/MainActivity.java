@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.ndc.bus.Adapter.MainAdapter;
 import com.ndc.bus.Common.BaseApplication;
 import com.ndc.bus.Database.BusDatabaseClient;
@@ -56,7 +57,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void settingVehLogs(){
-        vehLogList = getIntent().getStringArrayListExtra(BaseApplication.VEH_LOG);
+        retrieveLogs();
         MainAdapter mainAdapter = new MainAdapter(vehLogList, new LogRecyclerViewClickListener() {
             @Override
             public void onItemClick(String vehNm) {
@@ -65,6 +66,22 @@ public class MainActivity extends BaseActivity {
         });
         binding.logRv.setAdapter(mainAdapter);
     }
+
+    private void retrieveLogs() {
+        // 검색 => 어레이리스트에 추가 => 종료 => Shared Preferences에 ArrayList를 Json으로 변환하여 저장
+        // Json 형태를 불러와서 ArrayList로 변환 => 메인 화면에서 추가
+
+        SharedPreferences prefs = getSharedPreferences(BaseApplication.VEH_LOG, 0);
+        String jsonStr = prefs.getString(BaseApplication.VEH_LOG, ""); // 키값으로 꺼냄
+        if(!jsonStr.equals("")){
+            Gson gson = new Gson();
+            TypeToken<ArrayList<String>> token = new TypeToken<ArrayList<String>>() {};
+            vehLogList = gson.fromJson(jsonStr, token.getType());
+        }else{
+            vehLogList = new ArrayList<>(10);
+        }
+    }
+
 
     private void retrieveBusInfo(String vehNm, boolean sFlag){
         try {
