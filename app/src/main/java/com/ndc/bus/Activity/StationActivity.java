@@ -9,9 +9,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.databinding.DataBindingUtil;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.widget.RelativeLayout;
 
 import com.ndc.bus.Adapter.StationAdapter;
@@ -119,10 +121,8 @@ public class StationActivity extends BaseActivity {
                     ArrivalNotificationForeGroundService.class);
             intent.setAction(ArrivalNotificationForeGroundService.ACTION_START_SERVICE);
             intent.putExtra(BaseApplication.VEH_NM, mVehNm);
-            if (BaseApplication.LAN_MODE.compareTo("KR") == 0)
-                intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
-            else
-                intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStEngNm());
+            intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
+            intent.putExtra(BaseApplication.DEST_STATION_ENNAME, mDestStation.getStEngNm());
             intent.putExtra(BaseApplication.DEST_LONG, mDestStation.getPosX());
             intent.putExtra(BaseApplication.DEST_LATI, mDestStation.getPosY());
             intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
@@ -150,6 +150,7 @@ public class StationActivity extends BaseActivity {
                                 intent.setAction(ArrivalNotificationForeGroundService.ACTION_START_SERVICE);
                                 intent.putExtra(BaseApplication.VEH_NM, mVehNm);
                                 intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
+                                intent.putExtra(BaseApplication.DEST_STATION_ENNAME, mDestStation.getStEngNm());
                                 intent.putExtra(BaseApplication.DEST_LONG, mDestStation.getPosX());
                                 intent.putExtra(BaseApplication.DEST_LATI, mDestStation.getPosY());
                                 intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
@@ -176,6 +177,7 @@ public class StationActivity extends BaseActivity {
                                 intent.setAction(ArrivalNotificationForeGroundService.ACTION_START_SERVICE);
                                 intent.putExtra(BaseApplication.VEH_NM, mVehNm);
                                 intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
+                                intent.putExtra(BaseApplication.DEST_STATION_ENNAME, mDestStation.getStEngNm());
                                 intent.putExtra(BaseApplication.DEST_LONG, mDestStation.getPosX());
                                 intent.putExtra(BaseApplication.DEST_LATI, mDestStation.getPosY());
                                 intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
@@ -360,4 +362,5 @@ public class StationActivity extends BaseActivity {
             return false;
         }
     }
+
 }

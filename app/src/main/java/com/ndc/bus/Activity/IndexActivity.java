@@ -2,6 +2,7 @@ package com.ndc.bus.Activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -30,9 +31,6 @@ public class IndexActivity extends BaseActivity{
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_index);
         binding.setActivity(this);
 
-        //ini 호출
-        BaseApplication.LAN_MODE = "EN";
-
         //DB 호출
         InitDatabaseTask initTask = new InitDatabaseTask();
         initTask.execute();
@@ -40,6 +38,16 @@ public class IndexActivity extends BaseActivity{
 
         //처음 화면 보여주기
         showStartAni();
+    }
+
+    private void retrieveSettings(){
+        SharedPreferences prefs = getSharedPreferences(BaseApplication.LAN_INTENT, 0);
+        String strLan = prefs.getString(BaseApplication.LAN_INTENT, "");
+        if(strLan != ""){
+            BaseApplication.LAN_INTENT = strLan;
+        }
+        else
+            BaseApplication.LAN_MODE = "KR";
     }
 
     @Override

@@ -1,12 +1,15 @@
 package com.ndc.bus.Service;
 
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
@@ -15,6 +18,7 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
@@ -91,6 +95,8 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
         }
         mIsNotiCreate = false;
 
+        mOnGPSClick();
+
         this.tts = new TextToSpeech(this, this);
 
         super.onCreate();
@@ -132,10 +138,6 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
             if(checkNearArrival()){
                 if(!mIsNotiCreate){
                     makeNoti();
-                    if(mLanMode.compareTo("KR") == 0)
-                        speechBusInfo("목적지에 곧 도착합니다!!");
-                    else
-                        speechBusInfo("You will arrive at your destination soon.");
                     stopForeGroundService();
                 }
             }
@@ -200,8 +202,6 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
 
 
     private boolean checkNearArrival(){
-        Toast.makeText(getApplicationContext(), mStationName, Toast.LENGTH_SHORT).show();
-        Dlog.i("Check This station near " + mStationName);
         Double dDistance = Math.sqrt(Math.pow((mDestStationLongitude - mBeforeStationLongitude), 2) + Math.pow((mDestStationLatitude - mBeforeStationLatitude), 2));
         if(Math.sqrt(Math.pow(mDestStationLongitude-myGPS.getLongitude(),2 ) + Math.pow(mDestStationLatitude-myGPS.getLatitude(),2 )) < dDistance / 2)
             return true;
@@ -227,10 +227,14 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
                     .setSmallIcon(android.R.drawable.btn_star)
                     .setContentIntent(pendingIntent);
 
-            if(mLanMode.compareTo("KR") == 0)
+            if(mLanMode.compareTo("KR") == 0){
                 mBuilder.setContentText(mStationName + "에 거의 도착하였습니다!");
-            else
+                speechBusInfo("목적지에 곧 도착합니다!!");
+            }
+            else{
                 mBuilder.setContentText("Almost Arrive at" + mStationEnName);
+                speechBusInfo("You will arrive at your destination soon.");
+            }
 
             mNotificationManager.notify(BaseApplication.ARRIVAL_NOTI_ID, mBuilder.build());
             mIsNotiCreate = true;
@@ -245,6 +249,7 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
         mLanMode = intent.getStringExtra(BaseApplication.LAN_INTENT);
         mVehNm = intent.getStringExtra(BaseApplication.VEH_NM);
         mStationName = intent.getStringExtra(BaseApplication.DEST_STATION_NAME);
+        mStationName = intent.getStringExtra(BaseApplication.DEST_STATION_ENNAME);
 
         Dlog.i("Test Station Name : "+ mStationName + " VehID : "+ mVehNm);
     }
@@ -341,6 +346,20 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
             tts.setLanguage(Locale.KOREAN);
+        }
+    }
+
+    public void mOnGPSClick(){
+        //GPS가 켜져있는지 체크
+        if(!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            if(mLanMode.compareTo("KR") == 0)
+                Toast.makeText(getApplicationContext(), "앱을 동작시키기 위해서는 GPS 기능을 켜야합니다", Toast.LENGTH_SHORT);
+            else
+                Toast.makeText(getApplicationContext(), "You have to turn on GPS for app", Toast.LENGTH_SHORT);
+            //GPS 설정화면으로 이동
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            startActivity(intent);
         }
     }
 }
