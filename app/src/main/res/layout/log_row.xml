@@ -33,7 +33,8 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="3dp"
                 android:layout_toRightOf="@id/logIcon"
-                android:textSize="15sp" />
+                android:fontFamily="@font/nanumbarunpenr"
+                android:textSize="15.5sp" />
         </RelativeLayout>
 
         <LinearLayout

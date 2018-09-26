@@ -20,8 +20,9 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_width="30dp"
+                android:layout_marginLeft="7dp"
                 android:src="@drawable/bus_icon">
 
 
@@ -59,7 +60,8 @@
                     android:id="@+id/station_name_tv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="12sp"
+                    android:fontFamily="@font/nanumbarunpenr"
+                    android:textSize="13sp"
                     tools:text="24 JAN" />
 
                 <android.support.v7.widget.AppCompatTextView
@@ -67,7 +69,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:fontFamily="@font/nanumbarunpenr"
                     android:textColor="@android:color/black"
+                    android:textSize="15sp"
                     tools:text="Order Successfully Completed" />
 
             </LinearLayout>
