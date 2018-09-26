@@ -132,7 +132,7 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
             if(checkNearArrival()){
                 if(!mIsNotiCreate){
                     makeNoti();
-                    if(mLanMode == "KR")
+                    if(mLanMode.compareTo("KR") == 0)
                         speechBusInfo("목적지에 곧 도착합니다!!");
                     else
                         speechBusInfo("You will arrive at your destination soon.");
@@ -227,7 +227,7 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
                     .setSmallIcon(android.R.drawable.btn_star)
                     .setContentIntent(pendingIntent);
 
-            if(mLanMode == "KR")
+            if(mLanMode.compareTo("KR") == 0)
                 mBuilder.setContentText(mStationName + "에 거의 도착하였습니다!");
             else
                 mBuilder.setContentText("Almost Arrive at" + mStationEnName);
@@ -269,7 +269,7 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
                 .setContentTitle(BaseApplication.APP_NAME)
                 .setContentIntent(pendingIntent);
 
-        if(mLanMode == "KR")
+        if(mLanMode.compareTo("KR") == 0)
             mBuilder.setContentText(mVehNm + "번 버스 " + mStationName + "역 도착 알람 기능중입니다.");
         else
             mBuilder.setContentText(mVehNm + " Bus Arrival Alarm function for " + mStationEnName);
