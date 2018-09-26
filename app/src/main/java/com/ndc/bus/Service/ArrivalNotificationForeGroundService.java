@@ -1,12 +1,15 @@
 package com.ndc.bus.Service;
 
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
@@ -15,6 +18,7 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
@@ -77,6 +81,11 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
         super.onCreate();
         Dlog.i("Service onCreate");
 
+        if(BaseApplication.LAN_MODE.compareTo("KR") == 0)
+            Toast.makeText(getApplicationContext(), "알람 서비스를 위해서는 GPS 기능을 켜야합니다", Toast.LENGTH_LONG).show();
+        else
+            Toast.makeText(getApplicationContext(), "You have to turn on GPS for Alarm Service", Toast.LENGTH_LONG).show();
+
         //when service start, create locationManager for getting gps data
         initializeLocationManager();
         initializeLocationListeners();
@@ -90,6 +99,8 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
             mNotificationManager.createNotificationChannel(mChannel);
         }
         mIsNotiCreate = false;
+
+        mOnGPSClick();
 
         this.tts = new TextToSpeech(this, this);
 
@@ -129,13 +140,9 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
             mLastLocation.set(location);
             myGPS = mLastLocation;
 
-            if(checkNearArrival()){
+            if(checkArrivalOfBeforeStation()){
                 if(!mIsNotiCreate){
                     makeNoti();
-                    if(mLanMode.compareTo("KR") == 0)
-                        speechBusInfo("목적지에 곧 도착합니다!!");
-                    else
-                        speechBusInfo("You will arrive at your destination soon.");
                     stopForeGroundService();
                 }
             }
@@ -199,14 +206,46 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
     }
 
 
-    private boolean checkNearArrival(){
-        Toast.makeText(getApplicationContext(), mStationName, Toast.LENGTH_SHORT).show();
-        Dlog.i("Check This station near " + mStationName);
-        Double dDistance = Math.sqrt(Math.pow((mDestStationLongitude - mBeforeStationLongitude), 2) + Math.pow((mDestStationLatitude - mBeforeStationLatitude), 2));
-        if(Math.sqrt(Math.pow(mDestStationLongitude-myGPS.getLongitude(),2 ) + Math.pow(mDestStationLatitude-myGPS.getLatitude(),2 )) < dDistance / 2)
+    private boolean checkArrivalOfDest(){
+        if(distance(mDestStationLatitude, mDestStationLongitude, myGPS.getLatitude(), myGPS.getLongitude(), "meter") < 50)
             return true;
         else
             return false;
+    }
+
+    private boolean checkArrivalOfBeforeStation(){
+        if(distance(mBeforeStationLatitude, mBeforeStationLongitude, myGPS.getLatitude(), myGPS.getLongitude(), "meter") < 50)
+            return true;
+        else
+            return false;
+    }
+
+
+    private static double distance(double lat1, double lon1, double lat2, double lon2, String unit) {
+
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515;
+
+        if (unit == "kilometer") {
+            dist = dist * 1.609344;
+        } else if(unit == "meter"){
+            dist = dist * 1609.344;
+        }
+
+        return (dist);
+    }
+
+    private static double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    // This function converts radians to decimal degrees
+    private static double rad2deg(double rad) {
+        return (rad * 180 / Math.PI);
     }
 
     private void makeNoti(){
@@ -227,10 +266,14 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
                     .setSmallIcon(android.R.drawable.btn_star)
                     .setContentIntent(pendingIntent);
 
-            if(mLanMode.compareTo("KR") == 0)
+            if(mLanMode.compareTo("KR") == 0){
                 mBuilder.setContentText(mStationName + "에 거의 도착하였습니다!");
-            else
+                speechBusInfo("목적지에 곧 도착합니다!!");
+            }
+            else{
                 mBuilder.setContentText("Almost Arrive at" + mStationEnName);
+                speechBusInfo("You will arrive at your destination soon.");
+            }
 
             mNotificationManager.notify(BaseApplication.ARRIVAL_NOTI_ID, mBuilder.build());
             mIsNotiCreate = true;
@@ -245,6 +288,7 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
         mLanMode = intent.getStringExtra(BaseApplication.LAN_INTENT);
         mVehNm = intent.getStringExtra(BaseApplication.VEH_NM);
         mStationName = intent.getStringExtra(BaseApplication.DEST_STATION_NAME);
+        mStationEnName = intent.getStringExtra(BaseApplication.DEST_STATION_ENNAME);
 
         Dlog.i("Test Station Name : "+ mStationName + " VehID : "+ mVehNm);
     }
@@ -341,6 +385,16 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
             tts.setLanguage(Locale.KOREAN);
+        }
+    }
+
+    public void mOnGPSClick(){
+        //GPS가 켜져있는지 체크
+        if(!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            //GPS 설정화면으로 이동
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            startActivity(intent);
         }
     }
 }

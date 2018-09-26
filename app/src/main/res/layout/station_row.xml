@@ -16,7 +16,6 @@
         android:layout_marginRight="10dp">
 
         <FrameLayout
-            android:id="@+id/station_fl"
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
 
@@ -61,7 +60,8 @@
                     android:id="@+id/station_name_tv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="12sp"
+                    android:fontFamily="@font/nanumbarunpenr"
+                    android:textSize="13sp"
                     tools:text="24 JAN" />
 
                 <android.support.v7.widget.AppCompatTextView
@@ -69,6 +69,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:fontFamily="@font/nanumbarunpenr"
                     android:textColor="@android:color/black"
                     tools:text="Order Successfully Completed" />
 

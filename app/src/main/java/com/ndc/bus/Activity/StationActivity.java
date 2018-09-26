@@ -9,11 +9,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.databinding.DataBindingUtil;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.view.View;
+import android.provider.Settings;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.ndc.bus.Adapter.StationAdapter;
 import com.ndc.bus.Arrival.ArrivalItemList;
@@ -120,10 +122,8 @@ public class StationActivity extends BaseActivity {
                     ArrivalNotificationForeGroundService.class);
             intent.setAction(ArrivalNotificationForeGroundService.ACTION_START_SERVICE);
             intent.putExtra(BaseApplication.VEH_NM, mVehNm);
-            if (BaseApplication.LAN_MODE.compareTo("KR") == 0)
-                intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
-            else
-                intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStEngNm());
+            intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
+            intent.putExtra(BaseApplication.DEST_STATION_ENNAME, mDestStation.getStEngNm());
             intent.putExtra(BaseApplication.DEST_LONG, mDestStation.getPosX());
             intent.putExtra(BaseApplication.DEST_LATI, mDestStation.getPosY());
             intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
@@ -151,6 +151,7 @@ public class StationActivity extends BaseActivity {
                                 intent.setAction(ArrivalNotificationForeGroundService.ACTION_START_SERVICE);
                                 intent.putExtra(BaseApplication.VEH_NM, mVehNm);
                                 intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
+                                intent.putExtra(BaseApplication.DEST_STATION_ENNAME, mDestStation.getStEngNm());
                                 intent.putExtra(BaseApplication.DEST_LONG, mDestStation.getPosX());
                                 intent.putExtra(BaseApplication.DEST_LATI, mDestStation.getPosY());
                                 intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
@@ -177,6 +178,7 @@ public class StationActivity extends BaseActivity {
                                 intent.setAction(ArrivalNotificationForeGroundService.ACTION_START_SERVICE);
                                 intent.putExtra(BaseApplication.VEH_NM, mVehNm);
                                 intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
+                                intent.putExtra(BaseApplication.DEST_STATION_ENNAME, mDestStation.getStEngNm());
                                 intent.putExtra(BaseApplication.DEST_LONG, mDestStation.getPosX());
                                 intent.putExtra(BaseApplication.DEST_LATI, mDestStation.getPosY());
                                 intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
@@ -242,8 +244,6 @@ public class StationActivity extends BaseActivity {
             super.onPostExecute(stationList);
             final ArrayList<StationModel> stationModelList = createStationModelItems(stationList);
 
-            binding.startStation.setText(stationModelList.get(0).getStation().getStNm());
-            binding.endStation.setText(stationModelList.get(stationModelList.size() - 1).getStation().getStNm());
             if (BaseApplication.LAN_MODE.compareTo("KR") == 0) {
                 binding.startStation.setText(stationList.get(0).getStNm());
                 binding.endStation.setText(stationList.get(stationList.size() - 1).getStNm());
@@ -263,9 +263,6 @@ public class StationActivity extends BaseActivity {
                     }
                 }
             });
-
-
-
             binding.stationRv.setAdapter(stationAdapter);
             retrieveBusPosByRouteId();
         }
@@ -281,6 +278,8 @@ public class StationActivity extends BaseActivity {
                     if (response.isSuccessful()) {
                         List<ArrivalItemList> arrivalItemLists = response.body().getArrivalMsgBody().getArrivalItemList();
                         for(int i = 0; i < arrivalItemLists.size(); i++){
+                            //arrivalItemLists.get(i);
+
 
                         }
 
@@ -362,4 +361,5 @@ public class StationActivity extends BaseActivity {
             return false;
         }
     }
+
 }

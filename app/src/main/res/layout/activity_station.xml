@@ -22,6 +22,23 @@
             android:background="@drawable/station_background_1"
             android:orientation="vertical">
 
+            <RelativeLayout
+                android:layout_width="47dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="40dp"
+                android:orientation="vertical"
+                android:background="@drawable/main_setting">
+
+                <ImageButton
+                    android:id="@+id/stationBackBtn"
+                    android:layout_width="18dp"
+                    android:layout_height="21dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/setting_back" />
+
+            </RelativeLayout>
+
            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
@@ -36,33 +53,43 @@
                    android:layout_alignParentTop="true"
                    android:layout_centerHorizontal="true"
                    android:layout_marginTop="20dp"
-                   android:text="서울 BLUE 버스" />
+                   android:fontFamily="@font/nanumbarunpenr"
+                   android:text="서울 BLUE 버스"
+                   android:textSize="16sp"
+                   android:textColor="#000066"/>
 
                <TextView
                    android:id="@+id/vehNumber"
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:layout_centerInParent="true"
+                   android:fontFamily="@font/nanumbarunpenb"
                    android:text=""
-                   android:textSize="30dp" />
+                   android:textSize="32dp"
+                   android:textColor="#000066"/>
 
                <LinearLayout
                    android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:layout_below="@+id/vehNumber">
+                   android:layout_height="20dp"
+                   android:layout_below="@+id/vehNumber"
+                   android:layout_marginTop="15dp">
 
                    <TextView
                        android:id="@+id/startStation"
                        android:layout_width="wrap_content"
                        android:layout_height="match_parent"
                        android:layout_weight="5"
+                       android:fontFamily="@font/nanumbarunpenr"
                        android:gravity="end"
-                       android:textAlignment="gravity" />
+                       android:textAlignment="gravity"
+                       android:textSize="16sp"
+                       android:textColor="#000066"/>
 
                    <ImageView
                        android:id="@+id/imageView"
-                       android:layout_width="wrap_content"
-                       android:layout_height="match_parent"
+                       android:layout_width="30dp"
+                       android:layout_height="10dp"
+                       android:layout_marginTop="5dp"
                        android:layout_weight="1"
                        android:src="@drawable/station_arrow"/>
 
@@ -72,7 +99,10 @@
                        android:layout_height="match_parent"
                        android:layout_gravity="start"
                        android:layout_weight="5"
-                       android:textAlignment="gravity" />
+                       android:fontFamily="@font/nanumbarunpenr"
+                       android:textAlignment="gravity"
+                       android:textSize="16sp"
+                       android:textColor="#000066"/>
                </LinearLayout>
 
            </RelativeLayout>

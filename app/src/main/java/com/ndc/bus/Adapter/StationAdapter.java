@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ndc.bus.BR;
+import com.ndc.bus.Common.BaseApplication;
 import com.ndc.bus.Listener.StationRecyclerViewClickListener;
 import com.ndc.bus.R;
 import com.ndc.bus.Station.StationModel;
@@ -59,7 +60,10 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.MyViewHo
         else
             holder.binding.stationDateTv.setVisibility(View.GONE);
 
-        holder.binding.stationNameTv.setText(stationModel.getStation().getStNm());
+        if(BaseApplication.LAN_MODE.compareTo("KR") == 0)
+            holder.binding.stationNameTv.setText(stationModel.getStation().getStNm());
+        else
+            holder.binding.stationNameTv.setText(stationModel.getStation().getStEngNm() + "(" + stationModel.getStation().getStNm() + ")");
 
     }
 

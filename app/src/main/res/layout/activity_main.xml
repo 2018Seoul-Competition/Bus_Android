@@ -13,15 +13,6 @@
         tools:showIn="@layout/activity_main"
         tools:context="com.ndc.bus.Activity.MainActivity">
 
-
-        <android.support.design.widget.NavigationView
-            android:layout_width="150dp"
-            android:layout_height="3dp"
-            android:layout_marginTop="50dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:background="@drawable/notify_bg"/>
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="500dp"
@@ -41,8 +32,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="43dp"
                     android:layout_marginHorizontal="15dp"
+                    android:background="@android:color/transparent"
+                    android:fontFamily="@font/nanumbarunpenr"
                     android:paddingLeft="10dp"
-                    android:text="관악02" />
+                    android:text="관악02"
+                    android:textSize="19sp"
+                    android:textColor="#000066"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"

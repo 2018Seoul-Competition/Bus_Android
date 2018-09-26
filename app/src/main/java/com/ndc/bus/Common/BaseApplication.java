@@ -41,6 +41,9 @@ public class BaseApplication extends Application implements HasActivityInjector{
 
     public static String VEH_LOG = "VEH_LOG";
 
+    //SETTINGS
+    public static String ALARM_ON = "";
+
     @Override
     public void onCreate() {
         super.onCreate();

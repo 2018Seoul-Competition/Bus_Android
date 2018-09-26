@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable name="activity" type="com.ndc.bus.Activity.SettingActivity"/>
@@ -9,17 +10,190 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/index_background"
+        android:background="@drawable/setting_bg"
         tools:showIn="@layout/activity_main"
         tools:context="com.ndc.bus.Activity.SettingActivity">
 
-
-        <ListView
-            android:id="@+id/SettingList"
+        <ImageView
+            android:id="@+id/settingHeader_iv"
             android:layout_width="match_parent"
-            android:layout_height="312dp"
+            android:layout_height="60dp"
             android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true" />
+            android:layout_alignParentTop="true"
+            android:background="@drawable/setting_header" />
 
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="18dp"
+            android:textColor="#000066"
+            android:textSize="19sp"
+            android:text="설정" />
+
+        <ImageButton
+            android:id="@+id/settingBackBtn"
+            android:layout_width="18dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/setting_back" />
+
+        <RelativeLayout
+            android:id="@+id/settingNotify"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginTop="80dp"
+            android:layout_below="@+id/settingHeader_iv"
+            android:background="@drawable/setting_detail" >
+
+            <ImageButton
+            android:id="@+id/settingIconBtn"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:background="@android:color/transparent"/>
+
+            <TextView
+                android:id="@+id/settingNotifyFont"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="9dp"
+                android:fontFamily="@font/nanumbarunpenr"
+                android:textColor="#000066"
+                android:textSize="25sp"
+                android:text="공지사항"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/settingAlert1"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginTop="80dp"
+            android:layout_below="@+id/settingNotify"
+            android:background="@drawable/setting_detail" >
+            <LinearLayout
+                android:layout_width="160dp"
+                android:layout_height="55dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <Switch
+                    android:id="@+id/switch_Alarm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:fontFamily="@font/nanumbarunpenr"
+                    android:text="알림 ON/OFF "
+                    android:textColor="#969bb5"
+                    android:textSize="21dp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/settingAlertFont"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="9dp"
+                android:fontFamily="@font/nanumbarunpenr"
+                android:textColor="#000066"
+                android:textSize="25sp"
+                android:text="알림설정" />
+
+        </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/settingAlert2"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_below="@+id/settingAlert1"
+        android:background="@drawable/setting_detail2" >
+
+        <LinearLayout
+            android:layout_width="160dp"
+            android:layout_height="55dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+
+            <Switch
+                android:id="@+id/switch_arrive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:fontFamily="@font/nanumbarunpenr"
+                android:text="도착시간 "
+                android:textColor="#969bb5"
+                android:textSize="21dp" />
+        </LinearLayout>
+    </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/settingLanguage"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginTop="80dp"
+            android:layout_below="@+id/settingAlert2"
+            android:background="@drawable/setting_detail" >
+            <LinearLayout
+                android:layout_width="160dp"
+                android:layout_height="55dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <Switch
+                    android:id="@+id/switch_Language"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:fontFamily="@font/nanumbarunpenr"
+                    android:text=""
+                    android:textColor="#969bb5"
+                    android:textSize="21dp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/settingLanguageFont"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="9dp"
+                android:fontFamily="@font/nanumbarunpenr"
+                android:textColor="#000066"
+                android:textSize="25sp"
+                android:text="언어/Language" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/settingLicence_iv"
+                android:layout_width="350dp"
+                android:layout_height="15dp"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/setting_licence" />
+
+            <ImageView
+                android:id="@+id/settingVersion_iv"
+                android:layout_width="120dp"
+                android:layout_height="10dp"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/setting_version" />
+        </LinearLayout>
     </RelativeLayout>
 </layout>
