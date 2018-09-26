@@ -32,14 +32,6 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MyViewHolder> 
         holder.bind(vehNmList.get(position), listener);
     }
 
-    public void setItem(ArrayList<String> vehNmList) {
-        if (vehNmList == null) {
-            return;
-        }
-        this.vehNmList = vehNmList;
-        notifyDataSetChanged();
-    }
-
     @Override
     public int getItemCount() {
         return vehNmList.size();

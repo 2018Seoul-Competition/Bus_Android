@@ -15,13 +15,27 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp">
 
-        <com.github.vipulasri.timelineview.TimelineView
-            android:id="@+id/station_marker"
+        <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            app:line="@color/colorPrimary"
-            app:lineSize="3dp"
-            app:markerSize="20dp" />
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:src="@drawable/bus_icon">
+
+
+            </ImageView>
+
+            <com.github.vipulasri.timelineview.TimelineView
+                android:id="@+id/station_marker"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:line="@color/colorPrimary"
+                app:lineSize="3dp"
+                app:markerSize="20dp" />
+        </FrameLayout>
+
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"

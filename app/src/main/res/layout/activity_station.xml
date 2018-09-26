@@ -39,52 +39,40 @@
                    android:text="서울 BLUE 버스" />
 
                <TextView
-                    android:id="@+id/vehNumber"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:text=""
-                    android:textSize="30dp"/>
-
-                <LinearLayout
-                    android:layout_width="100dp"
-                    android:layout_height="30dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_below="@+id/vehNumber"
-                    android:layout_toLeftOf="@+id/imageView">
-                   <TextView
-                       android:id="@+id/startStation"
-                       android:layout_width="wrap_content"
-                       android:layout_height="wrap_content"
-                       android:layout_centerInParent="true"
-                       android:text=""
-                       android:textSize="15dp"/>
-                </LinearLayout>
-
-               <ImageView
-                   android:id="@+id/imageView"
-                   android:layout_width="60dp"
-                   android:layout_height="15dp"
-                   android:layout_below="@+id/vehNumber"
-                   android:layout_marginTop="25dp"
-                   android:layout_centerHorizontal="true"
-                   android:src="@drawable/station_arrow"/>
-
-               <LinearLayout
-                   android:layout_width="100dp"
-                   android:layout_height="30dp"
-                   android:layout_marginTop="15dp"
-                   android:layout_below="@+id/vehNumber"
-                   android:layout_toRightOf="@+id/imageView"
-                   android:orientation="vertical">
-               <TextView
-                   android:id="@+id/endStation"
+                   android:id="@+id/vehNumber"
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:layout_centerInParent="true"
-                   android:layout_gravity="right"
                    android:text=""
-                   android:textSize="15dp"/>
+                   android:textSize="30dp" />
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_below="@+id/vehNumber">
+
+                   <TextView
+                       android:id="@+id/startStation"
+                       android:layout_width="wrap_content"
+                       android:layout_height="match_parent"
+                       android:layout_weight="5"
+                       android:gravity="end"
+                       android:textAlignment="gravity" />
+
+                   <ImageView
+                       android:id="@+id/imageView"
+                       android:layout_width="wrap_content"
+                       android:layout_height="match_parent"
+                       android:layout_weight="1"
+                       android:src="@drawable/station_arrow"/>
+
+                   <TextView
+                       android:id="@+id/endStation"
+                       android:layout_width="wrap_content"
+                       android:layout_height="match_parent"
+                       android:layout_gravity="start"
+                       android:layout_weight="5"
+                       android:textAlignment="gravity" />
                </LinearLayout>
 
            </RelativeLayout>
