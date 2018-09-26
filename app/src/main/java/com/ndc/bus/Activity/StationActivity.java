@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.ndc.bus.Adapter.StationAdapter;
 import com.ndc.bus.Arrival.ArrivalItemList;
@@ -243,8 +244,6 @@ public class StationActivity extends BaseActivity {
             super.onPostExecute(stationList);
             final ArrayList<StationModel> stationModelList = createStationModelItems(stationList);
 
-            binding.startStation.setText(stationModelList.get(0).getStation().getStNm());
-            binding.endStation.setText(stationModelList.get(stationModelList.size() - 1).getStation().getStNm());
             if (BaseApplication.LAN_MODE.compareTo("KR") == 0) {
                 binding.startStation.setText(stationList.get(0).getStNm());
                 binding.endStation.setText(stationList.get(stationList.size() - 1).getStNm());
