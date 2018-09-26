@@ -14,12 +14,17 @@
         tools:context="com.ndc.bus.Activity.MainActivity">
 
 
+        <android.support.design.widget.NavigationView
+            android:layout_width="150dp"
+            android:layout_height="3dp"
+            android:layout_marginTop="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/notify_bg"/>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="500dp"
-            android:paddingBottom="@dimen/activity_vertical_margin"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_vertical_margin"
             android:background="@drawable/main_background_1"
             android:orientation="vertical">
@@ -27,6 +32,8 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="43dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="4dp"
                 android:background="@drawable/main_search">
 
                 <EditText
@@ -34,18 +41,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="43dp"
                     android:layout_marginHorizontal="15dp"
+                    android:paddingLeft="10dp"
                     android:text="관악02" />
 
-                <ImageButton
-                    android:id="@+id/stationBtn"
-                    android:layout_width="35dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="280dp"
-                    android:layout_marginTop="5dp"
-                    android:adjustViewBounds="true"
-                    android:scaleType="fitCenter"
-                    android:background="@drawable/main_searchicon"
-                    android:onClick="@{()->activity.retrieveBusData()}"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <ImageButton
+                        android:id="@+id/stationBtn"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_gravity="right"
+                        android:background="@drawable/main_searchicon"
+                        android:onClick="@{()->activity.retrieveBusData()}" />
+                </LinearLayout>
             </RelativeLayout>
 
             <RelativeLayout
@@ -71,7 +83,8 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_centerInParent="true"
-                    android:background="@drawable/main_historylogo" />
+                    android:src="@drawable/main_historylogo"
+                    android:background="@android:color/transparent"/>
 
             </RelativeLayout>
         </RelativeLayout>
@@ -97,29 +110,31 @@
                 android:id="@+id/scanBtn"
                 android:layout_width="140dp"
                 android:layout_height="130dp"
+                android:paddingRight="15dp"
                 android:layout_centerHorizontal="true"
                 android:scaleType="fitCenter"
                 android:adjustViewBounds="true"
-                android:background="@drawable/main_qrcode"
+                android:src="@drawable/main_qrcode"
+                android:background="@android:color/transparent"
                 android:onClick="@{()->activity.gotoQrScanActivity()}"/>
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_width="40dp"
+            android:layout_width="47dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="3dp"
             android:layout_marginTop="70dp"
             android:orientation="vertical"
             android:background="@drawable/main_setting">
 
             <ImageButton
                 android:id="@+id/settingBtn"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginTop="10dp"
+                android:layout_width="21dp"
+                android:layout_height="19dp"
                 android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/main_settingicon"
-                android:onClick="@{()->activity.gotoSettingActivity()}"/>
+                android:onClick="@{()->activity.gotoSettingActivity()}" />
 
         </RelativeLayout>
     </RelativeLayout>

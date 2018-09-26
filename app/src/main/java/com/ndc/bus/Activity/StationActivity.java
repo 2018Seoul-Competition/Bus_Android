@@ -114,7 +114,7 @@ public class StationActivity extends BaseActivity {
                     ArrivalNotificationForeGroundService.class);
             intent.setAction(ArrivalNotificationForeGroundService.ACTION_START_SERVICE);
             intent.putExtra(BaseApplication.VEH_NM, mVehNm);
-            if(BaseApplication.LAN_MODE == "KR")
+            if(BaseApplication.LAN_MODE.compareTo("KR") == 0)
                 intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
             else
                 intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStEngNm());
@@ -129,7 +129,7 @@ public class StationActivity extends BaseActivity {
         else{
             AlertDialog.Builder dialog = new AlertDialog.Builder(StationActivity.this);
             dialog.setTitle(BaseApplication.APP_NAME);
-            if(BaseApplication.LAN_MODE == "KR"){
+            if(BaseApplication.LAN_MODE.compareTo("KR") == 0){
                 dialog.setMessage("목적지를 " + mDestStation.getStNm() + "로 바꾸시겠습니까?")
                         .setNegativeButton("아니오", new DialogInterface.OnClickListener() {
                             @Override
@@ -239,7 +239,7 @@ public class StationActivity extends BaseActivity {
 
             binding.startStation.setText(stationModelList.get(0).getStation().getStNm());
             binding.endStation.setText(stationModelList.get(stationModelList.size()-1).getStation().getStNm());
-            if(BaseApplication.LAN_MODE == "KR") {
+            if(BaseApplication.LAN_MODE.compareTo("KR") == 0) {
                 binding.startStation.setText(stationList.get(0).getStNm());
                 binding.endStation.setText(stationList.get(stationList.size()-1).getStNm());
             }
@@ -287,7 +287,7 @@ public class StationActivity extends BaseActivity {
         //마을 버스
         if(!isNumeric(vehNm)){
             bgLayout.setBackgroundResource(R.drawable.station_background_2);
-            if(BaseApplication.LAN_MODE == "KR")
+            if(BaseApplication.LAN_MODE.compareTo("KR") == 0)
                 binding.busTypeText.setText("마을버스");
             else
                 binding.busTypeText.setText("Town Bus");
@@ -298,7 +298,7 @@ public class StationActivity extends BaseActivity {
                 if(vehNm.charAt(0) == '9'){
                     //red
                     bgLayout.setBackgroundResource(R.drawable.station_background_3);
-                    if(BaseApplication.LAN_MODE == "KR")
+                    if(BaseApplication.LAN_MODE.compareTo("KR") == 0)
                         binding.busTypeText.setText("광역버스");
                     else
                         binding.busTypeText.setText("Wide area bus");
@@ -306,7 +306,7 @@ public class StationActivity extends BaseActivity {
                 else{
                     //green
                     bgLayout.setBackgroundResource(R.drawable.station_background_2);
-                    if(BaseApplication.LAN_MODE == "KR")
+                    if(BaseApplication.LAN_MODE.compareTo("KR") == 0)
                         binding.busTypeText.setText("지선버스");
                     else
                         binding.busTypeText.setText("Branch bus");
@@ -315,7 +315,7 @@ public class StationActivity extends BaseActivity {
             else if(vehNm.length() == 3){
                 //blue
                 bgLayout.setBackgroundResource(R.drawable.station_background_1);
-                if(BaseApplication.LAN_MODE == "KR")
+                if(BaseApplication.LAN_MODE.compareTo("KR") == 0)
                     binding.busTypeText.setText("간선버스");
                 else
                     binding.busTypeText.setText("Main bus");
@@ -323,7 +323,7 @@ public class StationActivity extends BaseActivity {
             else{
                 //yellow
                 bgLayout.setBackgroundResource(R.drawable.station_background_4);
-                if(BaseApplication.LAN_MODE == "KR")
+                if(BaseApplication.LAN_MODE.compareTo("KR") == 0)
                     binding.busTypeText.setText("도심순환버스");
                 else
                     binding.busTypeText.setText("Urban circulation bus");

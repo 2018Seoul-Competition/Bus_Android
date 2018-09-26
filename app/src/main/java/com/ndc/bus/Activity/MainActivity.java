@@ -96,7 +96,7 @@ public class MainActivity extends BaseActivity {
                 intent.putExtra(BaseApplication.VEH_NM, vehNm);
                 startActivity(intent);
             } else {
-                if(BaseApplication.LAN_MODE == "KR")
+                if(BaseApplication.LAN_MODE.compareTo("KR") == 0)
                     Toast.makeText(MainActivity.this, "존재하지 않는 버스입니다!", Toast.LENGTH_SHORT).show();
                 else
                     Toast.makeText(MainActivity.this, "That Bus does not exist!", Toast.LENGTH_SHORT).show();
@@ -140,7 +140,7 @@ public class MainActivity extends BaseActivity {
         }
         else {
             backPressedTime = tempTime;
-            if(BaseApplication.LAN_MODE == "KR")
+            if(BaseApplication.LAN_MODE.compareTo("KR") == 0)
                 Toast.makeText(getApplicationContext(), "뒤로 버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT).show();
             else
                 Toast.makeText(getApplicationContext(), "Press Back button again to exist.", Toast.LENGTH_SHORT).show();
