@@ -132,10 +132,6 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
             if(checkNearArrival()){
                 if(!mIsNotiCreate){
                     makeNoti();
-                    if(mLanMode.compareTo("KR") == 0)
-                        speechBusInfo("목적지에 곧 도착합니다!!");
-                    else
-                        speechBusInfo("You will arrive at your destination soon.");
                     stopForeGroundService();
                 }
             }
@@ -200,8 +196,6 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
 
 
     private boolean checkNearArrival(){
-        Toast.makeText(getApplicationContext(), mStationName, Toast.LENGTH_SHORT).show();
-        Dlog.i("Check This station near " + mStationName);
         Double dDistance = Math.sqrt(Math.pow((mDestStationLongitude - mBeforeStationLongitude), 2) + Math.pow((mDestStationLatitude - mBeforeStationLatitude), 2));
         if(Math.sqrt(Math.pow(mDestStationLongitude-myGPS.getLongitude(),2 ) + Math.pow(mDestStationLatitude-myGPS.getLatitude(),2 )) < dDistance / 2)
             return true;
@@ -227,10 +221,14 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
                     .setSmallIcon(android.R.drawable.btn_star)
                     .setContentIntent(pendingIntent);
 
-            if(mLanMode.compareTo("KR") == 0)
+            if(mLanMode.compareTo("KR") == 0){
                 mBuilder.setContentText(mStationName + "에 거의 도착하였습니다!");
-            else
+                speechBusInfo("목적지에 곧 도착합니다!!");
+            }
+            else{
                 mBuilder.setContentText("Almost Arrive at" + mStationEnName);
+                speechBusInfo("You will arrive at your destination soon.");
+            }
 
             mNotificationManager.notify(BaseApplication.ARRIVAL_NOTI_ID, mBuilder.build());
             mIsNotiCreate = true;
