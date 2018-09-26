@@ -12,6 +12,7 @@ import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.ndc.bus.Adapter.StationAdapter;
@@ -262,6 +263,9 @@ public class StationActivity extends BaseActivity {
                     }
                 }
             });
+
+
+
             binding.stationRv.setAdapter(stationAdapter);
             retrieveBusPosByRouteId();
         }
@@ -277,8 +281,6 @@ public class StationActivity extends BaseActivity {
                     if (response.isSuccessful()) {
                         List<ArrivalItemList> arrivalItemLists = response.body().getArrivalMsgBody().getArrivalItemList();
                         for(int i = 0; i < arrivalItemLists.size(); i++){
-                            //arrivalItemLists.get(i);
-
 
                         }
 

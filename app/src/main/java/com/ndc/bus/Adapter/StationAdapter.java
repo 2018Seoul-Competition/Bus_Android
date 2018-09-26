@@ -68,7 +68,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.MyViewHo
         return stationModelList.size();
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder {
         private StationRowBinding binding;
 
         MyViewHolder(StationRowBinding binding) {
@@ -84,6 +84,10 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.MyViewHo
                     listener.onItemClick(stationModel);
                 }
             });
+        }
+
+        public StationRowBinding getBinding() {
+            return binding;
         }
     }
 }
