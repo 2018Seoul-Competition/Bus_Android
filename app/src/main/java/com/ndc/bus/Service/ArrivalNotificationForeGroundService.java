@@ -95,6 +95,8 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
         }
         mIsNotiCreate = false;
 
+        mOnGPSClick();
+
         this.tts = new TextToSpeech(this, this);
 
         super.onCreate();
@@ -247,6 +249,7 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
         mLanMode = intent.getStringExtra(BaseApplication.LAN_INTENT);
         mVehNm = intent.getStringExtra(BaseApplication.VEH_NM);
         mStationName = intent.getStringExtra(BaseApplication.DEST_STATION_NAME);
+        mStationName = intent.getStringExtra(BaseApplication.DEST_STATION_ENNAME);
 
         Dlog.i("Test Station Name : "+ mStationName + " VehID : "+ mVehNm);
     }
@@ -346,45 +349,17 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
         }
     }
 
-    public void checkGPSService() {
-        boolean isGPSEnabled = false;
-        try {
-            isGPSEnabled = mLocationManager
-                    .isProviderEnabled(LocationManager.GPS_PROVIDER);
-        } catch (Exception ex) {}
-        if (isGPSEnabled) {
-        } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(
-                    "Your GPS module is disabled. Would you like to enable it ?")
-                    .setCancelable(false)
-                    .setPositiveButton("Yes",
-                            new DialogInterface.OnClickListener() {
-
-                                public void onClick(DialogInterface dialog,
-                                                    int id) {
-                                    // Sent user to GPS settings screen
-                                    final ComponentName toLaunch = new ComponentName(
-                                            "com.android.settings",
-                                            "com.android.settings.SecuritySettings");
-                                    final Intent intent = new Intent(
-                                            Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                    intent.addCategory(Intent.CATEGORY_LAUNCHER);
-                                    intent.setComponent(toLaunch);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    startActivity(intent);
-                                    dialog.dismiss();
-                                }
-                            })
-                    .setNegativeButton("No",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                                    int id) {
-                                    dialog.cancel();
-                                }
-                            });
-            AlertDialog alert = builder.create();
-            alert.show();
+    public void mOnGPSClick(){
+        //GPS가 켜져있는지 체크
+        if(!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            if(mLanMode.compareTo("KR") == 0)
+                Toast.makeText(getApplicationContext(), "앱을 동작시키기 위해서는 GPS 기능을 켜야합니다", Toast.LENGTH_SHORT);
+            else
+                Toast.makeText(getApplicationContext(), "You have to turn on GPS for app", Toast.LENGTH_SHORT);
+            //GPS 설정화면으로 이동
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            startActivity(intent);
         }
     }
 }

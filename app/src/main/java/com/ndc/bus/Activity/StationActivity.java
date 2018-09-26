@@ -9,9 +9,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.databinding.DataBindingUtil;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.widget.RelativeLayout;
 
 import com.ndc.bus.Adapter.StationAdapter;
@@ -360,4 +362,5 @@ public class StationActivity extends BaseActivity {
             return false;
         }
     }
+
 }
