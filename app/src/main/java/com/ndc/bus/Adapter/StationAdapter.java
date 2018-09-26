@@ -63,14 +63,6 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.MyViewHo
 
     }
 
-    public void setItem(ArrayList<StationModel> stationModelList) {
-        if (stationModelList == null) {
-            return;
-        }
-        this.stationModelList = stationModelList;
-        notifyDataSetChanged();
-    }
-
     @Override
     public int getItemCount() {
         return stationModelList.size();

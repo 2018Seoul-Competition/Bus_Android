@@ -56,7 +56,6 @@ public class StationActivity extends BaseActivity {
     public void initSettings() {
         super.initSettings();
         mVehNm = getIntent().getStringExtra(BaseApplication.VEH_NM);
-        BaseApplication.LAN_MODE = getIntent().getStringExtra(BaseApplication.LAN_INTENT);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_station);
         binding.setActivity(this);
 
