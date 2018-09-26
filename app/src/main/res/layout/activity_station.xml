@@ -55,7 +55,8 @@
                    android:layout_marginTop="20dp"
                    android:fontFamily="@font/nanumbarunpenr"
                    android:text="서울 BLUE 버스"
-                   android:textSize="16sp" />
+                   android:textSize="16sp"
+                   android:textColor="#000066"/>
 
                <TextView
                    android:id="@+id/vehNumber"
@@ -64,7 +65,8 @@
                    android:layout_centerInParent="true"
                    android:fontFamily="@font/nanumbarunpenb"
                    android:text=""
-                   android:textSize="32dp" />
+                   android:textSize="32dp"
+                   android:textColor="#000066"/>
 
                <LinearLayout
                    android:layout_width="match_parent"
@@ -80,7 +82,8 @@
                        android:fontFamily="@font/nanumbarunpenr"
                        android:gravity="end"
                        android:textAlignment="gravity"
-                       android:textSize="16sp" />
+                       android:textSize="16sp"
+                       android:textColor="#000066"/>
 
                    <ImageView
                        android:id="@+id/imageView"
@@ -98,7 +101,8 @@
                        android:layout_weight="5"
                        android:fontFamily="@font/nanumbarunpenr"
                        android:textAlignment="gravity"
-                       android:textSize="16sp" />
+                       android:textSize="16sp"
+                       android:textColor="#000066"/>
                </LinearLayout>
 
            </RelativeLayout>
