@@ -81,6 +81,11 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
         super.onCreate();
         Dlog.i("Service onCreate");
 
+        if(BaseApplication.LAN_MODE.compareTo("KR") == 0)
+            Toast.makeText(getApplicationContext(), "알람 서비스를 위해서는 GPS 기능을 켜야합니다", Toast.LENGTH_LONG).show();
+        else
+            Toast.makeText(getApplicationContext(), "You have to turn on GPS for Alarm Service", Toast.LENGTH_LONG).show();
+
         //when service start, create locationManager for getting gps data
         initializeLocationManager();
         initializeLocationListeners();
@@ -135,7 +140,7 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
             mLastLocation.set(location);
             myGPS = mLastLocation;
 
-            if(checkNearArrival()){
+            if(checkArrivalOfBeforeStation()){
                 if(!mIsNotiCreate){
                     makeNoti();
                     stopForeGroundService();
@@ -201,12 +206,46 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
     }
 
 
-    private boolean checkNearArrival(){
-        Double dDistance = Math.sqrt(Math.pow((mDestStationLongitude - mBeforeStationLongitude), 2) + Math.pow((mDestStationLatitude - mBeforeStationLatitude), 2));
-        if(Math.sqrt(Math.pow(mDestStationLongitude-myGPS.getLongitude(),2 ) + Math.pow(mDestStationLatitude-myGPS.getLatitude(),2 )) < dDistance / 2)
+    private boolean checkArrivalOfDest(){
+        if(distance(mDestStationLatitude, mDestStationLongitude, myGPS.getLatitude(), myGPS.getLongitude(), "meter") < 50)
             return true;
         else
             return false;
+    }
+
+    private boolean checkArrivalOfBeforeStation(){
+        if(distance(mBeforeStationLatitude, mBeforeStationLongitude, myGPS.getLatitude(), myGPS.getLongitude(), "meter") < 50)
+            return true;
+        else
+            return false;
+    }
+
+
+    private static double distance(double lat1, double lon1, double lat2, double lon2, String unit) {
+
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515;
+
+        if (unit == "kilometer") {
+            dist = dist * 1.609344;
+        } else if(unit == "meter"){
+            dist = dist * 1609.344;
+        }
+
+        return (dist);
+    }
+
+    private static double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    // This function converts radians to decimal degrees
+    private static double rad2deg(double rad) {
+        return (rad * 180 / Math.PI);
     }
 
     private void makeNoti(){
@@ -249,7 +288,7 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
         mLanMode = intent.getStringExtra(BaseApplication.LAN_INTENT);
         mVehNm = intent.getStringExtra(BaseApplication.VEH_NM);
         mStationName = intent.getStringExtra(BaseApplication.DEST_STATION_NAME);
-        mStationName = intent.getStringExtra(BaseApplication.DEST_STATION_ENNAME);
+        mStationEnName = intent.getStringExtra(BaseApplication.DEST_STATION_ENNAME);
 
         Dlog.i("Test Station Name : "+ mStationName + " VehID : "+ mVehNm);
     }
@@ -352,10 +391,6 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
     public void mOnGPSClick(){
         //GPS가 켜져있는지 체크
         if(!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-            if(mLanMode.compareTo("KR") == 0)
-                Toast.makeText(getApplicationContext(), "앱을 동작시키기 위해서는 GPS 기능을 켜야합니다", Toast.LENGTH_SHORT);
-            else
-                Toast.makeText(getApplicationContext(), "You have to turn on GPS for app", Toast.LENGTH_SHORT);
             //GPS 설정화면으로 이동
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             intent.addCategory(Intent.CATEGORY_DEFAULT);
