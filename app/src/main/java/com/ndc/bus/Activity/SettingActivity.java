@@ -20,7 +20,7 @@ public class SettingActivity extends BaseActivity {
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_setting);
         binding.setActivity(this);
 
-        lanSwitch = (Switch) findViewById(R.id.switch_Lan);
+        lanSwitch = (Switch) findViewById(R.id.switch_Language);
 
         lanSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 

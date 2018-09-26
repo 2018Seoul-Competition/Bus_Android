@@ -44,13 +44,12 @@
 
             <ImageButton
                 android:id="@+id/logBtn"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_marginTop="5dp"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginTop="6.5dp"
                 android:layout_marginRight="20dp"
                 android:layout_gravity="right"
-                android:background="@android:color/transparent"
-                android:src="@drawable/log_remove"  />
+                android:background="@drawable/log_remove"  />
         </LinearLayout>
 
     </RelativeLayout>
