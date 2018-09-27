@@ -9,14 +9,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.databinding.DataBindingUtil;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.provider.Settings;
-import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.ndc.bus.Adapter.StationAdapter;
 import com.ndc.bus.Arrival.ArrivalItemList;
@@ -35,6 +31,7 @@ import com.ndc.bus.Station.StationStatus;
 import com.ndc.bus.Utils.Dlog;
 import com.ndc.bus.databinding.ActivityStationBinding;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -259,38 +256,22 @@ public class StationActivity extends BaseActivity {
                 binding.startStation.setText(stationList.get(0).getStEngNm());
                 binding.endStation.setText(stationList.get(stationList.size() - 1).getStEngNm());
             }
+            retrieveBusPosByRouteId(stationModelList);
 
-            StationAdapter stationAdapter = new StationAdapter(stationModelList, new StationRecyclerViewClickListener() {
-                @Override
-                public void onItemClick(StationModel stationModel) {
-                    int iDest = stationModelList.indexOf(stationModel);
-                    Station station = stationModelList.get(iDest).getStation();
-                    if (iDest != 0) {
-                        Station beforeStation = stationModelList.get(iDest - 1).getStation();
-                        setDestStation(beforeStation, station);
-                    }
-                }
-            });
-            binding.stationRv.setAdapter(stationAdapter);
-            retrieveBusPosByRouteId();
         }
 
-        private void retrieveBusPosByRouteId() {
+        private void retrieveBusPosByRouteId(final ArrayList<StationModel> stationModelList) {
             BaseApplication baseApplication = (BaseApplication) getApplication();
             String serviceKey = baseApplication.getKey();
             Call<ArrivalServiceResult> call = RetrofitClient.getInstance().getService().getBusPosByRtid(serviceKey, route.getRouteId());
+
             call.enqueue(new Callback<ArrivalServiceResult>() {
                 @Override
                 public void onResponse(Call<ArrivalServiceResult> call, Response<ArrivalServiceResult> response) {
                     // you  will get the reponse in the response parameter
                     if (response.isSuccessful()) {
                         List<ArrivalItemList> arrivalItemLists = response.body().getArrivalMsgBody().getArrivalItemList();
-                        for(int i = 0; i < arrivalItemLists.size(); i++){
-                            //arrivalItemLists.get(i);
-
-
-                        }
-
+                        setStationAdapter(stationModelList, arrivalItemLists);
                     } else {
                         int statusCode = response.code();
                     }
@@ -302,6 +283,21 @@ public class StationActivity extends BaseActivity {
                 }
             });
 
+        }
+
+        private void setStationAdapter(final ArrayList<StationModel> stationModelList, List<ArrivalItemList> arrivalItemLists){
+            StationAdapter stationAdapter = new StationAdapter(stationModelList, arrivalItemLists, new StationRecyclerViewClickListener() {
+                @Override
+                public void onItemClick(StationModel stationModel) {
+                    int iDest = stationModelList.indexOf(stationModel);
+                    Station station = stationModelList.get(iDest).getStation();
+                    if (iDest != 0) {
+                        Station beforeStation = stationModelList.get(iDest - 1).getStation();
+                        setDestStation(beforeStation, station);
+                    }
+                }
+            });
+            binding.stationRv.setAdapter(stationAdapter);
         }
 
         private ArrayList<StationModel> createStationModelItems(List<Station> stationList) {

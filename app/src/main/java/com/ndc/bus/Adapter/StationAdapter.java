@@ -7,12 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.ndc.bus.Arrival.ArrivalItemList;
 import com.ndc.bus.BR;
 import com.ndc.bus.Common.BaseApplication;
 import com.ndc.bus.Listener.StationRecyclerViewClickListener;
 import com.ndc.bus.R;
 import com.ndc.bus.Station.StationModel;
 import com.ndc.bus.Station.StationStatus;
+import com.ndc.bus.Utils.Dlog;
 import com.ndc.bus.Utils.VectorDrawableUtils;
 import com.ndc.bus.databinding.StationRowBinding;
 
@@ -22,12 +24,17 @@ import java.util.List;
 public class StationAdapter extends RecyclerView.Adapter<StationAdapter.MyViewHolder> {
     private final StationRecyclerViewClickListener listener;
     private List<StationModel> stationModelList;
+    private List<ArrivalItemList> arrivalItemLists;
+    private ArrayList<Integer> busPosList;
     private Context context;
 
-    public StationAdapter(List<StationModel> stationModelList, StationRecyclerViewClickListener listener) {
+    public StationAdapter(List<StationModel> stationModelList, List<ArrivalItemList> arrivalItemLists, StationRecyclerViewClickListener listener) {
         this.stationModelList = stationModelList;
+        this.arrivalItemLists = arrivalItemLists;
         this.listener = listener;
+        retrieveBusPos();
     }
+
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -43,28 +50,44 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.MyViewHo
 
         holder.bind(stationModel, listener);
 
-
-        if(stationModel.getStatus() == StationStatus.INACTIVE) {
+        if (stationModel.getStatus() == StationStatus.INACTIVE) {
             holder.binding.stationMarker.setMarker(VectorDrawableUtils.getDrawable(context, R.drawable.ic_marker_inactive, android.R.color.darker_gray));
-        } else if(stationModel.getStatus() == StationStatus.ACTIVE) {
+        } else if (stationModel.getStatus() == StationStatus.ACTIVE) {
             holder.binding.stationMarker.setMarker(VectorDrawableUtils.getDrawable(context, R.drawable.ic_marker_active, R.color.colorPrimary));
         } else {
             holder.binding.stationMarker.setMarker(ContextCompat.getDrawable(context, R.drawable.ic_marker), ContextCompat.getColor(context, R.color.colorPrimary));
         }
 
-        if(!stationModel.getDate().isEmpty()) {
+        if (!stationModel.getDate().isEmpty() && busPosList.contains(position+1)) {
             holder.binding.stationDateTv.setVisibility(View.VISIBLE);
-            holder.binding.stationDateTv.setText(stationModel.getDate());
-            //holder.binding.stationDateTv.setText(DateTimeUtils.parseDateTime(timeLineModel.getDate(), "yyyy-MM-dd HH:mm", "hh:mm a, dd-MMM-yyyy"));
-        }
-        else
-            holder.binding.stationDateTv.setVisibility(View.GONE);
+            int index = busPosList.indexOf(position+1);
+            int nextStTm = Integer.valueOf(arrivalItemLists.get(index).getNextStTm());
+            int seconds = nextStTm % 60;
+            int minutes = nextStTm / 60;
+            holder.binding.stationDateTv.setText("도착 " + minutes + "s분 " + seconds + "초 전");
+        } else {
+            //holder.binding.stationDateTv.setVisibility(View.GONE);
 
-        if(BaseApplication.LAN_MODE.compareTo("KR") == 0)
+        }
+        if (BaseApplication.LAN_MODE.compareTo("KR") == 0)
             holder.binding.stationNameTv.setText(stationModel.getStation().getStNm());
         else
             holder.binding.stationNameTv.setText(stationModel.getStation().getStEngNm() + "(" + stationModel.getStation().getStNm() + ")");
 
+        if (busPosList.contains(position)) {
+            holder.binding.vehIv.setVisibility(View.VISIBLE);
+            int height = holder.binding.rowLl.getHeight();
+        }
+
+    }
+
+
+    private void retrieveBusPos() {
+        busPosList = new ArrayList<>();
+        for (int i = 0; i < arrivalItemLists.size(); i++) {
+            int busPos = arrivalItemLists.get(i).getSectOrd();
+            busPosList.add(busPos);
+        }
     }
 
     @Override
@@ -73,7 +96,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.MyViewHo
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        private StationRowBinding binding;
+        public StationRowBinding binding;
 
         MyViewHolder(StationRowBinding binding) {
             super(binding.getRoot());
@@ -90,8 +113,5 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.MyViewHo
             });
         }
 
-        public StationRowBinding getBinding() {
-            return binding;
-        }
     }
 }
