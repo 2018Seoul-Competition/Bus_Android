@@ -35,6 +35,7 @@ public class IndexActivity extends BaseActivity{
         InitDatabaseTask initTask = new InitDatabaseTask();
         initTask.execute();
 
+        retrieveSettings();
 
         //처음 화면 보여주기
         showStartAni();
@@ -43,7 +44,7 @@ public class IndexActivity extends BaseActivity{
     private void retrieveSettings(){
         SharedPreferences prefs = getSharedPreferences(BaseApplication.LAN_INTENT, 0);
         String strLan = prefs.getString(BaseApplication.LAN_INTENT, "");
-        if(strLan != ""){
+        if(strLan.compareTo("") != 0){
             BaseApplication.LAN_INTENT = strLan;
         }
         else

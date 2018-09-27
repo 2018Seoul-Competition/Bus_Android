@@ -14,6 +14,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
+import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -67,6 +68,13 @@ public class StationActivity extends BaseActivity {
         mVehNm = getIntent().getStringExtra(BaseApplication.VEH_NM);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_station);
         binding.setActivity(this);
+
+        binding.stationBackBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                onBackPressed();
+            }
+        });
 
         mVehNm = getIntent().getStringExtra(BaseApplication.VEH_NM);
         initView();
