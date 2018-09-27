@@ -37,7 +37,7 @@ public class SettingActivity extends BaseActivity {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SharedPreferences sf = getSharedPreferences(BaseApplication.VEH_LOG, 0);
+                SharedPreferences sf = getSharedPreferences(BaseApplication.LAN_INTENT, 0);
                 SharedPreferences.Editor editor = sf.edit();//저장하려면 editor가 필요
                 String strLan = "";
                 if (isChecked == true){

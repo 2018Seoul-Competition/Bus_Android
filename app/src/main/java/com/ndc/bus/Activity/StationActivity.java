@@ -12,6 +12,7 @@ import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.ndc.bus.Adapter.StationAdapter;
