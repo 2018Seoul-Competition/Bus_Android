@@ -37,6 +37,10 @@ public class IndexActivity extends BaseActivity{
 
         retrieveSettings();
 
+        //default settings for alarm
+        BaseApplication.ALARM_BEFORE1_VAL = true;
+        BaseApplication.ALARM_BEFORE2_VAL = true;
+
         //처음 화면 보여주기
         showStartAni();
     }

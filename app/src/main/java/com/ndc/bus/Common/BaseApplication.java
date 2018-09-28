@@ -30,6 +30,8 @@ public class BaseApplication extends Application implements HasActivityInjector{
     public static String CHANNEL_NAME = "CHANNEL_FOR_BUS_ANDROID";
     public static int ARRIVAL_NOTI_ID = 0;
 
+    public static String BEFORE_2_LONG = "BEFORE_2_LONG";
+    public static String BEFORE_2_LATI = "BEFORE_2_LATI";
     public static String BEFORE_LONG = "BEFORE_LONG";
     public static String BEFORE_LATI = "BEFORE_LATI";
     public static String DEST_LONG = "DEST_LONG";
@@ -40,6 +42,12 @@ public class BaseApplication extends Application implements HasActivityInjector{
     public static String DEST_STATION_ENNAME = "DEST_STATION_ENNAME";
 
     public static String VEH_LOG = "VEH_LOG";
+
+    //for alarm settings
+    public static String ALARM_BEFORE1 = "ALARM_BEFORE1";
+    public static boolean ALARM_BEFORE1_VAL = false;
+    public static String ALARM_BEFORE2 = "ALARM_BEFORE2";
+    public static boolean ALARM_BEFORE2_VAL = false;
 
     //SETTINGS
     public static String ALARM_ON = "";

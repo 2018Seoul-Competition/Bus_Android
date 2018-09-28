@@ -28,6 +28,10 @@ public class SettingActivity extends BaseActivity {
             }
         });
 
+        //default settings for alarm
+        BaseApplication.ALARM_BEFORE1_VAL = true;
+        BaseApplication.ALARM_BEFORE2_VAL = true;
+
         lanSwitch = (Switch) findViewById(R.id.switch_Language);
 
         if(BaseApplication.LAN_MODE.compareTo("EN") == 0)
