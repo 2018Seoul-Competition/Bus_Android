@@ -1,19 +1,16 @@
 package com.ndc.bus.Adapter;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.ndc.bus.Arrival.ArrivalItemList;
-import com.ndc.bus.BR;
 import com.ndc.bus.Common.BaseApplication;
 import com.ndc.bus.Listener.StationRecyclerViewClickListener;
 import com.ndc.bus.R;
 import com.ndc.bus.Station.StationModel;
-import com.ndc.bus.Station.StationStatus;
 import com.ndc.bus.Utils.Dlog;
 import com.ndc.bus.Utils.VectorDrawableUtils;
 import com.ndc.bus.databinding.StationRowBinding;
@@ -47,9 +44,12 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.MyViewHo
     @Override
     public void onBindViewHolder(StationAdapter.MyViewHolder holder, final int position) {
         StationModel stationModel = stationModelList.get(position);
+        holder.bind(stationModel, position+1);
+        holder.binding.stationMarker.setMarker(VectorDrawableUtils.getDrawable(context, R.drawable.ic_marker_active, R.color.colorPrimary));
 
-        holder.bind(stationModel, listener);
-
+        //holder.bind(stationModel, listener);
+        //Dlog.e(String.valueOf(position));
+        /*
         if (stationModel.getStatus() == StationStatus.INACTIVE) {
             holder.binding.stationMarker.setMarker(VectorDrawableUtils.getDrawable(context, R.drawable.ic_marker_inactive, android.R.color.darker_gray));
         } else if (stationModel.getStatus() == StationStatus.ACTIVE) {
@@ -61,7 +61,8 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.MyViewHo
         if (!stationModel.getDate().isEmpty() && busPosList.contains(position+1)) {
             holder.binding.stationDateTv.setVisibility(View.VISIBLE);
             int index = busPosList.indexOf(position+1);
-            int nextStTm = Integer.valueOf(arrivalItemLists.get(index).getNextStTm());
+            int nextStTm = arrivalItemLists.get(index).getNextStTm();
+            Dlog.e(String.valueOf(nextStTm));
             int seconds = nextStTm % 60;
             int minutes = nextStTm / 60;
             holder.binding.stationDateTv.setText("도착 " + minutes + "s분 " + seconds + "초 전");
@@ -78,7 +79,20 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.MyViewHo
             holder.binding.vehIv.setVisibility(View.VISIBLE);
             int height = holder.binding.rowLl.getHeight();
         }
+        */
 
+        /*
+        if(busPosList.contains(position+1)){
+            Dlog.e(String.valueOf(position+1) + busPosList.toString());
+            holder.binding.vehIv.setVisibility(View.VISIBLE);
+            int index = busPosList.indexOf(position+1);
+            int nextStTm = arrivalItemLists.get(index).getNextStTm();
+            //Dlog.e(String.valueOf(nextStTm));
+            int seconds = nextStTm % 60;
+            int minutes = nextStTm / 60;
+            holder.binding.stationDateTv.setText("도착 " + minutes + "분 " + seconds + "초 전");
+        }
+        */
     }
 
 
@@ -103,6 +117,28 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.MyViewHo
             this.binding = binding;
         }
 
+        private void bind(StationModel stationModel, int position) {
+            if (BaseApplication.LAN_MODE.compareTo("KR") == 0) {
+                binding.stationNameTv.setText(stationModel.getStation().getStNm());
+            } else {
+                binding.stationNameTv.setText(stationModel.getStation().getStEngNm() + "(" + stationModel.getStation().getStNm() + ")");
+            }
+
+            if(busPosList.contains(position)){
+                Dlog.e(String.valueOf(position) + busPosList.toString());
+                binding.vehIv.setVisibility(View.VISIBLE);
+                int index = busPosList.indexOf(position);
+                int nextStTm = arrivalItemLists.get(index).getNextStTm();
+                //Dlog.e(String.valueOf(nextStTm));
+                int seconds = nextStTm % 60;
+                int minutes = nextStTm / 60;
+                binding.stationDateTv.setText("도착 " + minutes + "분 " + seconds + "초 전");
+            }
+
+        }
+    }
+
+        /*
         void bind(final StationModel stationModel, final StationRecyclerViewClickListener listener) {
             binding.setVariable(BR.stationModel, stationModel);
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -114,4 +150,5 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.MyViewHo
         }
 
     }
+    */
 }
