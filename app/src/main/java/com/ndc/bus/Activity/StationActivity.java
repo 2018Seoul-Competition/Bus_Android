@@ -268,6 +268,9 @@ public class StationActivity extends BaseActivity {
                     // you  will get the reponse in the response parameter
                     if (response.isSuccessful()) {
                         List<ArrivalItemList> arrivalItemLists = response.body().getArrivalMsgBody().getArrivalItemList();
+                        if(arrivalItemLists == null){
+                            arrivalItemLists = new ArrayList<>();
+                        }
                         setStationAdapter(stationModelList, arrivalItemLists);
                     } else {
                         int statusCode = response.code();
