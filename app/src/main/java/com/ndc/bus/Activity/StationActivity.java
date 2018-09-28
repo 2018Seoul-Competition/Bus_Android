@@ -289,8 +289,8 @@ public class StationActivity extends BaseActivity {
                 public void onItemClick(StationModel stationModel) {
                     int iDest = stationModelList.indexOf(stationModel);
                     Station station = stationModelList.get(iDest).getStation();
-                    if (iDest != 0) {
-                        if(iDest != 1){
+                    if (iDest > 1) {
+                        if(iDest != 2){
                             Station before2Station = stationModelList.get(iDest - 2).getStation();
                             Station beforeStation = stationModelList.get(iDest - 1).getStation();
                             setDestStation(before2Station, beforeStation, station);
