@@ -12,6 +12,7 @@ import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.ndc.bus.Adapter.StationAdapter;
@@ -46,6 +47,7 @@ public class StationActivity extends BaseActivity {
     BusDatabaseClient busDatabaseClient;
 
     private ActivityStationBinding binding;
+    private Station mBefore2DestStation;
     private Station mBeforeDestStation;
     private Station mDestStation;
     private String mVehNm;
@@ -65,6 +67,13 @@ public class StationActivity extends BaseActivity {
         mVehNm = getIntent().getStringExtra(BaseApplication.VEH_NM);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_station);
         binding.setActivity(this);
+
+        binding.stationBackBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                onBackPressed();
+            }
+        });
 
         mVehNm = getIntent().getStringExtra(BaseApplication.VEH_NM);
 
@@ -103,9 +112,10 @@ public class StationActivity extends BaseActivity {
 
     }
 
-    private void setDestStation(Station beforStation, Station destStation) {
+    private void setDestStation(Station before2Station, Station beforStation, Station destStation) {
         Dlog.i("Set Dest Station : " + destStation.getStNm());
         //목적지로 설정하냐는 문구 띄움 필요
+        mBefore2DestStation = before2Station;
         mBeforeDestStation = beforStation;
         mDestStation = destStation;
 
@@ -115,20 +125,7 @@ public class StationActivity extends BaseActivity {
     private void startArrivalAlarmService() {
         if (!isServiceRunning()) {
             Dlog.i("Service Start");
-            Intent intent = new Intent(
-                    StationActivity.this,
-                    ArrivalNotificationForeGroundService.class);
-            intent.setAction(ArrivalNotificationForeGroundService.ACTION_START_SERVICE);
-            intent.putExtra(BaseApplication.VEH_NM, mVehNm);
-            intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
-            intent.putExtra(BaseApplication.DEST_STATION_ENNAME, mDestStation.getStEngNm());
-            intent.putExtra(BaseApplication.DEST_LONG, mDestStation.getPosX());
-            intent.putExtra(BaseApplication.DEST_LATI, mDestStation.getPosY());
-            intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
-            intent.putExtra(BaseApplication.BEFORE_LATI, mBeforeDestStation.getPosY());
-            intent.putExtra(BaseApplication.LAN_INTENT, BaseApplication.LAN_MODE);
-            startService(intent);
-            bindService(intent, mConn, Context.BIND_AUTO_CREATE);
+            makeIntentAndStartService();
         } else {
             AlertDialog.Builder dialog = new AlertDialog.Builder(StationActivity.this);
             dialog.setTitle(BaseApplication.APP_NAME);
@@ -143,20 +140,7 @@ public class StationActivity extends BaseActivity {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //stop now service
-                                Intent intent = new Intent(
-                                        StationActivity.this,
-                                        ArrivalNotificationForeGroundService.class);
-                                intent.setAction(ArrivalNotificationForeGroundService.ACTION_START_SERVICE);
-                                intent.putExtra(BaseApplication.VEH_NM, mVehNm);
-                                intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
-                                intent.putExtra(BaseApplication.DEST_STATION_ENNAME, mDestStation.getStEngNm());
-                                intent.putExtra(BaseApplication.DEST_LONG, mDestStation.getPosX());
-                                intent.putExtra(BaseApplication.DEST_LATI, mDestStation.getPosY());
-                                intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
-                                intent.putExtra(BaseApplication.BEFORE_LATI, mBeforeDestStation.getPosY());
-                                intent.putExtra(BaseApplication.LAN_INTENT, BaseApplication.LAN_MODE);
-                                startService(intent);
-                                bindService(intent, mConn, Context.BIND_AUTO_CREATE);
+                                makeIntentAndStartService();
                             }
                         });
             } else {
@@ -170,26 +154,47 @@ public class StationActivity extends BaseActivity {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //stop now service
-                                Intent intent = new Intent(
-                                        StationActivity.this,
-                                        ArrivalNotificationForeGroundService.class);
-                                intent.setAction(ArrivalNotificationForeGroundService.ACTION_START_SERVICE);
-                                intent.putExtra(BaseApplication.VEH_NM, mVehNm);
-                                intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
-                                intent.putExtra(BaseApplication.DEST_STATION_ENNAME, mDestStation.getStEngNm());
-                                intent.putExtra(BaseApplication.DEST_LONG, mDestStation.getPosX());
-                                intent.putExtra(BaseApplication.DEST_LATI, mDestStation.getPosY());
-                                intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
-                                intent.putExtra(BaseApplication.BEFORE_LATI, mBeforeDestStation.getPosY());
-                                intent.putExtra(BaseApplication.LAN_INTENT, BaseApplication.LAN_MODE);
-                                startService(intent);
-                                bindService(intent, mConn, Context.BIND_AUTO_CREATE);
+                                makeIntentAndStartService();
                             }
                         });
             }
             dialog.create();
             dialog.show();
         }
+    }
+
+    private void makeIntentAndStartService(){
+        Intent intent = new Intent(
+                StationActivity.this,
+                ArrivalNotificationForeGroundService.class);
+        intent.setAction(ArrivalNotificationForeGroundService.ACTION_START_SERVICE);
+        intent.putExtra(BaseApplication.VEH_NM, mVehNm);
+        intent.putExtra(BaseApplication.DEST_STATION_NAME, mDestStation.getStNm());
+        intent.putExtra(BaseApplication.DEST_STATION_ENNAME, mDestStation.getStEngNm());
+        intent.putExtra(BaseApplication.DEST_LONG, mDestStation.getPosX());
+        intent.putExtra(BaseApplication.DEST_LATI, mDestStation.getPosY());
+        intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
+        intent.putExtra(BaseApplication.BEFORE_LATI, mBeforeDestStation.getPosY());
+        if(mBefore2DestStation != null){
+            intent.putExtra(BaseApplication.BEFORE_2_LONG, mBefore2DestStation.getPosX());
+            intent.putExtra(BaseApplication.BEFORE_2_LATI, mBefore2DestStation.getPosY());
+        }
+        else{
+            intent.putExtra(BaseApplication.BEFORE_2_LONG, "");
+            intent.putExtra(BaseApplication.BEFORE_2_LATI, "");
+        }
+        if(BaseApplication.ALARM_BEFORE1_VAL == true)
+            intent.putExtra(BaseApplication.ALARM_BEFORE1, "TRUE");
+        else
+            intent.putExtra(BaseApplication.ALARM_BEFORE1, "FALSE");
+        if(BaseApplication.ALARM_BEFORE2_VAL == true)
+            intent.putExtra(BaseApplication.ALARM_BEFORE2, "TRUE");
+        else
+            intent.putExtra(BaseApplication.ALARM_BEFORE2, "FALSE");
+
+        intent.putExtra(BaseApplication.LAN_INTENT, BaseApplication.LAN_MODE);
+        startService(intent);
+        bindService(intent, mConn, Context.BIND_AUTO_CREATE);
     }
 
 /*    // have to make Service first, before using this method
@@ -283,9 +288,16 @@ public class StationActivity extends BaseActivity {
                 public void onItemClick(StationModel stationModel) {
                     int iDest = stationModelList.indexOf(stationModel);
                     Station station = stationModelList.get(iDest).getStation();
-                    if (iDest != 0) {
-                        Station beforeStation = stationModelList.get(iDest - 1).getStation();
-                        setDestStation(beforeStation, station);
+                    if (iDest > 1) {
+                        if(iDest != 2){
+                            Station before2Station = stationModelList.get(iDest - 2).getStation();
+                            Station beforeStation = stationModelList.get(iDest - 1).getStation();
+                            setDestStation(before2Station, beforeStation, station);
+                        }
+                        else{
+                            Station beforeStation = stationModelList.get(iDest - 1).getStation();
+                            setDestStation(null, beforeStation, station);
+                        }
                     }
                 }
             });

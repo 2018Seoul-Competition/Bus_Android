@@ -9,13 +9,12 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="29dp"
         android:orientation="vertical">
 
-
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <ImageView
@@ -23,32 +22,37 @@
                 android:layout_width="wrap_content"
                 android:layout_height="17dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="8dp"
                 android:src="@drawable/log_icon" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/veh_nm_tv"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="3dp"
-                android:layout_toRightOf="@id/logIcon"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="5dp"
                 android:fontFamily="@font/nanumbarunpenr"
-                android:textSize="15.5sp"
+                android:textSize="20sp"
                 android:textColor="#000066"/>
-        </RelativeLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <ImageButton
                 android:id="@+id/logBtn"
                 android:layout_width="12dp"
                 android:layout_height="12dp"
-                android:layout_marginTop="6.5dp"
                 android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
                 android:layout_gravity="right"
                 android:background="@drawable/log_remove"  />
         </LinearLayout>

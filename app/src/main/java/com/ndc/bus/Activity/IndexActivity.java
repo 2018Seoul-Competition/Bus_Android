@@ -35,6 +35,11 @@ public class IndexActivity extends BaseActivity{
         InitDatabaseTask initTask = new InitDatabaseTask();
         initTask.execute();
 
+        retrieveSettings();
+
+        //default settings for alarm
+        BaseApplication.ALARM_BEFORE1_VAL = true;
+        BaseApplication.ALARM_BEFORE2_VAL = true;
 
         //처음 화면 보여주기
         showStartAni();
@@ -43,8 +48,8 @@ public class IndexActivity extends BaseActivity{
     private void retrieveSettings(){
         SharedPreferences prefs = getSharedPreferences(BaseApplication.LAN_INTENT, 0);
         String strLan = prefs.getString(BaseApplication.LAN_INTENT, "");
-        if(strLan != ""){
-            BaseApplication.LAN_INTENT = strLan;
+        if(strLan.compareTo("") != 0){
+            BaseApplication.LAN_MODE = strLan;
         }
         else
             BaseApplication.LAN_MODE = "KR";

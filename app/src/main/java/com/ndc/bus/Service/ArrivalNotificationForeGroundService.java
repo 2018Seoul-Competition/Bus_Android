@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.ndc.bus.Activity.StationActivity;
 import com.ndc.bus.Common.BaseApplication;
+import com.ndc.bus.CustomAlarm.CustomAlarm;
 import com.ndc.bus.R;
 import com.ndc.bus.Utils.Dlog;
 
@@ -46,7 +47,7 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
     //for noti
     private NotificationManager mNotificationManager;
     private NotificationCompat.Builder mBuilder;
-    private boolean mIsNotiCreate;
+    private CustomAlarm mCustomAlarm;
 
     //m_variables
     private String mVehNm;
@@ -56,6 +57,8 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
     private double mDestStationLatitude;
     private double mBeforeStationLongitude;
     private double mBeforeStationLatitude;
+    private double mBefore2StationLongitude;
+    private double mBefore2StationLatitude;
     private String mLanMode;
     private Location myGPS;
 
@@ -86,6 +89,9 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
         else
             Toast.makeText(getApplicationContext(), "You have to turn on GPS for Alarm Service", Toast.LENGTH_LONG).show();
 
+        //make alarm
+        mCustomAlarm = new CustomAlarm();
+
         //when service start, create locationManager for getting gps data
         initializeLocationManager();
         initializeLocationListeners();
@@ -98,7 +104,6 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
                     BaseApplication.CHANNEL_ID, BaseApplication.CHANNEL_NAME, importance);
             mNotificationManager.createNotificationChannel(mChannel);
         }
-        mIsNotiCreate = false;
 
         mOnGPSClick();
 
@@ -140,15 +145,18 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
             mLastLocation.set(location);
             myGPS = mLastLocation;
 
-            if(checkArrivalOfBeforeStation()){
-                if(!mIsNotiCreate){
-                    makeNoti();
-                    stopForeGroundService();
+            if(mCustomAlarm.getAlarmSetBeforeTwo()) {
+                if(checkArrivalOfBefore2Station()){
+                    makeNotiBefore2();
                 }
             }
-
-            Dlog.i("Long" + Double.toString(location.getLongitude()));
-            Dlog.i("Lat" + Double.toString(location.getLatitude()));
+            if(mCustomAlarm.getAlarmSetBeforeOne()) {
+                if(checkArrivalOfBeforeStation()){
+                    makeNotiBefore1();
+                }
+            }
+            if(mCustomAlarm.isAlarmedAllfinish())
+                stopForeGroundService();
         }
 
         @Override
@@ -220,6 +228,13 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
             return false;
     }
 
+    private boolean checkArrivalOfBefore2Station(){
+        if(distance(mBefore2StationLatitude, mBefore2StationLongitude, myGPS.getLatitude(), myGPS.getLongitude(), "meter") < 50)
+            return true;
+        else
+            return false;
+    }
+
 
     private static double distance(double lat1, double lon1, double lat2, double lon2, String unit) {
 
@@ -248,8 +263,9 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
         return (rad * 180 / Math.PI);
     }
 
-    private void makeNoti(){
-        if(!mIsNotiCreate){
+
+    private void makeNotiBefore1(){
+        if(!mCustomAlarm.getIsAlarmedBeforeOne()){
             Intent notificationIntent = new Intent(this, ArrivalNotificationForeGroundService.class);
             notificationIntent.setAction(ArrivalNotificationForeGroundService.ACTION_STOP_SERVICE);
             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -267,16 +283,45 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
                     .setContentIntent(pendingIntent);
 
             if(mLanMode.compareTo("KR") == 0){
-                mBuilder.setContentText(mStationName + "에 거의 도착하였습니다!");
-                speechBusInfo("목적지에 곧 도착합니다!!");
+                mBuilder.setContentText(mStationName + " 1정거장 전입니다!");
+                speechBusInfo("목적지 1정거장 전입니다");
             }
             else{
-                mBuilder.setContentText("Almost Arrive at" + mStationEnName);
-                speechBusInfo("You will arrive at your destination soon.");
+                mBuilder.setContentText("1 Station before " + mStationEnName);
+                speechBusInfo("1 Station before destination.");
             }
-
             mNotificationManager.notify(BaseApplication.ARRIVAL_NOTI_ID, mBuilder.build());
-            mIsNotiCreate = true;
+            mCustomAlarm.setIsAlarmedBeforeOne(true);
+        }
+    }
+    private void makeNotiBefore2(){
+        if(!mCustomAlarm.getIsAlarmedBeforeTwo()){
+            Intent notificationIntent = new Intent(this, ArrivalNotificationForeGroundService.class);
+            notificationIntent.setAction(ArrivalNotificationForeGroundService.ACTION_STOP_SERVICE);
+            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            int requestId = (int) System.currentTimeMillis();
+
+            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), requestId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            mBuilder = new NotificationCompat.Builder(getApplicationContext(), BaseApplication.CHANNEL_ID);
+
+            mBuilder.setContentTitle(BaseApplication.APP_NAME) // required
+                    .setDefaults(Notification.DEFAULT_ALL) // 알림, 사운드 진동 설정
+                    .setAutoCancel(true) // 알림 터치시 반응 후 삭제
+                    .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                    .setSmallIcon(android.R.drawable.btn_star)
+                    .setContentIntent(pendingIntent);
+
+            if(mLanMode.compareTo("KR") == 0){
+                mBuilder.setContentText(mStationName + " 2정거장 전입니다!");
+                speechBusInfo("목적지 2정거장 전입니다!!");
+            }
+            else {
+                mBuilder.setContentText("2 Station before " + mStationEnName);
+                speechBusInfo("Before Two Station for Destination.");
+            }
+            mNotificationManager.notify(BaseApplication.ARRIVAL_NOTI_ID, mBuilder.build());
+            mCustomAlarm.setIsAlarmedBeforeTwo(true);
         }
     }
 
@@ -285,16 +330,30 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
         mDestStationLatitude = Double.parseDouble(intent.getStringExtra(BaseApplication.DEST_LATI));
         mBeforeStationLatitude = Double.parseDouble(intent.getStringExtra(BaseApplication.BEFORE_LATI));
         mBeforeStationLongitude = Double.parseDouble(intent.getStringExtra(BaseApplication.BEFORE_LONG));
+        if(intent.getStringExtra(BaseApplication.BEFORE_2_LATI).compareTo("") != 0){
+            mBefore2StationLatitude = Double.parseDouble(intent.getStringExtra(BaseApplication.BEFORE_2_LATI));
+            mBefore2StationLongitude = Double.parseDouble(intent.getStringExtra(BaseApplication.BEFORE_2_LONG));
+        }
+        else{
+            mBefore2StationLatitude = 0;
+            mBefore2StationLongitude = 0;
+        }
         mLanMode = intent.getStringExtra(BaseApplication.LAN_INTENT);
         mVehNm = intent.getStringExtra(BaseApplication.VEH_NM);
         mStationName = intent.getStringExtra(BaseApplication.DEST_STATION_NAME);
         mStationEnName = intent.getStringExtra(BaseApplication.DEST_STATION_ENNAME);
-
-        Dlog.i("Test Station Name : "+ mStationName + " VehID : "+ mVehNm);
+        if(intent.getStringExtra(BaseApplication.ALARM_BEFORE1).compareTo("TRUE") == 0)
+            mCustomAlarm.setAlarmedBeforeOne(true);
+        else
+            mCustomAlarm.setAlarmedBeforeOne(false);
+        if(intent.getStringExtra(BaseApplication.ALARM_BEFORE2).compareTo("TRUE") == 0 && mBefore2StationLongitude != 0)
+            mCustomAlarm.setAlarmedBeforeTwo(true);
+        else
+            mCustomAlarm.setAlarmedBeforeTwo(false);
     }
 
     private void startForeGroundService(Intent gettingIntent){
-        mIsNotiCreate = false;
+        mCustomAlarm.setIsAlarmedFalse();
 
         initializeLocationListeners();
 
