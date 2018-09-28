@@ -39,15 +39,12 @@ public class SettingActivity extends BaseActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 SharedPreferences sf = getSharedPreferences(BaseApplication.LAN_INTENT, 0);
                 SharedPreferences.Editor editor = sf.edit();//저장하려면 editor가 필요
-                String strLan = "";
                 if (isChecked == true){
                     BaseApplication.LAN_MODE = "EN";
-                    strLan = "EN";
                 } else {
                     BaseApplication.LAN_MODE = "KR";
-                    strLan = "KR";
                 }
-                editor.putString(BaseApplication.LAN_INTENT, strLan); // 입력
+                editor.putString(BaseApplication.LAN_INTENT, BaseApplication.LAN_MODE); // 입력
                 editor.apply(); // 파일에 최종 반영함
             }
         });

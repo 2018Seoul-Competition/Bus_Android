@@ -45,7 +45,7 @@ public class IndexActivity extends BaseActivity{
         SharedPreferences prefs = getSharedPreferences(BaseApplication.LAN_INTENT, 0);
         String strLan = prefs.getString(BaseApplication.LAN_INTENT, "");
         if(strLan.compareTo("") != 0){
-            BaseApplication.LAN_INTENT = strLan;
+            BaseApplication.LAN_MODE = strLan;
         }
         else
             BaseApplication.LAN_MODE = "KR";
