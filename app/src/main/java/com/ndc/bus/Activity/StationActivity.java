@@ -67,7 +67,6 @@ public class StationActivity extends BaseActivity {
         binding.setActivity(this);
 
         mVehNm = getIntent().getStringExtra(BaseApplication.VEH_NM);
-        initView();
 
         mConn = new ServiceConnection() {
             @Override
@@ -91,6 +90,7 @@ public class StationActivity extends BaseActivity {
                     ArrivalNotificationForeGroundService.class);
             bindService(intent, mConn, Context.BIND_AUTO_CREATE);
         }
+        initView();
 
     }
 
@@ -250,7 +250,6 @@ public class StationActivity extends BaseActivity {
                 binding.endStation.setText(stationList.get(stationList.size() - 1).getStEngNm());
             }
             retrieveBusPosByRouteId(stationModelList);
-
         }
 
         private void retrieveBusPosByRouteId(final ArrayList<StationModel> stationModelList) {
