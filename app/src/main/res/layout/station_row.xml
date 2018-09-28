@@ -26,16 +26,14 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/bus_icon"
                 android:visibility="invisible">
-
-
             </ImageView>
 
             <com.github.vipulasri.timelineview.TimelineView
                 android:id="@+id/station_marker"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                app:line="@color/colorPrimary"
                 app:lineSize="3dp"
+                android:src="@drawable/ic_marker_active"
                 app:markerSize="20dp" />
         </FrameLayout>
 
