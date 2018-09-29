@@ -60,6 +60,11 @@ public class MainActivity extends BaseActivity {
                     0 );
         }
 
+        if(BaseApplication.LAN_MODE.compareTo("EN") == 0)
+            binding.stationSearchTx.setText("Search");
+        else
+            binding.stationSearchTx.setText("검색");
+
         settingVehLogs();
 
     }
@@ -191,5 +196,6 @@ public class MainActivity extends BaseActivity {
         Intent intent = new Intent(this, SettingActivity.class);
         startActivity(intent);
     }
+
 
 }

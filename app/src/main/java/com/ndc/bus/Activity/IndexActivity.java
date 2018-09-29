@@ -38,7 +38,7 @@ public class IndexActivity extends BaseActivity{
         retrieveSettings();
 
         //처음 화면 보여주기
-        showStartAni();
+        //showStartAni();
     }
 
     private void retrieveSettings(){
@@ -57,9 +57,9 @@ public class IndexActivity extends BaseActivity{
         super.onDestroy();
     }
 
-    private void showStartAni(){
-        Glide.with(this).load(R.raw.index_logo).into(binding.logoIv);
-    }
+    //private void showStartAni(){
+    //    Glide.with(this).load(R.raw.index_logo).into(binding.logoIv);
+    //}
 
     @SuppressLint("StaticFieldLeak")
     private class InitDatabaseTask extends AsyncTask<Void, Void, Void> {

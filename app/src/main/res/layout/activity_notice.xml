@@ -12,55 +12,43 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@drawable/setting_bg">
 
-        <RelativeLayout
+        <ImageView
+            android:id="@+id/settingHeader_iv"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="60dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/setting_header" />
 
-            <ImageView
-                android:id="@+id/noticeHeader"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:src="@drawable/notice_header" />
+        <TextView
+            android:id="@+id/noticeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="18dp"
+            android:fontFamily="@font/nanumbarunpenr"
+            android:textColor="#000066"
+            android:textSize="20sp"
+            android:text="공지사항" />
 
-            <TextView
-                android:id="@+id/noticeText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:fontFamily="@font/nanumbarunpenr"
-                android:layout_marginTop="18dp"
-                android:textColor="#000066"
-                android:textSize="19sp"
-                android:text="공지사항" />
-        </RelativeLayout>
-
-
-        <RelativeLayout
-            android:layout_width="47dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="70dp"
-            android:orientation="vertical"
-            android:background="@drawable/notice_backbg">
-
-            <ImageButton
-                android:id="@+id/noticeBtn"
-                android:layout_width="18dp"
-                android:layout_height="21dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/setting_back" />
-
-        </RelativeLayout>
+        <ImageButton
+            android:id="@+id/noticeBtn"
+            android:layout_width="18dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/setting_back" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="160dp"
+            android:layout_marginTop="140dp"
             android:layout_alignParentBottom="true">
 
             <ImageView

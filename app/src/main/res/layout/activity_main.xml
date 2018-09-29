@@ -42,18 +42,36 @@
                     android:textColor="#000066"/>
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:id="@+id/stationBtn_layout"
+                    android:layout_width="45dp"
                     android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
                     android:orientation="vertical">
                     <ImageButton
                         android:id="@+id/stationBtn"
-                        android:layout_width="27dp"
-                        android:layout_height="27dp"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
                         android:layout_marginTop="8dp"
-                        android:layout_marginRight="13dp"
+                        android:layout_marginRight="10dp"
                         android:layout_gravity="right"
                         android:background="@drawable/main_searchicon"
                         android:onClick="@{()->activity.retrieveBusData()}" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_toLeftOf="@+id/stationBtn_layout">
+
+                    <TextView
+                        android:id="@+id/station_search_tx"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nanumbarunpenr"
+                        android:text="검색"
+                        android:textColor="#81bbe2"
+                        android:textSize="15dp"/>
                 </LinearLayout>
             </RelativeLayout>
 
