@@ -112,7 +112,6 @@ public class MainActivity extends BaseActivity {
                     addVehLog();
                     saveVehLog();
                 }
-
                 Intent intent = new Intent(this, StationActivity.class);
                 intent.putExtra(BaseApplication.VEH_NM, vehNm);
                 startActivity(intent);
