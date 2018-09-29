@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.ndc.bus.Adapter.StationAdapter;
 import com.ndc.bus.Arrival.ArrivalItemList;
@@ -183,14 +184,8 @@ public class StationActivity extends BaseActivity {
             intent.putExtra(BaseApplication.BEFORE_2_LONG, "");
             intent.putExtra(BaseApplication.BEFORE_2_LATI, "");
         }
-        if(BaseApplication.ALARM_BEFORE1_VAL == true)
-            intent.putExtra(BaseApplication.ALARM_BEFORE1, "TRUE");
-        else
-            intent.putExtra(BaseApplication.ALARM_BEFORE1, "FALSE");
-        if(BaseApplication.ALARM_BEFORE2_VAL == true)
-            intent.putExtra(BaseApplication.ALARM_BEFORE2, "TRUE");
-        else
-            intent.putExtra(BaseApplication.ALARM_BEFORE2, "FALSE");
+        intent.putExtra(BaseApplication.ALARM_BEFORE1, BaseApplication.ALARM_BEFORE1_VAL);
+        intent.putExtra(BaseApplication.ALARM_BEFORE2, BaseApplication.ALARM_BEFORE2_VAL);
 
         intent.putExtra(BaseApplication.LAN_INTENT, BaseApplication.LAN_MODE);
         startService(intent);
@@ -291,7 +286,7 @@ public class StationActivity extends BaseActivity {
                 public void onItemClick(StationModel stationModel) {
                     int iDest = stationModelList.indexOf(stationModel);
                     Station station = stationModelList.get(iDest).getStation();
-                    if (iDest > 1) {
+                    if (iDest > 2) {
                         if(iDest != 2){
                             Station before2Station = stationModelList.get(iDest - 2).getStation();
                             Station beforeStation = stationModelList.get(iDest - 1).getStation();

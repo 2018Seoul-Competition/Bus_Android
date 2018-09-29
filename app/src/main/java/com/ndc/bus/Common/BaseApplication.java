@@ -45,9 +45,9 @@ public class BaseApplication extends Application implements HasActivityInjector{
 
     //for alarm settings
     public static String ALARM_BEFORE1 = "ALARM_BEFORE1";
-    public static boolean ALARM_BEFORE1_VAL = false;
+    public static String ALARM_BEFORE1_VAL = "TRUE";
     public static String ALARM_BEFORE2 = "ALARM_BEFORE2";
-    public static boolean ALARM_BEFORE2_VAL = false;
+    public static String ALARM_BEFORE2_VAL = "TRUE";
 
     //SETTINGS
     public static String ALARM_ON = "";

@@ -29,26 +29,58 @@ public class SettingActivity extends BaseActivity {
             }
         });
 
-        //default settings for alarm
-        BaseApplication.ALARM_BEFORE1_VAL = true;
-        BaseApplication.ALARM_BEFORE2_VAL = true;
-
         lanSwitch = (Switch) findViewById(R.id.switch_Language);
 
         if(BaseApplication.LAN_MODE.compareTo("EN") == 0){
             binding.textSettting.setText("Settings");
             binding.settingNotifyFont.setText("Notice");
-            binding.switchAlarm.setText("Alarm ON/OFF");
             binding.settingAlertFont.setText("Alarm settings");
-            binding.switchArrive.setText("Arrival Time");
+            binding.switchArrive2Tx.setText("1Station Before");
+            binding.switchArrive3Tx.setText("2Station Before");
         }
         else{
             binding.textSettting.setText("설정");
             binding.settingNotifyFont.setText("공지사항");
-            binding.switchAlarm.setText("알림 ON/OFF");
             binding.settingAlertFont.setText("알림설정");
-            binding.switchArrive.setText("도착시간");
+            binding.switchArrive2Tx.setText("1정거장 전");
+            binding.switchArrive3Tx.setText("2정거장 전");
         }
+
+        if(BaseApplication.ALARM_BEFORE1_VAL.compareTo("TRUE") == 0)
+            binding.switchArrive2.setChecked(true);
+        binding.switchArrive2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferences sf = getSharedPreferences(BaseApplication.LAN_INTENT, 0);
+                SharedPreferences.Editor editor = sf.edit();//저장하려면 editor가 필요
+                if (isChecked == true){
+                    BaseApplication.ALARM_BEFORE1_VAL = "TURE";
+                } else {
+                    BaseApplication.ALARM_BEFORE1_VAL = "FALSE";
+                }
+                editor.putString(BaseApplication.ALARM_BEFORE1, BaseApplication.ALARM_BEFORE1_VAL); // 입력
+                editor.apply(); // 파일에 최종 반영함
+            }
+        });
+
+        if(BaseApplication.ALARM_BEFORE2_VAL.compareTo("TRUE") == 0)
+            binding.switchArrive3.setChecked(true);
+        binding.switchArrive3.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferences sf = getSharedPreferences(BaseApplication.LAN_INTENT, 0);
+                SharedPreferences.Editor editor = sf.edit();//저장하려면 editor가 필요
+                if (isChecked == true){
+                    BaseApplication.ALARM_BEFORE2_VAL = "TURE";
+                } else {
+                    BaseApplication.ALARM_BEFORE2_VAL = "FALSE";
+                }
+                editor.putString(BaseApplication.ALARM_BEFORE2, BaseApplication.ALARM_BEFORE2_VAL); // 입력
+                editor.apply(); // 파일에 최종 반영함
+            }
+        });
 
         if(BaseApplication.LAN_MODE.compareTo("EN") == 0)
             lanSwitch.setChecked(true);
