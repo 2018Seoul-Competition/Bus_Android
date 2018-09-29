@@ -37,7 +37,7 @@
                     android:background="@android:color/transparent"
                     android:fontFamily="@font/nanumbarunpenr"
                     android:paddingLeft="12dp"
-                    android:text="721"
+                    android:text=""
                     android:textSize="20sp"
                     android:textColor="#000066"/>
 

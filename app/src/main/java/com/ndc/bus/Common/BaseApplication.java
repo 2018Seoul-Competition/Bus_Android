@@ -38,6 +38,7 @@ public class BaseApplication extends Application implements HasActivityInjector{
     public static String DEST_LATI = "DEST_LATI";
 
     public static String VEH_NM = "VEH_NM";
+    public static String VEH_NM_VAL = "";
     public static String DEST_STATION_NAME = "DEST_STATION_NAME";
     public static String DEST_STATION_ENNAME = "DEST_STATION_ENNAME";
 

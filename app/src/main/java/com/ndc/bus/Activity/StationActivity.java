@@ -55,7 +55,6 @@ public class StationActivity extends BaseActivity {
 
     private boolean mIsConnected;
     private ArrivalNotificationForeGroundService mService;
-    public ServiceConnection mConn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +64,6 @@ public class StationActivity extends BaseActivity {
     @Override
     public void initSettings() {
         super.initSettings();
-        mVehNm = getIntent().getStringExtra(BaseApplication.VEH_NM);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_station);
         binding.setActivity(this);
 
@@ -75,31 +73,14 @@ public class StationActivity extends BaseActivity {
                 onBackPressed();
             }
         });
-
-        mVehNm = getIntent().getStringExtra(BaseApplication.VEH_NM);
-
-        mConn = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-                Dlog.i("ServiceConnected");
-                MyBinder mb = (MyBinder) iBinder;
-                mService = mb.getService();
-                mIsConnected = true;
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName componentName) {
-                Dlog.i("onServiceDisconnected");
-                mIsConnected = false;
-            }
-        };
-
         if (isServiceRunning()) {
             Intent intent = new Intent(
                     StationActivity.this,
                     ArrivalNotificationForeGroundService.class);
-            bindService(intent, mConn, Context.BIND_AUTO_CREATE);
         }
+
+        mVehNm = BaseApplication.VEH_NM_VAL;
+
         initView();
 
     }
@@ -124,7 +105,13 @@ public class StationActivity extends BaseActivity {
     }
 
     private void startArrivalAlarmService() {
-        if (!isServiceRunning()) {
+        if(BaseApplication.ALARM_BEFORE1_VAL.compareTo("FALSE") == 0 && BaseApplication.ALARM_BEFORE2_VAL.compareTo("FALSE") == 0){
+            if(BaseApplication.LAN_MODE.compareTo("EN") == 0)
+                Toast.makeText(getApplicationContext(), "Alarm is off", Toast.LENGTH_LONG);
+            else
+                Toast.makeText(getApplicationContext(), "알람 기능이 꺼져있습니다.", Toast.LENGTH_LONG);
+        }
+        else if (!isServiceRunning()) {
             Dlog.i("Service Start");
             makeIntentAndStartService();
         } else {
@@ -189,7 +176,6 @@ public class StationActivity extends BaseActivity {
 
         intent.putExtra(BaseApplication.LAN_INTENT, BaseApplication.LAN_MODE);
         startService(intent);
-        bindService(intent, mConn, Context.BIND_AUTO_CREATE);
     }
 
 /*    // have to make Service first, before using this method
@@ -220,11 +206,6 @@ public class StationActivity extends BaseActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (mIsConnected) {
-            Dlog.i("unbindService");
-            unbindService(mConn);
-            mIsConnected = false;
-        }
     }
 
     private class SelectDatabaseTask extends AsyncTask<String, Void, List<Station>> {
@@ -287,15 +268,9 @@ public class StationActivity extends BaseActivity {
                     int iDest = stationModelList.indexOf(stationModel);
                     Station station = stationModelList.get(iDest).getStation();
                     if (iDest > 2) {
-                        if(iDest != 2){
-                            Station before2Station = stationModelList.get(iDest - 2).getStation();
-                            Station beforeStation = stationModelList.get(iDest - 1).getStation();
-                            setDestStation(before2Station, beforeStation, station);
-                        }
-                        else{
-                            Station beforeStation = stationModelList.get(iDest - 1).getStation();
-                            setDestStation(null, beforeStation, station);
-                        }
+                        Station before2Station = stationModelList.get(iDest - 2).getStation();
+                        Station beforeStation = stationModelList.get(iDest - 1).getStation();
+                        setDestStation(before2Station, beforeStation, station);
                     }
                 }
             });

@@ -112,9 +112,8 @@ public class MainActivity extends BaseActivity {
                     addVehLog();
                     saveVehLog();
                 }
-
+                BaseApplication.VEH_NM_VAL = vehNm;
                 Intent intent = new Intent(this, StationActivity.class);
-                intent.putExtra(BaseApplication.VEH_NM, vehNm);
                 startActivity(intent);
             } else {
                 if(BaseApplication.LAN_MODE.compareTo("KR") == 0)

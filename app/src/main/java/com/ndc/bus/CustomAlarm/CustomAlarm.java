@@ -17,10 +17,10 @@ public class CustomAlarm {
     //method
     public boolean isAlarmedAllfinish(){
         boolean checkAlarmFinish = true;
+        if(m_BeforeTwoStation == true)
+            checkAlarmFinish = m_BeforeTwoStation;
         if(m_BeforeOneStation == true)
             checkAlarmFinish = m_IsAlarmedBeforeOne;
-        if(m_BeforeTwoStation == true)
-            checkAlarmFinish = checkAlarmFinish && m_BeforeTwoStation;
         return checkAlarmFinish;
     }
 
