@@ -7,17 +7,21 @@ import android.view.ViewGroup;
 
 import com.ndc.bus.BR;
 import com.ndc.bus.Listener.LogRecyclerViewClickListener;
+import com.ndc.bus.Listener.LogRemoveClickListener;
 import com.ndc.bus.databinding.LogRowBinding;
 
 import java.util.ArrayList;
 
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MyViewHolder> {
     private final LogRecyclerViewClickListener listener;
+    private final LogRemoveClickListener logRemoveClickListener;
     private ArrayList<String> vehNmList;
 
-    public MainAdapter(ArrayList<String> vehNmList, LogRecyclerViewClickListener listener) {
+
+    public MainAdapter(ArrayList<String> vehNmList, LogRecyclerViewClickListener listener, LogRemoveClickListener logRemoveClickListener) {
         this.vehNmList = vehNmList;
         this.listener = listener;
+        this.logRemoveClickListener = logRemoveClickListener;
     }
 
     @Override
@@ -52,6 +56,12 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MyViewHolder> 
                 @Override
                 public void onClick(View v) {
                     listener.onItemClick(vehNm);
+                }
+            });
+            binding.logRmvBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    logRemoveClickListener.removeLog(vehNm);
                 }
             });
         }

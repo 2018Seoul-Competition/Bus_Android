@@ -25,6 +25,7 @@ import com.ndc.bus.Adapter.MainAdapter;
 import com.ndc.bus.Common.BaseApplication;
 import com.ndc.bus.Database.BusDatabaseClient;
 import com.ndc.bus.Listener.LogRecyclerViewClickListener;
+import com.ndc.bus.Listener.LogRemoveClickListener;
 import com.ndc.bus.R;
 import com.ndc.bus.Route.Route;
 import com.ndc.bus.Utils.Dlog;
@@ -70,8 +71,20 @@ public class MainActivity extends BaseActivity {
             public void onItemClick(String vehNm) {
                 retrieveBusInfo(vehNm, false);
             }
+        }, new LogRemoveClickListener(){
+
+            @Override
+            public void removeLog(String vehNm) {
+                removeLogInActivity(vehNm);
+            }
         });
         binding.logRv.setAdapter(mainAdapter);
+    }
+
+    private void removeLogInActivity(String vehNm){
+        vehLogList.remove(vehNm);
+        saveVehLog();
+        settingVehLogs();
     }
 
     private void retrieveLogs() {
@@ -96,6 +109,7 @@ public class MainActivity extends BaseActivity {
             Route route = retrieveRouteTask.execute(vehNm).get();
             if (route != null) {
                 if(sFlag){
+                    addVehLog();
                     saveVehLog();
                 }
 
@@ -118,15 +132,18 @@ public class MainActivity extends BaseActivity {
         retrieveBusInfo(vehNm, true);
     }
 
-    private void saveVehLog() {
+    private void addVehLog(){
         String vehNm = binding.vehNmText.getText().toString();
+        if(!(vehLogList.contains(vehNm))){
+            vehLogList.add(vehNm);
+        }
+    }
+
+    private void saveVehLog() {
         Gson gson = new Gson();
         SharedPreferences sf = getSharedPreferences(BaseApplication.VEH_LOG, 0);
         SharedPreferences.Editor editor = sf.edit();//저장하려면 editor가 필요
 
-        if(!(vehLogList.contains(vehNm))){
-            vehLogList.add(vehNm);
-        }
         String jsonStr = gson.toJson(vehLogList);
         editor.putString(BaseApplication.VEH_LOG, jsonStr); // 입력
         editor.apply(); // 파일에 최종 반영함
