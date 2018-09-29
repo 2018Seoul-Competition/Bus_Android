@@ -78,8 +78,8 @@ public class StationActivity extends BaseActivity {
                     StationActivity.this,
                     ArrivalNotificationForeGroundService.class);
         }
-        Bundle intent = getIntent().getExtras();
-        mVehNm = getIntent().getStringExtra(BaseApplication.VEH_NM);
+
+        mVehNm = BaseApplication.VEH_NM_VAL;
 
         initView();
 

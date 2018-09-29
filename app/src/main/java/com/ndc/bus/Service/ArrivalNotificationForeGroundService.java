@@ -360,8 +360,6 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
         setDestLongAndLat(gettingIntent);
 
         Intent intent = new Intent(this, StationActivity.class);
-        intent.putExtra(BaseApplication.VEH_NM, mVehNm);
-        intent.putExtra(BaseApplication.LAN_INTENT, mLanMode);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,0);
 
         mBuilder = new NotificationCompat.Builder(getApplicationContext(), BaseApplication.CHANNEL_ID);
