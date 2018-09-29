@@ -1,5 +1,6 @@
 package com.ndc.bus.Activity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.view.View;
@@ -52,5 +53,10 @@ public class SettingActivity extends BaseActivity {
                 editor.apply(); // 파일에 최종 반영함
             }
         });
+    }
+
+    public void gotoNoticeActivity(){
+        Intent intent = new Intent(this, NoticeActivity.class);
+        startActivity(intent);
     }
 }

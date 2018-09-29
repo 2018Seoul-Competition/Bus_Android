@@ -55,7 +55,8 @@
             android:id="@+id/settingIconBtn"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:background="@android:color/transparent"/>
+            android:background="@android:color/transparent"
+            android:onClick="@{()->activity.gotoNoticeActivity()}"/>
 
             <TextView
                 android:id="@+id/settingNotifyFont"

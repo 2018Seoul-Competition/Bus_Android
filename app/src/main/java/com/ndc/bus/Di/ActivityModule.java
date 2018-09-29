@@ -3,6 +3,7 @@ package com.ndc.bus.Di;
 import com.ndc.bus.Activity.IndexActivity;
 import com.ndc.bus.Activity.MainActivity;
 import com.ndc.bus.Activity.MapActivity;
+import com.ndc.bus.Activity.NoticeActivity;
 import com.ndc.bus.Activity.QrScanActivity;
 import com.ndc.bus.Activity.SettingActivity;
 import com.ndc.bus.Activity.StationActivity;
@@ -35,4 +36,8 @@ abstract class ActivityModule {
     @ActivityScope
     @ContributesAndroidInjector
     abstract public SettingActivity contributeSettingActivityInjector();
+
+    @ActivityScope
+    @ContributesAndroidInjector
+    abstract public NoticeActivity contributeNoticeActivityInjector();
 }
