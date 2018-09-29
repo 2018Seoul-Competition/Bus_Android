@@ -144,6 +144,8 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
         {
             mLastLocation.set(location);
             myGPS = mLastLocation;
+            BaseApplication.LAST_LATI_VAL = Double.toString(myGPS.getLatitude());
+            BaseApplication.LAST_LONG_VAL = Double.toString(myGPS.getLongitude());
 
             if(mCustomAlarm.getAlarmSetBeforeTwo()) {
                 if(checkArrivalOfBefore2Station()){
