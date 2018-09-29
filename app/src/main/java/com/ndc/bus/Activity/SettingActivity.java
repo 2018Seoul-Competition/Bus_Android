@@ -35,6 +35,21 @@ public class SettingActivity extends BaseActivity {
 
         lanSwitch = (Switch) findViewById(R.id.switch_Language);
 
+        if(BaseApplication.LAN_MODE.compareTo("EN") == 0){
+            binding.textSettting.setText("Settings");
+            binding.settingNotifyFont.setText("Notice");
+            binding.switchAlarm.setText("Alarm ON/OFF");
+            binding.settingAlertFont.setText("Alarm settings");
+            binding.switchArrive.setText("Arrival Time");
+        }
+        else{
+            binding.textSettting.setText("설정");
+            binding.settingNotifyFont.setText("공지사항");
+            binding.switchAlarm.setText("알림 ON/OFF");
+            binding.settingAlertFont.setText("알림설정");
+            binding.switchArrive.setText("도착시간");
+        }
+
         if(BaseApplication.LAN_MODE.compareTo("EN") == 0)
             lanSwitch.setChecked(true);
 

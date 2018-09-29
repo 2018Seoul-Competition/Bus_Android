@@ -23,7 +23,7 @@
             android:background="@drawable/setting_header" />
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/textSettting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
