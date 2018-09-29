@@ -47,7 +47,7 @@
             android:id="@+id/settingNotify"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:layout_marginTop="70dp"
+            android:layout_marginTop="80dp"
             android:layout_below="@+id/settingHeader_iv"
             android:background="@drawable/setting_detail" >
 
@@ -71,29 +71,48 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/settingAlert1"
+            android:id="@+id/settingAlert2"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:layout_marginTop="70dp"
+            android:layout_marginTop="80dp"
             android:layout_below="@+id/settingNotify"
             android:background="@drawable/setting_detail" >
+
             <LinearLayout
-                android:layout_width="160dp"
-                android:layout_height="55dp"
-                android:layout_alignParentEnd="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="12dp"
+                android:layout_toLeftOf="@+id/switch_arrive2_layout">
+
+                <TextView
+                    android:id="@+id/switch_arrive2_tx"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/nanumbarunpenr"
+                    android:text="1정거장 전"
+                    android:textColor="#969bb5"
+                    android:textSize="21dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/switch_arrive2_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="11dp"
+                android:padding="5dp"
                 android:orientation="vertical">
 
                 <Switch
-                    android:id="@+id/switch_arrive1"
+                    android:id="@+id/switch_arrive2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
-                    android:fontFamily="@font/nanumbarunpenr"
-                    android:text="알림 ON/OFF "
-                    android:textColor="#969bb5"
-                    android:textSize="21dp" />
+                    android:track="@drawable/switch_track_selector"
+                    android:thumb="@drawable/switch_thumb_selector"/>
+
             </LinearLayout>
 
             <TextView
@@ -110,72 +129,65 @@
         </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/settingAlert2"
+        android:id="@+id/settingAlert3"
         android:layout_width="match_parent"
         android:layout_height="55dp"
-        android:layout_below="@+id/settingAlert1"
+        android:layout_below="@+id/settingAlert2"
         android:background="@drawable/setting_detail2" >
 
         <LinearLayout
-            android:layout_width="160dp"
-            android:layout_height="55dp"
-            android:layout_alignParentEnd="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
             android:layout_marginTop="12dp"
+            android:layout_toLeftOf="@+id/switch_arrive3_layout">
+
+            <TextView
+                android:id="@+id/switch_arrive3_tx"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nanumbarunpenr"
+                android:text="2정거장 전"
+                android:textColor="#969bb5"
+                android:textSize="21dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/switch_arrive3_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="11dp"
+            android:padding="5dp"
             android:orientation="vertical">
 
             <Switch
-                android:id="@+id/switch_arrive2"
+                android:id="@+id/switch_arrive3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                android:fontFamily="@font/nanumbarunpenr"
-                android:text="1정거장 전 "
-                android:textColor="#969bb5"
-                android:textSize="21dp" />
+                android:track="@drawable/switch_track_selector"
+                android:thumb="@drawable/switch_thumb_selector"/>
         </LinearLayout>
     </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/settingAlert3"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:layout_below="@+id/settingAlert2"
-            android:background="@drawable/setting_detail2" >
-
-            <LinearLayout
-                android:layout_width="160dp"
-                android:layout_height="55dp"
-                android:layout_alignParentEnd="true"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="12dp"
-                android:orientation="vertical">
-
-                <Switch
-                    android:id="@+id/switch_arrive3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:fontFamily="@font/nanumbarunpenr"
-                    android:text="2정거장 전 "
-                    android:textColor="#969bb5"
-                    android:textSize="21dp" />
-            </LinearLayout>
-        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/settingLanguage"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:layout_marginTop="70dp"
-            android:layout_below="@+id/settingAlert3"
+            android:layout_marginTop="80dp"
+            android:layout_below="@+id/settingAlert2"
             android:background="@drawable/setting_detail" >
+
             <LinearLayout
-                android:layout_width="160dp"
-                android:layout_height="55dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="11dp"
+                android:padding="5dp"
                 android:orientation="vertical">
 
                 <Switch
@@ -183,10 +195,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
-                    android:fontFamily="@font/nanumbarunpenr"
-                    android:text=""
-                    android:textColor="#969bb5"
-                    android:textSize="21dp" />
+                    android:track="@drawable/switch_track_selector"
+                    android:thumb="@drawable/switch_thumb_selector"/>
             </LinearLayout>
 
             <TextView
