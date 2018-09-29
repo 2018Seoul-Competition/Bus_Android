@@ -3,15 +3,11 @@ package com.ndc.bus.Activity;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -26,14 +22,14 @@ import com.ndc.bus.Network.RetrofitClient;
 import com.ndc.bus.R;
 import com.ndc.bus.Route.Route;
 import com.ndc.bus.Service.ArrivalNotificationForeGroundService;
-import com.ndc.bus.Service.ArrivalNotificationForeGroundService.MyBinder;
+import com.ndc.bus.Station.Result.StationItemList;
+import com.ndc.bus.Station.Result.StationServiceResult;
 import com.ndc.bus.Station.Station;
 import com.ndc.bus.Station.StationModel;
 import com.ndc.bus.Station.StationStatus;
 import com.ndc.bus.Utils.Dlog;
 import com.ndc.bus.databinding.ActivityStationBinding;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,9 +63,9 @@ public class StationActivity extends BaseActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_station);
         binding.setActivity(this);
 
-        binding.stationBackBtn.setOnClickListener(new View.OnClickListener(){
+        binding.stationBackBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 onBackPressed();
             }
         });
@@ -105,13 +101,12 @@ public class StationActivity extends BaseActivity {
     }
 
     private void startArrivalAlarmService() {
-        if(BaseApplication.ALARM_BEFORE1_VAL.compareTo("FALSE") == 0 && BaseApplication.ALARM_BEFORE2_VAL.compareTo("FALSE") == 0){
-            if(BaseApplication.LAN_MODE.compareTo("EN") == 0)
+        if (BaseApplication.ALARM_BEFORE1_VAL.compareTo("FALSE") == 0 && BaseApplication.ALARM_BEFORE2_VAL.compareTo("FALSE") == 0) {
+            if (BaseApplication.LAN_MODE.compareTo("EN") == 0)
                 Toast.makeText(getApplicationContext(), "Alarm is off", Toast.LENGTH_LONG);
             else
                 Toast.makeText(getApplicationContext(), "알람 기능이 꺼져있습니다.", Toast.LENGTH_LONG);
-        }
-        else if (!isServiceRunning()) {
+        } else if (!isServiceRunning()) {
             Dlog.i("Service Start");
             makeIntentAndStartService();
         } else {
@@ -151,7 +146,7 @@ public class StationActivity extends BaseActivity {
         }
     }
 
-    private void makeIntentAndStartService(){
+    private void makeIntentAndStartService() {
         Intent intent = new Intent(
                 StationActivity.this,
                 ArrivalNotificationForeGroundService.class);
@@ -163,11 +158,10 @@ public class StationActivity extends BaseActivity {
         intent.putExtra(BaseApplication.DEST_LATI, mDestStation.getPosY());
         intent.putExtra(BaseApplication.BEFORE_LONG, mBeforeDestStation.getPosX());
         intent.putExtra(BaseApplication.BEFORE_LATI, mBeforeDestStation.getPosY());
-        if(mBefore2DestStation != null){
+        if (mBefore2DestStation != null) {
             intent.putExtra(BaseApplication.BEFORE_2_LONG, mBefore2DestStation.getPosX());
             intent.putExtra(BaseApplication.BEFORE_2_LATI, mBefore2DestStation.getPosY());
-        }
-        else{
+        } else {
             intent.putExtra(BaseApplication.BEFORE_2_LONG, "");
             intent.putExtra(BaseApplication.BEFORE_2_LATI, "");
         }
@@ -208,20 +202,21 @@ public class StationActivity extends BaseActivity {
         super.onStop();
     }
 
-    private class SelectDatabaseTask extends AsyncTask<String, Void, List<Station>> {
+    private class SelectDatabaseTask extends AsyncTask<String, Void, Void> {
         private Route route;
-
+        private List<Station> stationList;
+        private List<String> stationIdList;
         @Override
-        protected List<Station> doInBackground(String... strings) {
+        protected Void doInBackground(String... strings) {
             this.route = busDatabaseClient.getBusDatabase().routeDAO().retrieveRouteNmByNm(strings[0]);
-            List<Station> stationList = busDatabaseClient.getBusDatabase().routeRowDAO().retrieveAllStationsById(route.getRouteId());
-            return stationList;
+            this.stationList = busDatabaseClient.getBusDatabase().routeRowDAO().retrieveAllStationsById(route.getRouteId());
+            this.stationIdList = busDatabaseClient.getBusDatabase().routeRowDAO().retrieveAllStationsIdById(route.getRouteId());
+            return null;
         }
 
         @Override
-        protected void onPostExecute(List<Station> stationList) {
-            super.onPostExecute(stationList);
-            final ArrayList<StationModel> stationModelList = createStationModelItems(stationList);
+        protected void onPostExecute(Void v) {
+            final ArrayList<StationModel> stationModelList = createStationModelItems();
 
             if (BaseApplication.LAN_MODE.compareTo("KR") == 0) {
                 binding.startStation.setText(stationList.get(0).getStNm());
@@ -244,7 +239,7 @@ public class StationActivity extends BaseActivity {
                     // you  will get the reponse in the response parameter
                     if (response.isSuccessful()) {
                         List<ArrivalItemList> arrivalItemLists = response.body().getArrivalMsgBody().getArrivalItemList();
-                        if(arrivalItemLists == null){
+                        if (arrivalItemLists == null) {
                             arrivalItemLists = new ArrayList<>();
                         }
                         setStationAdapter(stationModelList, arrivalItemLists);
@@ -256,12 +251,14 @@ public class StationActivity extends BaseActivity {
                 @Override
                 public void onFailure(Call<ArrivalServiceResult> call, Throwable t) {
                     Dlog.e(t.getMessage());
+                    List<ArrivalItemList> arrivalItemLists = new ArrayList<>();
+                    setStationAdapter(stationModelList, arrivalItemLists);
                 }
             });
 
         }
 
-        private void setStationAdapter(final ArrayList<StationModel> stationModelList, List<ArrivalItemList> arrivalItemLists){
+        private void setStationAdapter(final ArrayList<StationModel> stationModelList, List<ArrivalItemList> arrivalItemLists) {
             StationAdapter stationAdapter = new StationAdapter(stationModelList, arrivalItemLists, new StationRecyclerViewClickListener() {
                 @Override
                 public void onItemClick(StationModel stationModel) {
@@ -275,9 +272,55 @@ public class StationActivity extends BaseActivity {
                 }
             });
             binding.stationRv.setAdapter(stationAdapter);
+            retrieveStationByPos();
         }
 
-        private ArrayList<StationModel> createStationModelItems(List<Station> stationList) {
+        private void retrieveStationByPos() {
+            BaseApplication baseApplication = (BaseApplication) getApplication();
+            String serviceKey = baseApplication.getKey();
+
+            Call<StationServiceResult> call = RetrofitClient.getInstance().getService().getStaionsByPosList(serviceKey, 126.95584930, 37.53843986, 1000);
+
+            call.enqueue(new Callback<StationServiceResult>() {
+                @Override
+                public void onResponse(Call<StationServiceResult> call, Response<StationServiceResult> response) {
+                    // you  will get the reponse in the response parameter
+                    if (response.isSuccessful()) {
+                        List<StationItemList> itemLists = response.body().getStationMsgBody().getStationItemList();
+                        setFocusOnDest(itemLists);
+                    } else {
+                        int statusCode = response.code();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<StationServiceResult> call, Throwable t) {
+                    Dlog.e(t.getMessage());
+                }
+            });
+
+        }
+
+        private void setFocusOnDest(List<StationItemList> itemLists){
+            boolean dFlag = false;
+            String stationId = null;
+
+            for (int i = 0; i < itemLists.size(); i++) {
+                stationId = itemLists.get(i).getStationId();
+                if(stationIdList.contains(stationId)){
+                    dFlag = true;
+                    break;
+                }
+            }
+
+            if(dFlag) {
+                binding.stationRv.scrollToPosition(stationIdList.indexOf(stationId));
+            }else{
+                Toast.makeText(getApplicationContext(),"주변 정거장이 존재하지 않음!", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        private ArrayList<StationModel> createStationModelItems() {
             ArrayList<StationModel> stationModelList = new ArrayList<>();
 
             for (int i = 0; i < stationList.size(); i++) {
