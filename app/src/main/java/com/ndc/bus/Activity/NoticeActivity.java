@@ -3,6 +3,7 @@ package com.ndc.bus.Activity;
 import android.databinding.DataBindingUtil;
 import android.view.View;
 
+import com.ndc.bus.Common.BaseApplication;
 import com.ndc.bus.R;
 import com.ndc.bus.databinding.ActivityNoticeBinding;
 
@@ -23,5 +24,10 @@ public class NoticeActivity extends BaseActivity {
                 onBackPressed();
             }
         });
+
+        if(BaseApplication.LAN_MODE.compareTo("EN") == 0)
+            binding.noticeText.setText("NOTICE");
+        else
+            binding.noticeText.setText("공지사항");
     }
 }
