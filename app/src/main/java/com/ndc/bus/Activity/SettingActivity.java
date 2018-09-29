@@ -32,7 +32,7 @@ public class SettingActivity extends BaseActivity {
         lanSwitch = (Switch) findViewById(R.id.switch_Language);
 
         if(BaseApplication.LAN_MODE.compareTo("EN") == 0){
-            binding.textSettting.setText("Settings");
+            binding.textSettting.setText("SETTINGS");
             binding.settingNotifyFont.setText("Notice");
             binding.settingAlertFont.setText("Alarm");
             binding.switchArrive2Tx.setText("1Station Before");
