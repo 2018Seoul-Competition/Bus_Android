@@ -47,7 +47,7 @@
             android:id="@+id/settingNotify"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:layout_marginTop="80dp"
+            android:layout_marginTop="70dp"
             android:layout_below="@+id/settingHeader_iv"
             android:background="@drawable/setting_detail" >
 
@@ -63,7 +63,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="25dp"
-                android:layout_marginTop="9dp"
+                android:layout_marginTop="9.5dp"
                 android:fontFamily="@font/nanumbarunpenr"
                 android:textColor="#000066"
                 android:textSize="25sp"
@@ -74,7 +74,7 @@
             android:id="@+id/settingAlert1"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:layout_marginTop="80dp"
+            android:layout_marginTop="70dp"
             android:layout_below="@+id/settingNotify"
             android:background="@drawable/setting_detail" >
             <LinearLayout
@@ -82,11 +82,11 @@
                 android:layout_height="55dp"
                 android:layout_alignParentEnd="true"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="12dp"
                 android:orientation="vertical">
 
                 <Switch
-                    android:id="@+id/switch_Alarm"
+                    android:id="@+id/switch_arrive1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
@@ -101,7 +101,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="25dp"
-                android:layout_marginTop="9dp"
+                android:layout_marginTop="9.5dp"
                 android:fontFamily="@font/nanumbarunpenr"
                 android:textColor="#000066"
                 android:textSize="25sp"
@@ -121,34 +121,61 @@
             android:layout_height="55dp"
             android:layout_alignParentEnd="true"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="12dp"
             android:orientation="vertical">
 
             <Switch
-                android:id="@+id/switch_arrive"
+                android:id="@+id/switch_arrive2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:fontFamily="@font/nanumbarunpenr"
-                android:text="도착시간 "
+                android:text="1정거장 전 "
                 android:textColor="#969bb5"
                 android:textSize="21dp" />
         </LinearLayout>
     </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/settingAlert3"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_below="@+id/settingAlert2"
+            android:background="@drawable/setting_detail2" >
+
+            <LinearLayout
+                android:layout_width="160dp"
+                android:layout_height="55dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical">
+
+                <Switch
+                    android:id="@+id/switch_arrive3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:fontFamily="@font/nanumbarunpenr"
+                    android:text="2정거장 전 "
+                    android:textColor="#969bb5"
+                    android:textSize="21dp" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/settingLanguage"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:layout_marginTop="80dp"
-            android:layout_below="@+id/settingAlert2"
+            android:layout_marginTop="70dp"
+            android:layout_below="@+id/settingAlert3"
             android:background="@drawable/setting_detail" >
             <LinearLayout
                 android:layout_width="160dp"
                 android:layout_height="55dp"
                 android:layout_alignParentEnd="true"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="12dp"
                 android:orientation="vertical">
 
                 <Switch
@@ -167,7 +194,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="25dp"
-                android:layout_marginTop="9dp"
+                android:layout_marginTop="9.5dp"
                 android:fontFamily="@font/nanumbarunpenr"
                 android:textColor="#000066"
                 android:textSize="25sp"
