@@ -225,10 +225,29 @@ public class StationActivity extends BaseActivity {
                 binding.startStation.setText(stationList.get(0).getStEngNm());
                 binding.endStation.setText(stationList.get(stationList.size() - 1).getStEngNm());
             }
-            retrieveBusPosByRouteId(stationModelList);
+            setStationAdapter(stationModelList);
+            //retrieveBusPosByRouteId(stationModelList);
         }
 
-        private void retrieveBusPosByRouteId(final ArrayList<StationModel> stationModelList) {
+        private void setStationAdapter(final ArrayList<StationModel> stationModelList) {
+            StationAdapter stationAdapter = new StationAdapter(stationModelList, new StationRecyclerViewClickListener() {
+                @Override
+                public void onItemClick(StationModel stationModel) {
+                    int iDest = stationModelList.indexOf(stationModel);
+                    Station station = stationModelList.get(iDest).getStation();
+                    if (iDest > 2) {
+                        Station before2Station = stationModelList.get(iDest - 2).getStation();
+                        Station beforeStation = stationModelList.get(iDest - 1).getStation();
+                        setDestStation(before2Station, beforeStation, station);
+                    }
+                }
+            });
+            binding.stationRv.setAdapter(stationAdapter);
+            retrieveBusPosByRouteId(stationAdapter);
+            retrieveStationByPos();
+        }
+
+        private void retrieveBusPosByRouteId(final StationAdapter stationAdapter) {
             BaseApplication baseApplication = (BaseApplication) getApplication();
             String serviceKey = baseApplication.getKey();
             Call<ArrivalServiceResult> call = RetrofitClient.getInstance().getService().getBusPosByRtid(serviceKey, route.getRouteId());
@@ -242,7 +261,7 @@ public class StationActivity extends BaseActivity {
                         if (arrivalItemLists == null) {
                             arrivalItemLists = new ArrayList<>();
                         }
-                        setStationAdapter(stationModelList, arrivalItemLists);
+                        stationAdapter.setArrivalItemLists(arrivalItemLists);
                     } else {
                         int statusCode = response.code();
                     }
@@ -251,28 +270,9 @@ public class StationActivity extends BaseActivity {
                 @Override
                 public void onFailure(Call<ArrivalServiceResult> call, Throwable t) {
                     Dlog.e(t.getMessage());
-                    List<ArrivalItemList> arrivalItemLists = new ArrayList<>();
-                    setStationAdapter(stationModelList, arrivalItemLists);
                 }
             });
 
-        }
-
-        private void setStationAdapter(final ArrayList<StationModel> stationModelList, List<ArrivalItemList> arrivalItemLists) {
-            StationAdapter stationAdapter = new StationAdapter(stationModelList, arrivalItemLists, new StationRecyclerViewClickListener() {
-                @Override
-                public void onItemClick(StationModel stationModel) {
-                    int iDest = stationModelList.indexOf(stationModel);
-                    Station station = stationModelList.get(iDest).getStation();
-                    if (iDest > 2) {
-                        Station before2Station = stationModelList.get(iDest - 2).getStation();
-                        Station beforeStation = stationModelList.get(iDest - 1).getStation();
-                        setDestStation(before2Station, beforeStation, station);
-                    }
-                }
-            });
-            binding.stationRv.setAdapter(stationAdapter);
-            retrieveStationByPos();
         }
 
         private void retrieveStationByPos() {

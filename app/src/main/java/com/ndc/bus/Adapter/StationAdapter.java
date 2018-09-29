@@ -7,12 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ndc.bus.Arrival.ArrivalItemList;
-import com.ndc.bus.BR;
 import com.ndc.bus.Common.BaseApplication;
 import com.ndc.bus.Listener.StationRecyclerViewClickListener;
 import com.ndc.bus.R;
 import com.ndc.bus.Station.StationModel;
-import com.ndc.bus.Utils.Dlog;
 import com.ndc.bus.Utils.VectorDrawableUtils;
 import com.ndc.bus.databinding.StationRowBinding;
 
@@ -33,6 +31,13 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.MyViewHo
         retrieveBusPos();
     }
 
+    public StationAdapter(ArrayList<StationModel> stationModelList, StationRecyclerViewClickListener listener) {
+        this.stationModelList = stationModelList;
+        this.arrivalItemLists = new ArrayList<>();
+        this.listener = listener;
+        retrieveBusPos();
+    }
+
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -49,6 +54,13 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.MyViewHo
         holder.bind(stationModel, position+1, listener);
     }
 
+    public List<ArrivalItemList> getArrivalItemLists() {
+        return arrivalItemLists;
+    }
+
+    public void setArrivalItemLists(List<ArrivalItemList> arrivalItemLists) {
+        this.arrivalItemLists = arrivalItemLists;
+    }
 
     private void retrieveBusPos() {
         busPosList = new ArrayList<>();
