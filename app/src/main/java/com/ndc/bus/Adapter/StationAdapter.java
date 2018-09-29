@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ndc.bus.Arrival.ArrivalItemList;
+import com.ndc.bus.BR;
 import com.ndc.bus.Common.BaseApplication;
 import com.ndc.bus.Listener.StationRecyclerViewClickListener;
 import com.ndc.bus.R;
@@ -38,14 +39,14 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.MyViewHo
         context = parent.getContext();
         StationRowBinding binding = StationRowBinding.
                 inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        binding.stationMarker.setMarker(VectorDrawableUtils.getDrawable(context, R.drawable.ic_marker_active, R.color.colorPrimary));
         return new MyViewHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(StationAdapter.MyViewHolder holder, final int position) {
         StationModel stationModel = stationModelList.get(position);
-        holder.bind(stationModel, position+1);
-        holder.binding.stationMarker.setMarker(VectorDrawableUtils.getDrawable(context, R.drawable.ic_marker_active, R.color.colorPrimary));
+        holder.bind(stationModel, position+1, listener);
 
         //holder.bind(stationModel, listener);
         //Dlog.e(String.valueOf(position));
@@ -109,15 +110,27 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.MyViewHo
         return stationModelList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
-        public StationRowBinding binding;
+    class MyViewHolder extends RecyclerView.ViewHolder {
+        private StationRowBinding binding;
 
         MyViewHolder(StationRowBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }
 
-        private void bind(StationModel stationModel, int position) {
+        private void bind(final StationModel stationModel, int position, final StationRecyclerViewClickListener listener) {
+            //binding.setVariable(BR.stationModel, stationModel);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onItemClick(stationModel);
+                }
+            });
+
+            if(busPosList.contains(position)){
+                Dlog.i("A");
+            }
+
             if (BaseApplication.LAN_MODE.compareTo("KR") == 0) {
                 binding.stationNameTv.setText(stationModel.getStation().getStNm());
             } else {
@@ -133,6 +146,9 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.MyViewHo
                 int seconds = nextStTm % 60;
                 int minutes = nextStTm / 60;
                 binding.stationDateTv.setText("도착 " + minutes + "분 " + seconds + "초 전");
+            }else{
+                binding.vehIv.setVisibility(View.INVISIBLE);
+                binding.stationDateTv.setText("");
             }
 
         }
