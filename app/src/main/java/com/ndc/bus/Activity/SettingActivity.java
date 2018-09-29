@@ -34,7 +34,7 @@ public class SettingActivity extends BaseActivity {
         if(BaseApplication.LAN_MODE.compareTo("EN") == 0){
             binding.textSettting.setText("Settings");
             binding.settingNotifyFont.setText("Notice");
-            binding.settingAlertFont.setText("Alarm settings");
+            binding.settingAlertFont.setText("Alarm");
             binding.switchArrive2Tx.setText("1Station Before");
             binding.switchArrive3Tx.setText("2Station Before");
         }
