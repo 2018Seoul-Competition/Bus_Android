@@ -107,9 +107,9 @@ public class StationActivity extends BaseActivity {
     private void startArrivalAlarmService() {
         if(BaseApplication.ALARM_BEFORE1_VAL.compareTo("FALSE") == 0 && BaseApplication.ALARM_BEFORE2_VAL.compareTo("FALSE") == 0){
             if(BaseApplication.LAN_MODE.compareTo("EN") == 0)
-                Toast.makeText(getApplicationContext(), "Alarm is off", Toast.LENGTH_SHORT);
+                Toast.makeText(getApplicationContext(), "Alarm is off", Toast.LENGTH_LONG);
             else
-                Toast.makeText(getApplicationContext(), "알람 기능이 꺼져있습니다.", Toast.LENGTH_SHORT);
+                Toast.makeText(getApplicationContext(), "알람 기능이 꺼져있습니다.", Toast.LENGTH_LONG);
         }
         else if (!isServiceRunning()) {
             Dlog.i("Service Start");
