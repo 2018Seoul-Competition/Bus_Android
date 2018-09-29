@@ -178,7 +178,7 @@
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:layout_marginTop="80dp"
-            android:layout_below="@+id/settingAlert2"
+            android:layout_below="@+id/settingAlert3"
             android:background="@drawable/setting_detail" >
 
             <LinearLayout
