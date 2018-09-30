@@ -85,6 +85,13 @@ public class StationActivity extends BaseActivity {
 
         initView();
 
+        binding.stationRenewBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                forcedRefresh();
+            }
+        });
+
     }
 
     private void initView() {
