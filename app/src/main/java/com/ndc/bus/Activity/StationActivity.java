@@ -3,11 +3,15 @@ package com.ndc.bus.Activity;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -49,8 +53,12 @@ public class StationActivity extends BaseActivity {
     private Station mDestStation;
     private String mVehNm;
 
-    private boolean mIsConnected;
-    private ArrivalNotificationForeGroundService mService;
+    //gps
+    private LocationManager mLocationManager = null;
+    private static final int LOCATION_INTERVAL = 1000 * 1 * 10;
+    private static final float LOCATION_DISTANCE = 0.1f;
+    private privateLocationListener[] mLocationListeners;
+    private Location myGPS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +77,9 @@ public class StationActivity extends BaseActivity {
                 onBackPressed();
             }
         });
-        if (isServiceRunning()) {
-            Intent intent = new Intent(
-                    StationActivity.this,
-                    ArrivalNotificationForeGroundService.class);
-        }
+
+        if(!isServiceRunning())
+            initGPS();
 
         mVehNm = BaseApplication.VEH_NM_VAL;
 
@@ -88,6 +94,99 @@ public class StationActivity extends BaseActivity {
         SelectDatabaseTask selectTask = new SelectDatabaseTask();
         selectTask.execute(mVehNm);
 
+    }
+
+
+    private void forcedRefresh(){
+        if(mLocationManager == null && !isServiceRunning()){
+            initGPS();
+        }
+    }
+
+    private void initGPS(){
+        initializeLocationManager();
+        initializeLocationListeners();
+        linkLocationManagerAndListeners();
+        mOnGPSCheck();
+    }
+
+    private void initializeLocationManager() {
+        if (mLocationManager == null) {
+            mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        }
+    }
+
+    private void initializeLocationListeners() {
+        if (mLocationListeners == null) {
+            mLocationListeners = new privateLocationListener[]{
+                    new privateLocationListener(LocationManager.GPS_PROVIDER),
+                    new privateLocationListener(LocationManager.NETWORK_PROVIDER)
+            };
+            ;
+        }
+    }
+
+    private void linkLocationManagerAndListeners() {
+        try {
+            mLocationManager.requestLocationUpdates(
+                    LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
+                    mLocationListeners[1]);
+        } catch (java.lang.SecurityException ex) {
+            Dlog.i("fail to request location update, ignore" + ex);
+        } catch (IllegalArgumentException ex) {
+            Dlog.i("network provider does not exist, " + ex.getMessage());
+        }
+        try {
+            mLocationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
+                    mLocationListeners[0]);
+        } catch (java.lang.SecurityException ex) {
+            Dlog.d("fail to request location update, ignore" + ex);
+        } catch (IllegalArgumentException ex) {
+            Dlog.d(ex.getMessage());
+        }
+    }
+
+    public void mOnGPSCheck() {
+        //GPS가 켜져있는지 체크
+        if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            //GPS 설정화면으로 이동
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            startActivity(intent);
+        }
+    }
+
+    private class privateLocationListener implements android.location.LocationListener {
+        Location mLastLocation;
+
+        public privateLocationListener(String provider) {
+            mLastLocation = new Location(provider);
+        }
+
+        @Override
+        public void onLocationChanged(Location location) {
+            mLastLocation.set(location);
+            myGPS = mLastLocation;
+            BaseApplication.LAST_LATI_VAL = Double.toString(myGPS.getLatitude());
+            BaseApplication.LAST_LONG_VAL = Double.toString(myGPS.getLongitude());
+            Dlog.i("GPS in Station : " + Double.toString(myGPS.getLatitude()));
+            Dlog.i(Double.toString(myGPS.getLongitude()));
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+            Dlog.e(provider);
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+            Dlog.e(provider);
+        }
     }
 
     private void setDestStation(Station before2Station, Station beforStation, Station destStation) {
