@@ -55,8 +55,8 @@ public class StationActivity extends BaseActivity {
 
     //gps
     private LocationManager mLocationManager = null;
-    private static final int LOCATION_INTERVAL = 1000 * 1 * 10;
-    private static final float LOCATION_DISTANCE = 0.1f;
+    private static final int LOCATION_INTERVAL = 1000 * 1;
+    private static final float LOCATION_DISTANCE = 0.01f;
     private privateLocationListener[] mLocationListeners;
     private Location myGPS;
 
@@ -392,7 +392,7 @@ public class StationActivity extends BaseActivity {
             BaseApplication baseApplication = (BaseApplication) getApplication();
             String serviceKey = baseApplication.getKey();
 
-            Call<StationServiceResult> call = RetrofitClient.getInstance().getService().getStaionsByPosList(serviceKey, 126.95584930, 37.53843986, 1000);
+            Call<StationServiceResult> call = RetrofitClient.getInstance().getService().getStaionsByPosList(serviceKey, Double.parseDouble(BaseApplication.LAST_LONG_VAL), Double.parseDouble(BaseApplication.LAST_LATI_VAL), 50);
 
             call.enqueue(new Callback<StationServiceResult>() {
                 @Override
