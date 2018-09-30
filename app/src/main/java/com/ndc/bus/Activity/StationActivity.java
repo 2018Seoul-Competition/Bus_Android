@@ -392,7 +392,11 @@ public class StationActivity extends BaseActivity {
             BaseApplication baseApplication = (BaseApplication) getApplication();
             String serviceKey = baseApplication.getKey();
 
-            Call<StationServiceResult> call = RetrofitClient.getInstance().getService().getStaionsByPosList(serviceKey, Double.parseDouble(BaseApplication.LAST_LONG_VAL), Double.parseDouble(BaseApplication.LAST_LATI_VAL), 50);
+            Call<StationServiceResult> call;
+            if(BaseApplication.LAST_LONG_VAL.compareTo("") != 0)
+                call = RetrofitClient.getInstance().getService().getStaionsByPosList(serviceKey, Double.parseDouble(BaseApplication.LAST_LONG_VAL), Double.parseDouble(BaseApplication.LAST_LATI_VAL), 50);
+            else
+                call = RetrofitClient.getInstance().getService().getStaionsByPosList(serviceKey, 125, 25, 50);
 
             call.enqueue(new Callback<StationServiceResult>() {
                 @Override
