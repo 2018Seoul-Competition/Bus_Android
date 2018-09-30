@@ -105,10 +105,10 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.MyViewHo
                 int seconds = nextStTm % 60;
                 int minutes = nextStTm / 60;
                 if(BaseApplication.LAN_MODE.compareTo("EN") == 0){
-                    binding.stationDateTv.setText("Arrive after " + minutes + "minutes " + seconds + "seconds" +String.valueOf(nextStTm));
+                    binding.stationDateTv.setText("Arrive after " + minutes + "minutes " + seconds + "seconds");
                 }
                 else
-                    binding.stationDateTv.setText("도착 " + minutes + "분 " + seconds + "초 전"+String.valueOf(nextStTm));
+                    binding.stationDateTv.setText("도착 " + minutes + "분 " + seconds + "초 전");
             }else{
                 binding.vehIv.setVisibility(View.INVISIBLE);
                 binding.stationDateTv.setText("");
