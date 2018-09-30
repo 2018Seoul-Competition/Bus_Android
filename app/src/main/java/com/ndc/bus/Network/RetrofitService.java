@@ -1,6 +1,7 @@
 package com.ndc.bus.Network;
 
 import com.ndc.bus.Arrival.ArrivalServiceResult;
+import com.ndc.bus.Station.Result.StationServiceResult;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -19,6 +20,16 @@ public interface RetrofitService {
             final @Query(value = "serviceKey", encoded = true) String serviceKey,
             @Query("busRouteId") String busRouteId
     );
+
+    @GET("getStaionsByPosList")
+    Call<StationServiceResult> getStaionsByPosList(
+            final @Query(value = "serviceKey", encoded = true) String serviceKey,
+            @Query("tmX") double tmX,
+            @Query("tmY") double tmY,
+            @Query("radius") int radius
+    );
+
+
     /*
     //File Should be sended Through MultiPart and POST
     @POST("/sendImage")

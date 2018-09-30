@@ -35,7 +35,7 @@ public class QrScanActivity extends BaseActivity {
         qrScan = new IntentIntegrator(this);
 
         //scan option
-        if(BaseApplication.LAN_MODE.compareTo("KR") == 0)
+        if (BaseApplication.LAN_MODE.compareTo("KR") == 0)
             qrScan.setPrompt("QR코드를 찍어주세요");
         else
             qrScan.setPrompt("Scan Qr Code");
@@ -47,7 +47,7 @@ public class QrScanActivity extends BaseActivity {
 
     //Getting the scan results
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
@@ -61,7 +61,7 @@ public class QrScanActivity extends BaseActivity {
                     //data를 json으로 변환
                     JSONObject obj = new JSONObject(result.getContents());
                     String appUrl = (String) obj.get("url");
-                    String vehNm = (String)obj.get("vehNm");
+                    String vehNm = (String) obj.get("vehNm");
                     retrieveBusData(vehNm);
                     //String strDistBusId= (String) obj.get("vehNm");
                     //retrieveBusInfo(strDistBusId);
@@ -78,12 +78,12 @@ public class QrScanActivity extends BaseActivity {
     public void retrieveBusData(String vehNm) throws ExecutionException, InterruptedException {
         RetrieveRouteTask retrieveRouteTask = new RetrieveRouteTask();
         Route route = retrieveRouteTask.execute(vehNm).get();
-        if(route != null){
+        if (route != null) {
             Intent intent = new Intent(this, StationActivity.class);
             intent.putExtra(BaseApplication.VEH_NM, vehNm);
             startActivity(intent);
-        }else{
-            Toast.makeText(this,"존재하지 않는 버스입니다!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "존재하지 않는 버스입니다!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -93,13 +93,13 @@ public class QrScanActivity extends BaseActivity {
         BaseApplication baseApplication = (BaseApplication)getApplication();
         String serviceKey = baseApplication.getKey();
 
-        Call<ArrivalServiceResult> call =  RetrofitClient.getInstance().getService().getBusPosByVehId(serviceKey, vehId);
-        call.enqueue(new Callback<ArrivalServiceResult>() {
+        Call<StationServiceResult> call =  RetrofitClient.getInstance().getService().getBusPosByVehId(serviceKey, vehId);
+        call.enqueue(new Callback<StationServiceResult>() {
             @Override
-            public void onResponse(Call<ArrivalServiceResult> call, Response<ArrivalServiceResult> response) {
+            public void onResponse(Call<StationServiceResult> call, Response<StationServiceResult> response) {
                 // you  will get the reponse in the response parameter
                 if(response.isSuccessful()) {
-                    Dlog.i(response.body().getArrivalMsgHeader().getHeaderMsg());
+                    Dlog.i(response.body().getStationMsgHeader().getHeaderMsg());
                     Intent intent = new Intent(QrScanActivity.this, StationActivity.class);
                     intent.putExtra(BaseApplication.VEH_NM, response.body().);
                     startActivity(intent);
@@ -109,7 +109,7 @@ public class QrScanActivity extends BaseActivity {
             }
 
             @Override
-            public void onFailure(Call<ArrivalServiceResult> call, Throwable t) {
+            public void onFailure(Call<StationServiceResult> call, Throwable t) {
                 Dlog.e(t.getMessage());
             }
         });
@@ -133,7 +133,6 @@ public class QrScanActivity extends BaseActivity {
         }
 
     }
-
 
 
 }

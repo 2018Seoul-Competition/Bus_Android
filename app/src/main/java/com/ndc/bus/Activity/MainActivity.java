@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -66,6 +68,7 @@ public class MainActivity extends BaseActivity {
             binding.stationSearchTx.setText("검색");
 
         settingVehLogs();
+        mOnGPSCheck();
 
     }
 
@@ -197,5 +200,18 @@ public class MainActivity extends BaseActivity {
         startActivity(intent);
     }
 
+    public void mOnGPSCheck() {
+        //GPS가 켜져있는지 체크
+        if (!BaseApplication.mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            //GPS 설정화면으로 이동
+            if(BaseApplication.LAN_MODE.compareTo("EN") == 0)
+                Toast.makeText(getApplicationContext(), "You have to Turn on GPS for app", Toast.LENGTH_SHORT);
+            else
+                Toast.makeText(getApplicationContext(), "앱을 위해서는 GPS 기능을 켜야 합니다.", Toast.LENGTH_SHORT);
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            startActivity(intent);
+        }
+    }
 
 }
