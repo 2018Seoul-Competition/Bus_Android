@@ -35,7 +35,8 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.MyViewHo
         this.stationModelList = stationModelList;
         this.arrivalItemLists = new ArrayList<>();
         this.listener = listener;
-        retrieveBusPos();
+        this.busPosList = new ArrayList<>();
+        //retrieveBusPos();
     }
 
 
@@ -60,10 +61,10 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.MyViewHo
 
     public void setArrivalItemLists(List<ArrivalItemList> arrivalItemLists) {
         this.arrivalItemLists = arrivalItemLists;
+        retrieveBusPos();
     }
 
     private void retrieveBusPos() {
-        busPosList = new ArrayList<>();
         for (int i = 0; i < arrivalItemLists.size(); i++) {
             int busPos = arrivalItemLists.get(i).getSectOrd();
             busPosList.add(busPos);
@@ -99,11 +100,8 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.MyViewHo
 
             if(busPosList.contains(position)){
                 binding.vehIv.setVisibility(View.VISIBLE);
-                /*
-                Dlog.e(String.valueOf(position) + busPosList.toString());
                 int index = busPosList.indexOf(position);
                 int nextStTm = arrivalItemLists.get(index).getNextStTm();
-                //Dlog.e(String.valueOf(nextStTm));
                 int seconds = nextStTm % 60;
                 int minutes = nextStTm / 60;
                 if(BaseApplication.LAN_MODE.compareTo("EN") == 0){
@@ -111,7 +109,6 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.MyViewHo
                 }
                 else
                     binding.stationDateTv.setText("도착 " + minutes + "분 " + seconds + "초 전"+String.valueOf(nextStTm));
-                */
             }else{
                 binding.vehIv.setVisibility(View.INVISIBLE);
                 binding.stationDateTv.setText("");
