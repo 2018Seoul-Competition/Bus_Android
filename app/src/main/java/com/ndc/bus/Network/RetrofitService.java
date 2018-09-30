@@ -9,19 +9,19 @@ import retrofit2.http.Query;
 
 public interface RetrofitService {
 
-    @GET("getBusPosByVehId")
+    @GET("buspos/getBusPosByVehId")
     Call<ArrivalServiceResult> getBusPosByVehId(
         final @Query(value = "serviceKey", encoded = true) String serviceKey,
         @Query("vehId") String vehId
     );
 
-    @GET("getBusPosByRtid")
+    @GET("buspos/getBusPosByRtid")
     Call<ArrivalServiceResult> getBusPosByRtid(
             final @Query(value = "serviceKey", encoded = true) String serviceKey,
             @Query("busRouteId") String busRouteId
     );
 
-    @GET("getStaionsByPosList")
+    @GET("stationinfo/getStationByPos")
     Call<StationServiceResult> getStaionsByPosList(
             final @Query(value = "serviceKey", encoded = true) String serviceKey,
             @Query("tmX") double tmX,
