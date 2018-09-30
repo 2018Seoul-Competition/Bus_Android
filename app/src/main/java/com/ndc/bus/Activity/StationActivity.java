@@ -394,7 +394,7 @@ public class StationActivity extends BaseActivity {
 
             Call<StationServiceResult> call;
             if(BaseApplication.LAST_LONG_VAL.compareTo("") != 0)
-                call = RetrofitClient.getInstance().getService().getStaionsByPosList(serviceKey, Double.parseDouble(BaseApplication.LAST_LONG_VAL), Double.parseDouble(BaseApplication.LAST_LATI_VAL), 50);
+                call = RetrofitClient.getInstance().getService().getStaionsByPosList(serviceKey, Double.parseDouble(BaseApplication.LAST_LONG_VAL), Double.parseDouble(BaseApplication.LAST_LATI_VAL), 100);
             else
                 call = RetrofitClient.getInstance().getService().getStaionsByPosList(serviceKey, 125, 25, 50);
 
@@ -404,6 +404,9 @@ public class StationActivity extends BaseActivity {
                     // you  will get the reponse in the response parameter
                     if (response.isSuccessful()) {
                         List<StationItemList> itemLists = response.body().getStationMsgBody().getStationItemList();
+                        if(itemLists == null){
+                            itemLists = new ArrayList<>();
+                        }
                         setFocusOnDest(itemLists);
                     } else {
                         int statusCode = response.code();
