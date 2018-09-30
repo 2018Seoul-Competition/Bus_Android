@@ -26,4 +26,7 @@ public interface RouteRowDAO {
 
     @Query("SELECT * FROM RouteRow")
     List<RouteRow> getAllRouteRow();
+
+    @Query("SELECT STATION.stId FROM STATION INNER JOIN RouteRow ON RouteRow.stId = Station.stId WHERE RouteRow.routeId=:routeId ORDER BY RouteRow.routeRowNum ASC")
+    List<String> retrieveAllStationsIdById(String routeId);
 }
