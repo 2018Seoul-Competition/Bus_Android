@@ -246,6 +246,13 @@ public class StationActivity extends BaseActivity {
     }
 
     private void makeIntentAndStartService() {
+        if (mLocationListeners[0] != null)
+            mLocationListeners[0] = null;
+        if (mLocationListeners[0] != null)
+            mLocationListeners[1] = null;
+        if (mLocationManager != null)
+            mLocationManager = null;
+
         Intent intent = new Intent(
                 StationActivity.this,
                 ArrivalNotificationForeGroundService.class);
