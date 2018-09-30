@@ -33,7 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 app:lineSize="3dp"
-                app:line="#6cd5f3"
+                app:line="#000066"
                 android:src="@drawable/ic_marker_active"
                 app:markerSize="20dp" />
         </FrameLayout>
