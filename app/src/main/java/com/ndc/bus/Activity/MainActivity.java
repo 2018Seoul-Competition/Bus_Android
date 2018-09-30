@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -66,7 +68,6 @@ public class MainActivity extends BaseActivity {
             binding.stationSearchTx.setText("검색");
 
         settingVehLogs();
-
     }
 
     private void settingVehLogs(){
@@ -196,6 +197,4 @@ public class MainActivity extends BaseActivity {
         Intent intent = new Intent(this, SettingActivity.class);
         startActivity(intent);
     }
-
-
 }

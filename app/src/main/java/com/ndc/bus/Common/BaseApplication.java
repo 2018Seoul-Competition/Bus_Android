@@ -51,8 +51,8 @@ public class BaseApplication extends Application implements HasActivityInjector{
     public static String ALARM_BEFORE2_VAL = "TRUE";
 
     //gps
-    public static String LAST_LONG_VAL = "";
     public static String LAST_LATI_VAL = "";
+    public static String LAST_LONG_VAL = "";
 
     //SETTINGS
     public static String ALARM_ON = "";

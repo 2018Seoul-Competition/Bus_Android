@@ -85,11 +85,6 @@ public class ArrivalNotificationForeGroundService extends Service implements Tex
         super.onCreate();
         Dlog.i("Service onCreate");
 
-        if (BaseApplication.LAN_MODE.compareTo("KR") == 0)
-            Toast.makeText(getApplicationContext(), "알람 서비스를 위해서는 GPS 기능을 켜야합니다", Toast.LENGTH_LONG).show();
-        else
-            Toast.makeText(getApplicationContext(), "You have to turn on GPS for Alarm Service", Toast.LENGTH_LONG).show();
-
         //make alarm
         mCustomAlarm = new CustomAlarm();
 
