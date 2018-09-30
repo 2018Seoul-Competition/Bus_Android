@@ -30,6 +30,12 @@ android {
         }
     }
 
+    lintOptions {
+
+        checkReleaseBuilds false
+
+    }
+
     sourceSets { main { assets.srcDirs = ['src/main/assets'] } }
 }
 
